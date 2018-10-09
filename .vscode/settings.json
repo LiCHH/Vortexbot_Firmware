@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "communicate.h": "c",
+        "can.h": "c",
+        "sys_config.h": "c"
+    },
+
+    "C_Cpp.clang_format_path": "C:/Program Files/LLVM/bin/clang-format.exe"
+}

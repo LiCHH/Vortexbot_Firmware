@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "compilerPath": "C:/Program Files/LLVM/bin/gcc.exe",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "C:/Keil_v5/ARM/ARMCC/include"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "STM32F427xx"
+            ],
+            "intelliSenseMode": "clang-x64",
+            "cStandard": "c99",
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": false
+            }
+        }
+    ],
+    "version": 4
+}
