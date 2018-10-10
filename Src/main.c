@@ -107,6 +107,7 @@ int main(void)
   MX_RTC_Init();
   MX_UART7_Init();
   MX_USART6_UART_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
   /* Software parameter init */
   chassis_param_init();  
@@ -125,9 +126,9 @@ int main(void)
   {
 
   /* USER CODE END WHILE */
-//  chassis_task();
-  /* USER CODE BEGIN 3 */
 
+  /* USER CODE BEGIN 3 */
+  chassis_task();
   }
   /* USER CODE END 3 */
 

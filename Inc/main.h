@@ -48,6 +48,13 @@
 /* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/
+#define PWM_FREQUENCE 50
+#define PWM_RESOLUTION 10000
+#define APB1_TIMER_CLOCKS 84000000
+#define PWM_DEFAULT_DUTY 5000
+#define APB2_TIMER_CLOCKS 168000000
+#define TIM_PSC_APB1 ((APB1_TIMER_CLOCKS/PWM_FREQUENCE)/PWM_RESOLUTION -1)
+#define TIM_PSC_APB2 ((APB2_TIMER_CLOCKS/PWM_FREQUENCE)/PWM_RESOLUTION -1)
 
 #define LEDA_Pin GPIO_PIN_8
 #define LEDA_GPIO_Port GPIOG

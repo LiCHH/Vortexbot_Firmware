@@ -35,16 +35,18 @@ void testctrl_callback_handler(testctrl_info_t *tc, uint8_t *buf)
   temp[2] = chassis.wheel_spd_ref[2];
   temp[3] = chassis.wheel_spd_ref[3];
   
-  static int32_t flag = 0;
-  if (!flag)
-  {
-    HAL_GPIO_WritePin(LEDA_GPIO_Port, LEDA_Pin, GPIO_PIN_SET);
-    flag = 1;
-  }
-  else
-  {
-    HAL_GPIO_WritePin(LEDA_GPIO_Port, LEDA_Pin, GPIO_PIN_RESET);
-    flag = 0;
-  }
+  HAL_GPIO_TogglePin(LEDA_GPIO_Port, LEDA_Pin);
+  // Can be replace by HAL_GPIO_TogglePin
+  // static int32_t flag = 0;
+  // if (!flag)
+  // {
+  //   HAL_GPIO_WritePin(LEDA_GPIO_Port, LEDA_Pin, GPIO_PIN_SET);
+  //   flag = 1;
+  // }
+  // else
+  // {
+  //   HAL_GPIO_WritePin(LEDA_GPIO_Port, LEDA_Pin, GPIO_PIN_RESET);
+  //   flag = 0;
+  // }
   HAL_UART_Transmit_DMA(&TEST_HUART, (uint8_t *)temp, sizeof(temp));
 }

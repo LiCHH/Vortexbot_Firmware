@@ -68,18 +68,13 @@ void can_device_init(void)
   hcan1_tx_msgs.header.tx.IDE = CAN_ID_STD;
   hcan1_tx_msgs.header.tx.DLC = 0x08;
 
+  // HAL_CAN_Start() 在配置完过滤器后开启
   HAL_CAN_Start(&hcan1);
-  // hcan1.pTxMsg = &Tx1Message;
-  // hcan1.pRxMsg = &Rx1Message;
-  //  hcan2.pTxMsg = &Tx2Message;
-  //  hcan2.pRxMsg = &Rx2Message;
 }
 
 void can_receive_start(void)
 {
   HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
-  // HAL_CAN_Receive_IT(&hcan1, CAN_FIFO0);
-  //  HAL_CAN_Receive_IT(&hcan2, CAN_FIFO0);
 }
 
 uint32_t FlashTimer;
@@ -119,15 +114,17 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
   // for test
   chassis_task();
 
-  static int flag = 0;
-  if (!flag)
-  {
-    HAL_GPIO_WritePin(LEDB_GPIO_Port, LEDB_Pin, GPIO_PIN_SET);
-  }
-  else
-  {
-    HAL_GPIO_WritePin(LEDB_GPIO_Port, LEDB_Pin, GPIO_PIN_RESET);
-  }
+  HAL_GPIO_TogglePin(LEDB_GPIO_Port, LEDB_Pin);
+  // Can be replace by HAL_GPIO_TogglePin()
+  // static int flag = 0;
+  // if (!flag)
+  // {
+  //   HAL_GPIO_WritePin(LEDB_GPIO_Port, LEDB_Pin, GPIO_PIN_SET);
+  // }
+  // else
+  // {
+  //   HAL_GPIO_WritePin(LEDB_GPIO_Port, LEDB_Pin, GPIO_PIN_RESET);
+  // }
   /*#### add enable can it again to solve can receive only one ID problem!!!####**/
   // __HAL_CAN_ENABLE_IT(&hcan1, CAN_IT_FMP0);
   HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
@@ -199,7 +196,7 @@ void send_chassis_current(int16_t iq1, int16_t iq2, int16_t iq3, int16_t iq4)
   hcan1_tx_msgs.data[6] = iq4 >> 8;
   hcan1_tx_msgs.data[7] = iq4;
   uint32_t mailbox;
-  while (!HAL_CAN_GetTxMailboxesFreeLevel(&hcan1)) {}
+  while (HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) < 1) {}
   HAL_CAN_AddTxMessage(&hcan1, &hcan1_tx_msgs.header.tx, hcan1_tx_msgs.data, &mailbox);
   // HAL_CAN_Transmit(&CHASSIS_CAN, 10);
 }
