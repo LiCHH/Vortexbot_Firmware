@@ -15,7 +15,7 @@
 typedef struct
 {
   int16_t wheel_spd_fdb[4];
-  int16_t wheel_spd_ref[4];
+  int16_t wheel_spd_ref[4]; // 空载最高在0x0400左右，即455rpm
 
   int16_t wheel_current[4];
 } chassis_t;

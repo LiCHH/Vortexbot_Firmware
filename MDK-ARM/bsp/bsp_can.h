@@ -35,44 +35,53 @@
 /*CAN发送或是接收的ID*/
 typedef enum
 {
-	CAN_2006Moto_ALL_ID = 0x200,
-	CAN_2006Moto1_ID = 0x201,
-	CAN_2006Moto2_ID = 0x202,
-	CAN_2006Moto3_ID = 0x203,
-	CAN_2006Moto4_ID = 0x204,	
+  CAN_2006Moto_ALL_ID = 0x200,
+  CAN_2006Moto1_ID = 0x201,
+  CAN_2006Moto2_ID = 0x202,
+  CAN_2006Moto3_ID = 0x203,
+  CAN_2006Moto4_ID = 0x204,
 } can_msg_id_e;
 
-#define FILTER_BUF		5
-typedef struct{
-  //Encoder 
-  uint16_t ecd;           //angle
-  uint16_t last_ecd;      //last_angle
-  
-  int16_t speed_rpm;      //speed_rpm
-  int16_t given_current;  //given_current
-  
-  int32_t round_cnt;      //round_cnt
-  int32_t total_ecd;      //total_angle
-  int32_t total_angle;    //total_ecd / encoder ratio
-  
+#define FILTER_BUF 5
+typedef struct
+{
+  //Encoder
+  uint16_t ecd;      //angle
+  uint16_t last_ecd; //last_angle
+
+  int16_t speed_rpm;     //speed_rpm
+  int16_t given_current; //given_current
+
+  int32_t round_cnt;   //round_cnt
+  int32_t total_ecd;   //total_angle
+  int32_t total_angle; //total_ecd / encoder ratio
+
   uint16_t offset_ecd;
   uint32_t msg_cnt;
-  
+
   int32_t ecd_raw_rate;
-  int32_t rate_buf[FILTER_BUF];//use in EC60
-  uint8_t buf_cut;        //use in EC60
-  int32_t filter_rate;    //use in EC60
+  int32_t rate_buf[FILTER_BUF]; //use in EC60
+  uint8_t buf_cut;              //use in EC60
+  int32_t filter_rate;          //use in EC60
 } moto_measure_t;
 
+typedef struct
+{
+  union {
+    CAN_RxHeaderTypeDef rx;
+    CAN_TxHeaderTypeDef tx;
+  } header;
+  uint8_t data[8];
+} can_transmit_t;
 
 /* Extern  ------------------------------------------------------------------*/
-extern moto_measure_t  moto_chassis[];
+extern moto_measure_t moto_chassis[];
 
 void can_device_init(void);
 void can_receive_start(void);
 
 void get_moto_offset(moto_measure_t *ptr, CAN_HandleTypeDef *hcan);
-void encoder_data_handler(moto_measure_t *ptr, CAN_HandleTypeDef* hcan);
+void encoder_data_handler(moto_measure_t *ptr, CAN_HandleTypeDef *hcan);
 
 void send_chassis_current(int16_t iq1, int16_t iq2, int16_t iq3, int16_t iq4);
 //void set_moto_current(CAN_HandleTypeDef* hcan, s16 iq1, s16 iq2, s16 iq3, s16 iq4);
