@@ -68,7 +68,16 @@ void SystemClock_Config(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-
+// test code
+void PWM_SetDuty(TIM_HandleTypeDef *htim, uint32_t channel, float duty)
+{
+  switch(channel){	
+		case TIM_CHANNEL_1: htim->Instance->CCR1 = (PWM_RESOLUTION*duty) - 1;break;
+		case TIM_CHANNEL_2: htim->Instance->CCR2 = (PWM_RESOLUTION*duty) - 1;break;
+		case TIM_CHANNEL_3: htim->Instance->CCR3 = (PWM_RESOLUTION*duty) - 1;break;
+		case TIM_CHANNEL_4: htim->Instance->CCR4 = (PWM_RESOLUTION*duty) - 1;break;
+  }
+}
 /* USER CODE END 0 */
 
 /**
@@ -103,11 +112,13 @@ int main(void)
   MX_DMA_Init();
   MX_CAN1_Init();
   MX_USART1_UART_Init();
-  MX_TIM1_Init();
   MX_RTC_Init();
   MX_UART7_Init();
   MX_USART6_UART_Init();
   MX_TIM4_Init();
+  MX_TIM5_Init();
+  MX_TIM2_Init();
+  MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
   /* Software parameter init */
   chassis_param_init();  
@@ -118,17 +129,109 @@ int main(void)
   /* Start recieve can and uart */
   can_receive_start();
   testctrl_uart_init();
+
+  /* PWM device init */
+//  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
+
+  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
+  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
+  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
+  
+  HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_2);
+  HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_3);
+  HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_4);
+  
+  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_2);
+  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_3);
+  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  
+  PWM_SetDuty(&htim2, TIM_CHANNEL_1, 0.10);
+    PWM_SetDuty(&htim2, TIM_CHANNEL_2, 0.10);
+    PWM_SetDuty(&htim2, TIM_CHANNEL_3, 0.10);
+    PWM_SetDuty(&htim2, TIM_CHANNEL_4, 0.10);
+    
+    PWM_SetDuty(&htim4, TIM_CHANNEL_1, 0.10);
+    PWM_SetDuty(&htim4, TIM_CHANNEL_2, 0.10);
+    PWM_SetDuty(&htim4, TIM_CHANNEL_3, 0.10);
+    PWM_SetDuty(&htim4, TIM_CHANNEL_4, 0.10);
+    
+    PWM_SetDuty(&htim5, TIM_CHANNEL_1, 0.10);
+    PWM_SetDuty(&htim5, TIM_CHANNEL_2, 0.10);
+    PWM_SetDuty(&htim5, TIM_CHANNEL_3, 0.10);
+    PWM_SetDuty(&htim5, TIM_CHANNEL_4, 0.10);
+    
+    PWM_SetDuty(&htim8, TIM_CHANNEL_1, 0.10);
+    PWM_SetDuty(&htim8, TIM_CHANNEL_2, 0.10);
+    PWM_SetDuty(&htim8, TIM_CHANNEL_3, 0.10);
+    PWM_SetDuty(&htim8, TIM_CHANNEL_4, 0.10);
+    
+    HAL_Delay(5000);
+    
+    PWM_SetDuty(&htim2, TIM_CHANNEL_1, 0.05);
+    PWM_SetDuty(&htim2, TIM_CHANNEL_2, 0.05);
+    PWM_SetDuty(&htim2, TIM_CHANNEL_3, 0.05);
+    PWM_SetDuty(&htim2, TIM_CHANNEL_4, 0.05);
+    
+    PWM_SetDuty(&htim4, TIM_CHANNEL_1, 0.05);
+    PWM_SetDuty(&htim4, TIM_CHANNEL_2, 0.05);
+    PWM_SetDuty(&htim4, TIM_CHANNEL_3, 0.05);
+    PWM_SetDuty(&htim4, TIM_CHANNEL_4, 0.05);
+    
+    PWM_SetDuty(&htim5, TIM_CHANNEL_1, 0.05);
+    PWM_SetDuty(&htim5, TIM_CHANNEL_2, 0.05);
+    PWM_SetDuty(&htim5, TIM_CHANNEL_3, 0.05);
+    PWM_SetDuty(&htim5, TIM_CHANNEL_4, 0.05);
+    
+    PWM_SetDuty(&htim8, TIM_CHANNEL_1, 0.05);
+    PWM_SetDuty(&htim8, TIM_CHANNEL_2, 0.05);
+    PWM_SetDuty(&htim8, TIM_CHANNEL_3, 0.05);
+    PWM_SetDuty(&htim8, TIM_CHANNEL_4, 0.05);
+    
+    HAL_Delay(1000);
+    
+    PWM_SetDuty(&htim2, TIM_CHANNEL_1, 0.10);
+    PWM_SetDuty(&htim2, TIM_CHANNEL_2, 0.10);
+    PWM_SetDuty(&htim2, TIM_CHANNEL_3, 0.10);
+    PWM_SetDuty(&htim2, TIM_CHANNEL_4, 0.10);
+    
+    PWM_SetDuty(&htim4, TIM_CHANNEL_1, 0.10);
+    PWM_SetDuty(&htim4, TIM_CHANNEL_2, 0.10);
+    PWM_SetDuty(&htim4, TIM_CHANNEL_3, 0.10);
+    PWM_SetDuty(&htim4, TIM_CHANNEL_4, 0.10);
+    
+    PWM_SetDuty(&htim5, TIM_CHANNEL_1, 0.10);
+    PWM_SetDuty(&htim5, TIM_CHANNEL_2, 0.10);
+    PWM_SetDuty(&htim5, TIM_CHANNEL_3, 0.10);
+    PWM_SetDuty(&htim5, TIM_CHANNEL_4, 0.10);
+    
+    PWM_SetDuty(&htim8, TIM_CHANNEL_1, 0.10);
+    PWM_SetDuty(&htim8, TIM_CHANNEL_2, 0.10);
+    PWM_SetDuty(&htim8, TIM_CHANNEL_3, 0.10);
+    PWM_SetDuty(&htim8, TIM_CHANNEL_4, 0.10);
+  
   while (1)
   {
 
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-  chassis_task();
+  // chassis_task();
+  float count = 0;
+    
+    count += 1;
+//  } 
+  HAL_Delay(100);
   }
   /* USER CODE END 3 */
 

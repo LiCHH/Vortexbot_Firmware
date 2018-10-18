@@ -17,7 +17,7 @@
             "cStandard": "c99",
             "browse": {
                 "databaseFilename": "",
-                "limitSymbolsToIncludedHeaders": false
+                "limitSymbolsToIncludedHeaders": true
             }
         }
     ],
