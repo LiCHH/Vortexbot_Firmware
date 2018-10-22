@@ -1,8 +1,8 @@
+/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : main.h
-  * @brief          : Header for main.c file.
-  *                   This file contains the common defines of the application.
+  * File Name          : freertos.c
+  * Description        : Code for freertos applications
   ******************************************************************************
   * This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
@@ -46,70 +46,107 @@
   *
   ******************************************************************************
   */
-
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H__
-#define __MAIN_H__
+/* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
+#include "FreeRTOS.h"
+#include "task.h"
+#include "main.h"
+#include "cmsis_os.h"
 
-/* USER CODE BEGIN Includes */
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */     
 
 /* USER CODE END Includes */
 
+/* Private typedef -----------------------------------------------------------*/
+/* USER CODE BEGIN PTD */
+
+/* USER CODE END PTD */
+
 /* Private define ------------------------------------------------------------*/
-#define PWM_FREQUENCE 50
-#define PWM_RESOLUTION 10000
-#define APB1_TIMER_CLOCKS 84000000
-#define PWM_DEFAULT_DUTY 5000
-#define APB2_TIMER_CLOCKS 168000000
-#define TIM_PSC_APB1 ((APB1_TIMER_CLOCKS/PWM_FREQUENCE)/PWM_RESOLUTION -1)
-#define TIM_PSC_APB2 ((APB2_TIMER_CLOCKS/PWM_FREQUENCE)/PWM_RESOLUTION -1)
+/* USER CODE BEGIN PD */
 
-#define LEDA_Pin GPIO_PIN_8
-#define LEDA_GPIO_Port GPIOG
-#define LEDB_Pin GPIO_PIN_7
-#define LEDB_GPIO_Port GPIOG
-#define LEDC_Pin GPIO_PIN_6
-#define LEDC_GPIO_Port GPIOG
-#define LEDD_Pin GPIO_PIN_5
-#define LEDD_GPIO_Port GPIOG
-#define LEDE_Pin GPIO_PIN_4
-#define LEDE_GPIO_Port GPIOG
-#define LEDF_Pin GPIO_PIN_3
-#define LEDF_GPIO_Port GPIOG
-#define LEDG_Pin GPIO_PIN_2
-#define LEDG_GPIO_Port GPIOG
-#define KEY_Pin GPIO_PIN_2
-#define KEY_GPIO_Port GPIOB
-#define LEDH_Pin GPIO_PIN_1
-#define LEDH_GPIO_Port GPIOG
-#define LED1_Pin GPIO_PIN_11
-#define LED1_GPIO_Port GPIOE
-#define LED2_Pin GPIO_PIN_14
-#define LED2_GPIO_Port GPIOF
+/* USER CODE END PD */
 
-/* ########################## Assert Selection ############################## */
+/* Private macro -------------------------------------------------------------*/
+/* USER CODE BEGIN PM */
+
+/* USER CODE END PM */
+
+/* Private variables ---------------------------------------------------------*/
+/* USER CODE BEGIN Variables */
+
+/* USER CODE END Variables */
+osThreadId defaultTaskHandle;
+
+/* Private function prototypes -----------------------------------------------*/
+/* USER CODE BEGIN FunctionPrototypes */
+   
+/* USER CODE END FunctionPrototypes */
+
+void StartDefaultTask(void const * argument);
+
+void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
+
 /**
-  * @brief Uncomment the line below to expanse the "assert_param" macro in the 
-  *        HAL drivers code
+  * @brief  FreeRTOS initialization
+  * @param  None
+  * @retval None
   */
-/* #define USE_FULL_ASSERT    1U */
+void MX_FREERTOS_Init(void) {
+  /* USER CODE BEGIN Init */
+       
+  /* USER CODE END Init */
 
-/* USER CODE BEGIN Private defines */
+  /* USER CODE BEGIN RTOS_MUTEX */
+  /* add mutexes, ... */
+  /* USER CODE END RTOS_MUTEX */
 
-/* USER CODE END Private defines */
+  /* USER CODE BEGIN RTOS_SEMAPHORES */
+  /* add semaphores, ... */
+  /* USER CODE END RTOS_SEMAPHORES */
 
-#ifdef __cplusplus
- extern "C" {
-#endif
-void _Error_Handler(char *, int);
+  /* USER CODE BEGIN RTOS_TIMERS */
+  /* start timers, add new ones, ... */
+  /* USER CODE END RTOS_TIMERS */
 
-#define Error_Handler() _Error_Handler(__FILE__, __LINE__)
-#ifdef __cplusplus
+  /* Create the thread(s) */
+  /* definition and creation of defaultTask */
+  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
+  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+
+  /* USER CODE BEGIN RTOS_THREADS */
+  /* add threads, ... */
+  /* USER CODE END RTOS_THREADS */
+
+  /* USER CODE BEGIN RTOS_QUEUES */
+  /* add queues, ... */
+  /* USER CODE END RTOS_QUEUES */
 }
-#endif
 
-#endif /* __MAIN_H__ */
+/* USER CODE BEGIN Header_StartDefaultTask */
+/**
+  * @brief  Function implementing the defaultTask thread.
+  * @param  argument: Not used 
+  * @retval None
+  */
+/* USER CODE END Header_StartDefaultTask */
+void StartDefaultTask(void const * argument)
+{
+
+  /* USER CODE BEGIN StartDefaultTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartDefaultTask */
+}
+
+/* Private application code --------------------------------------------------*/
+/* USER CODE BEGIN Application */
+     
+/* USER CODE END Application */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
