@@ -22,6 +22,7 @@
 *******************************************************************************/
 
 #include "bsp_can.h"
+#include "bsp_uart.h"
 #include "can.h"
 #include "sys_config.h"
 
@@ -81,7 +82,17 @@ uint32_t FlashTimer;
  *******************************************************************************************/
 void HAL_CAN_RxCpltCallback(CAN_HandleTypeDef* _hcan)
 {
-
+    static uint16_t count = 0;
+    uint8_t temp[2];
+    temp[0] = moto_chassis[0].ecd >> 8;
+    temp[1] = moto_chassis[0].ecd;
+    if(count == 1000){
+        HAL_UART_Transmit_DMA(&TEST_HUART, (uint8_t *)temp, sizeof(temp));
+        count = 0;
+    } else {
+        count += 1;
+    }
+    
 	if(HAL_GetTick() - FlashTimer>500){
 //		HAL_GPIO_TogglePin(LED1_GPIO_Port,LED1_Pin);
 		FlashTimer = HAL_GetTick();
@@ -100,7 +111,7 @@ void HAL_CAN_RxCpltCallback(CAN_HandleTypeDef* _hcan)
 			}
 			break;
 	}
-		
+    
 	/*#### add enable can it again to solve can receive only one ID problem!!!####**/
 	__HAL_CAN_ENABLE_IT(&hcan1, CAN_IT_FMP0);
 

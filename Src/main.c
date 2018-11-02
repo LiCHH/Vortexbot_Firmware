@@ -123,6 +123,11 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+      chassis.wheel_pos_ref[0] = 8000;//buf[1] | (buf[0] << 8);
+  chassis.wheel_pos_ref[1] = 20480;//buf[3] | (buf[2] << 8);
+  chassis.wheel_pos_ref[2] = 0x00;//buf[5] | (buf[4] << 8);
+  chassis.wheel_pos_ref[3] = 0x00;//buf[7] | (buf[6] << 8);
+
 
   /* USER CODE END WHILE */
    chassis_task();

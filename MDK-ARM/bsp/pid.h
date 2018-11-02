@@ -77,5 +77,6 @@ void PID_struct_init(
 float pid_calc(pid_t *pid, float feedback, float ref);
 
 extern pid_t pid_chassis_spd[4];
+extern pid_t pid_chassis_pos[4];
   
 #endif

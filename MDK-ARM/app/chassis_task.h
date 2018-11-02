@@ -17,6 +17,9 @@ typedef struct
   int16_t wheel_spd_fdb[4];
   int16_t wheel_spd_ref[4];
 
+  int16_t wheel_pos_fdb[4];
+  int16_t wheel_pos_ref[4];
+
   int16_t wheel_current[4];
 } chassis_t;
 

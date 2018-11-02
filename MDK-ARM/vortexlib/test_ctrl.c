@@ -22,17 +22,17 @@ uint8_t test_buf[TEST_BUF_LEN];
 
 void testctrl_callback_handler(testctrl_info_t *tc, uint8_t *buf)
 {
-  chassis.wheel_spd_ref[0] = buf[1] | (buf[0] << 8);
-  chassis.wheel_spd_ref[1] = buf[3] | (buf[2] << 8);
-  chassis.wheel_spd_ref[2] = buf[5] | (buf[4] << 8);
-  chassis.wheel_spd_ref[3] = buf[7] | (buf[6] << 8);
+  chassis.wheel_pos_ref[0] = 2048;//buf[1] | (buf[0] << 8);
+  chassis.wheel_pos_ref[1] = 2048;//buf[3] | (buf[2] << 8);
+  chassis.wheel_pos_ref[2] = 4096;//buf[5] | (buf[4] << 8);
+  chassis.wheel_pos_ref[3] = 4096;//buf[7] | (buf[6] << 8);
 
  
 
   int16_t temp[4];
-  temp[0] = chassis.wheel_spd_ref[0];
-  temp[1] = chassis.wheel_spd_ref[1];
-  temp[2] = chassis.wheel_spd_ref[2];
+  temp[0] = chassis.wheel_pos_fdb[0];
+  temp[1] = chassis.wheel_pos_fdb[1];
+  temp[2] = chassis.wheel_pos_fdb[2];
   temp[3] = chassis.wheel_spd_ref[3];
   
   static int32_t flag = 0;
