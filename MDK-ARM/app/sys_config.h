@@ -15,6 +15,13 @@
 /* math relevant */
 #define PI 3.1416f
 
+typedef enum{
+  fr_motor = 0,
+  fl_motor,
+  bl_motor,
+  br_motor
+} motor_seq_e;
+
 
 /* chassis relevant */
 /* the ratio of motor encoder value translate to degree */

@@ -20,6 +20,7 @@ void get_chassis_info(void)
   for(int i = 0; i < 4; ++i)
   {
     chassis.wheel_spd_fdb[i] = moto_chassis[i].speed_rpm;
+    chassis.wheel_pos_fdb[i] = moto_chassis[i].total_angle;
   }
 }
 
@@ -28,8 +29,10 @@ void chassis_task(void)
   get_chassis_info();
   for(int i = 0; i < 4; ++i)
   {
-    pid_calc(&pid_chassis_spd[i], chassis.wheel_spd_fdb[i], chassis.wheel_spd_ref[i]);
-    chassis.wheel_current[i] = pid_chassis_spd[i].out;
+    pid_calc(&pid_steer_pos[i], chassis.wheel_pos_fdb[i], chassis.wheel_pos_ref[i]);
+    chassis.wheel_spd_ref[i] = pid_steer_pos[i].out;
+    pid_calc(&pid_driving_spd[i], chassis.wheel_spd_fdb[i], chassis.wheel_spd_ref[i]);
+    chassis.wheel_current[i] = pid_driving_spd[i].out;
   }
   send_control_msgs();
 }
@@ -40,7 +43,9 @@ void chassis_param_init(void)
 
   for (int i = 0; i < 4; i++)
   {
-    PID_struct_init(&pid_chassis_spd[i], POSITION_PID, 10000, 500, 4.5f, 0.05, 0);
+    PID_struct_init(&pid_driving_spd[i], POSITION_PID, 10000, 500, 4.5f, 0.0f, 0.f);
+    PID_struct_init(&pid_steer_spd[i], POSITION_PID, 10000, 500, 4.5f, 0.0f, 0.f);
+    PID_struct_init(&pid_steer_pos[i], POSITION_PID, 600, 5, 3.f, 0.03f, 0.f);
   }
 }
 

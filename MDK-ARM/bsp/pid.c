@@ -121,4 +121,6 @@ float pid_calc(pid_t *pid, float feedback, float ref)
     return pid->out;
 }
 
-pid_t pid_chassis_spd[4] = {0};
+pid_t pid_driving_spd[4] = {0};
+pid_t pid_steer_spd[4] = {0};
+pid_t pid_steer_pos[4] = {0};
