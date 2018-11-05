@@ -32,6 +32,7 @@
 #define UART_RX_DMA_SIZE       1024
 
 void testctrl_uart_init(void);
+void rc_uart_init(void);
 void computer_uart_init(void);
 
 // void testctrl_return_transmit(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t size);

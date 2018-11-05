@@ -29,6 +29,7 @@
 #include "usart.h"
 // #include "cmsis_os.h"
 #include "test_ctrl.h"
+#include "remote_ctrl.h"
 
 /* dma double buffer */
 uint8_t judge_dma_rxbuff[2][UART_RX_DMA_SIZE];
@@ -61,6 +62,19 @@ static void uart_rx_idle_callback(UART_HandleTypeDef *huart)
     __HAL_DMA_SET_COUNTER(huart->hdmarx, TEST_MAX_LEN);
     __HAL_DMA_ENABLE(huart->hdmarx);
     // HAL_DMA_Start(huart->hdmarx, (uint32_t)&huart->Instance->DR, (uint32_t)test_buf, TEST_MAX_LEN);
+  }
+  else if (huart == &RC_HUART)
+  {
+    __HAL_DMA_DISABLE(huart->hdmarx);
+    __HAL_DMA_CLEAR_FLAG(huart->hdmarx, __HAL_DMA_GET_TC_FLAG_INDEX(huart->hdmarx));
+
+    if (1)
+    {
+      rc_callback_handler(&rc_info ,rc_buf);
+    }
+
+    __HAL_DMA_SET_COUNTER(huart->hdmarx, RC_MAX_LEN);
+    __HAL_DMA_ENABLE(huart->hdmarx);
   }
 }
 
@@ -232,6 +246,14 @@ void testctrl_uart_init(void)
   __HAL_UART_ENABLE_IT(&TEST_HUART, UART_IT_IDLE);
 
   UART_Receive_DMA_No_IT(&TEST_HUART, test_buf, TEST_MAX_LEN);
+}
+
+void rc_uart_init(void)
+{
+  __HAL_UART_CLEAR_IDLEFLAG(&RC_HUART);
+  __HAL_UART_ENABLE_IT(&RC_HUART, UART_IT_IDLE);
+
+  UART_Receive_DMA_No_IT(&RC_HUART, rc_buf, UART_IT_IDLE);
 }
 
 void computer_uart_init(void)

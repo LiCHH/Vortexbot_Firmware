@@ -10,7 +10,7 @@
 /* uart relevant */
 #define PC_HUART    huart6
 #define TEST_HUART  huart7
-#define JUDGE_HUART huart1
+#define RC_HUART    huart1
 
 /* math relevant */
 #define PI 3.1416f

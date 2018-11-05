@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F427xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;.\app;.\bsp;.\vortexlib;../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;..\Middlewares\Third_Party\FreeRTOS\Source\include;..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS;..\Drivers\CMSIS\Include;..\Drivers\CMSIS\Device</IncludePath>
+              <IncludePath>../Inc;   ../Drivers/STM32F4xx_HAL_Driver/Inc;   ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;   ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;   .\app;   .\bsp;   .\vortexlib;   ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;   ..\Middlewares\Third_Party\FreeRTOS\Source\include;   ..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS;   ..\Drivers\CMSIS\Include;   ..\Drivers\CMSIS\Device</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -487,6 +487,11 @@
               <FileType>1</FileType>
               <FilePath>.\vortexlib\test_ctrl.c</FilePath>
             </File>
+            <File>
+              <FileName>remote_ctrl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\vortexlib\remote_ctrl.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -598,16 +603,6 @@
           <GroupName>Middlewares/FreeRTOS</GroupName>
           <Files>
             <File>
-              <FileName>heap_4.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c</FilePath>
-            </File>
-            <File>
-              <FileName>port.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/port.c</FilePath>
-            </File>
-            <File>
               <FileName>croutine.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Middlewares\Third_Party\FreeRTOS\Source\croutine.c</FilePath>
@@ -641,6 +636,16 @@
               <FileName>cmsis_os.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS\cmsis_os.c</FilePath>
+            </File>
+            <File>
+              <FileName>heap_4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c</FilePath>
+            </File>
+            <File>
+              <FileName>port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/port.c</FilePath>
             </File>
           </Files>
         </Group>
