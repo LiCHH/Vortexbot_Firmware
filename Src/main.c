@@ -83,11 +83,20 @@ void MX_FREERTOS_Init(void);
 // test code
 void PWM_SetDuty(TIM_HandleTypeDef *htim, uint32_t channel, float duty)
 {
-  switch(channel){	
-		case TIM_CHANNEL_1: htim->Instance->CCR1 = (PWM_RESOLUTION*duty) - 1;break;
-		case TIM_CHANNEL_2: htim->Instance->CCR2 = (PWM_RESOLUTION*duty) - 1;break;
-		case TIM_CHANNEL_3: htim->Instance->CCR3 = (PWM_RESOLUTION*duty) - 1;break;
-		case TIM_CHANNEL_4: htim->Instance->CCR4 = (PWM_RESOLUTION*duty) - 1;break;
+  switch (channel)
+  {
+  case TIM_CHANNEL_1:
+    htim->Instance->CCR1 = (PWM_RESOLUTION * duty) - 1;
+    break;
+  case TIM_CHANNEL_2:
+    htim->Instance->CCR2 = (PWM_RESOLUTION * duty) - 1;
+    break;
+  case TIM_CHANNEL_3:
+    htim->Instance->CCR3 = (PWM_RESOLUTION * duty) - 1;
+    break;
+  case TIM_CHANNEL_4:
+    htim->Instance->CCR4 = (PWM_RESOLUTION * duty) - 1;
+    break;
   }
 }
 /* USER CODE END 0 */
@@ -133,7 +142,7 @@ int main(void)
   MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
   /* Software parameter init */
-  chassis_param_init();  
+  chassis_param_init();
 
   /* Hardware device init */
   can_device_init();
@@ -142,8 +151,18 @@ int main(void)
   can_receive_start();
   testctrl_uart_init();
 
+  chassis.steer_pos_ref[0] = 2000; //buf[1] | (buf[0] << 8);
+  chassis.steer_pos_ref[1] = 2000; //buf[3] | (buf[2] << 8);
+  chassis.steer_pos_ref[2] = 2000; //buf[5] | (buf[4] << 8);
+  chassis.steer_pos_ref[3] = 2000; //buf[7] | (buf[6] << 8);
+
+  chassis.driving_spd_ref[0] = 0x3840;
+  chassis.driving_spd_ref[1] = 0x0;
+  chassis.driving_spd_ref[2] = 0xFFFF;
+  chassis.driving_spd_ref[3] = 0xFFFF;
+
   /* PWM device init */
-//  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
+  //  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
@@ -153,12 +172,12 @@ int main(void)
   HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
   HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
   HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
-  
+
   HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_2);
   HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_3);
   HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_4);
-  
+
   HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_2);
   HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_3);
@@ -170,96 +189,52 @@ int main(void)
 
   /* Start scheduler */
   osKernelStart();
-  
+
   /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  
-  PWM_SetDuty(&htim2, TIM_CHANNEL_1, 0.10);
-    PWM_SetDuty(&htim2, TIM_CHANNEL_2, 0.10);
-    PWM_SetDuty(&htim2, TIM_CHANNEL_3, 0.10);
-    PWM_SetDuty(&htim2, TIM_CHANNEL_4, 0.10);
-    
-    PWM_SetDuty(&htim4, TIM_CHANNEL_1, 0.10);
-    PWM_SetDuty(&htim4, TIM_CHANNEL_2, 0.10);
-    PWM_SetDuty(&htim4, TIM_CHANNEL_3, 0.10);
-    PWM_SetDuty(&htim4, TIM_CHANNEL_4, 0.10);
-    
-    PWM_SetDuty(&htim5, TIM_CHANNEL_1, 0.10);
-    PWM_SetDuty(&htim5, TIM_CHANNEL_2, 0.10);
-    PWM_SetDuty(&htim5, TIM_CHANNEL_3, 0.10);
-    PWM_SetDuty(&htim5, TIM_CHANNEL_4, 0.10);
-    
-    PWM_SetDuty(&htim8, TIM_CHANNEL_1, 0.10);
-    PWM_SetDuty(&htim8, TIM_CHANNEL_2, 0.10);
-    PWM_SetDuty(&htim8, TIM_CHANNEL_3, 0.10);
-    PWM_SetDuty(&htim8, TIM_CHANNEL_4, 0.10);
-    
-    HAL_Delay(5000);
-    
-    PWM_SetDuty(&htim2, TIM_CHANNEL_1, 0.05);
-    PWM_SetDuty(&htim2, TIM_CHANNEL_2, 0.05);
-    PWM_SetDuty(&htim2, TIM_CHANNEL_3, 0.05);
-    PWM_SetDuty(&htim2, TIM_CHANNEL_4, 0.05);
-    
-    PWM_SetDuty(&htim4, TIM_CHANNEL_1, 0.05);
-    PWM_SetDuty(&htim4, TIM_CHANNEL_2, 0.05);
-    PWM_SetDuty(&htim4, TIM_CHANNEL_3, 0.05);
-    PWM_SetDuty(&htim4, TIM_CHANNEL_4, 0.05);
-    
-    PWM_SetDuty(&htim5, TIM_CHANNEL_1, 0.05);
-    PWM_SetDuty(&htim5, TIM_CHANNEL_2, 0.05);
-    PWM_SetDuty(&htim5, TIM_CHANNEL_3, 0.05);
-    PWM_SetDuty(&htim5, TIM_CHANNEL_4, 0.05);
-    
-    PWM_SetDuty(&htim8, TIM_CHANNEL_1, 0.05);
-    PWM_SetDuty(&htim8, TIM_CHANNEL_2, 0.05);
-    PWM_SetDuty(&htim8, TIM_CHANNEL_3, 0.05);
-    PWM_SetDuty(&htim8, TIM_CHANNEL_4, 0.05);
-    
-    HAL_Delay(1000);
-    
-    PWM_SetDuty(&htim2, TIM_CHANNEL_1, 0.10);
-    PWM_SetDuty(&htim2, TIM_CHANNEL_2, 0.10);
-    PWM_SetDuty(&htim2, TIM_CHANNEL_3, 0.10);
-    PWM_SetDuty(&htim2, TIM_CHANNEL_4, 0.10);
-    
-    PWM_SetDuty(&htim4, TIM_CHANNEL_1, 0.10);
-    PWM_SetDuty(&htim4, TIM_CHANNEL_2, 0.10);
-    PWM_SetDuty(&htim4, TIM_CHANNEL_3, 0.10);
-    PWM_SetDuty(&htim4, TIM_CHANNEL_4, 0.10);
-    
-    PWM_SetDuty(&htim5, TIM_CHANNEL_1, 0.10);
-    PWM_SetDuty(&htim5, TIM_CHANNEL_2, 0.10);
-    PWM_SetDuty(&htim5, TIM_CHANNEL_3, 0.10);
-    PWM_SetDuty(&htim5, TIM_CHANNEL_4, 0.10);
-    
-    PWM_SetDuty(&htim8, TIM_CHANNEL_1, 0.10);
-    PWM_SetDuty(&htim8, TIM_CHANNEL_2, 0.10);
-    PWM_SetDuty(&htim8, TIM_CHANNEL_3, 0.10);
-    PWM_SetDuty(&htim8, TIM_CHANNEL_4, 0.10);
-  
+
+  //  PWM_SetDuty(&htim2, TIM_CHANNEL_1, 0.10);
+  //  PWM_SetDuty(&htim2, TIM_CHANNEL_2, 0.10);
+  //  PWM_SetDuty(&htim2, TIM_CHANNEL_3, 0.10);
+  //  PWM_SetDuty(&htim2, TIM_CHANNEL_4, 0.10);
+
+  //  HAL_Delay(5000);
+
+  //  PWM_SetDuty(&htim2, TIM_CHANNEL_1, 0.05);
+  //  PWM_SetDuty(&htim2, TIM_CHANNEL_2, 0.05);
+  //  PWM_SetDuty(&htim2, TIM_CHANNEL_3, 0.05);
+
+  //  HAL_Delay(1000);
+
+  //  PWM_SetDuty(&htim2, TIM_CHANNEL_1, 0.10);
+  //  PWM_SetDuty(&htim2, TIM_CHANNEL_2, 0.10);
+  //  PWM_SetDuty(&htim2, TIM_CHANNEL_3, 0.10);
+  //  PWM_SetDuty(&htim2, TIM_CHANNEL_4, 0.10);
+
   while (1)
   {
-      chassis.wheel_pos_ref[0] = 8000;//buf[1] | (buf[0] << 8);
-  chassis.wheel_pos_ref[1] = 20480;//buf[3] | (buf[2] << 8);
-  chassis.wheel_pos_ref[2] = 0x00;//buf[5] | (buf[4] << 8);
-  chassis.wheel_pos_ref[3] = 0x00;//buf[7] | (buf[6] << 8);
+    chassis.steer_pos_ref[0] = 2000; //buf[1] | (buf[0] << 8);
+    chassis.steer_pos_ref[1] = 2000; //buf[3] | (buf[2] << 8);
+    chassis.steer_pos_ref[2] = 2000; //buf[5] | (buf[4] << 8);
+    chassis.steer_pos_ref[3] = 2000; //buf[7] | (buf[6] << 8);
 
+    chassis.driving_spd_ref[0] = 0x400;
+    chassis.driving_spd_ref[1] = 0x400;
+    chassis.driving_spd_ref[2] = 0x400;
+    chassis.driving_spd_ref[3] = 0x400;
+    /* USER CODE END WHILE */
 
-  /* USER CODE END WHILE */
+    /* USER CODE BEGIN 3 */
+    // chassis_task();
+    float count = 0;
 
-  /* USER CODE BEGIN 3 */
-  // chassis_task();
-  float count = 0;
-    
     count += 1;
-//  } 
-  HAL_Delay(100);
+    //  }
+    HAL_Delay(100);
   }
   /* USER CODE END 3 */
-
 }
 
 /**
@@ -273,15 +248,15 @@ void SystemClock_Config(void)
   RCC_ClkInitTypeDef RCC_ClkInitStruct;
   RCC_PeriphCLKInitTypeDef PeriphClkInitStruct;
 
-    /**Configure the main internal regulator output voltage 
+  /**Configure the main internal regulator output voltage 
     */
   __HAL_RCC_PWR_CLK_ENABLE();
 
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
-    /**Initializes the CPU, AHB and APB busses clocks 
+  /**Initializes the CPU, AHB and APB busses clocks 
     */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI | RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
@@ -295,10 +270,9 @@ void SystemClock_Config(void)
     _Error_Handler(__FILE__, __LINE__);
   }
 
-    /**Initializes the CPU, AHB and APB busses clocks 
+  /**Initializes the CPU, AHB and APB busses clocks 
     */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
@@ -316,11 +290,11 @@ void SystemClock_Config(void)
     _Error_Handler(__FILE__, __LINE__);
   }
 
-    /**Configure the Systick interrupt time 
+  /**Configure the Systick interrupt time 
     */
-  HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
+  HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq() / 1000);
 
-    /**Configure the Systick 
+  /**Configure the Systick 
     */
   HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
 
@@ -345,7 +319,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 0 */
 
   /* USER CODE END Callback 0 */
-  if (htim->Instance == TIM6) {
+  if (htim->Instance == TIM6)
+  {
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */
@@ -363,13 +338,13 @@ void _Error_Handler(char *file, int line)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  while(1)
+  while (1)
   {
   }
   /* USER CODE END Error_Handler_Debug */
 }
 
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.
@@ -377,8 +352,8 @@ void _Error_Handler(char *file, int line)
   * @param  line: assert_param error line source number
   * @retval None
   */
-void assert_failed(uint8_t* file, uint32_t line)
-{ 
+void assert_failed(uint8_t *file, uint32_t line)
+{
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
      tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */

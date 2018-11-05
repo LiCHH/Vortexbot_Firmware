@@ -29,7 +29,8 @@
 // test include
 #include "chassis_task.h"
 
-moto_measure_t moto_chassis[4] = {0}; //4 chassis moto
+moto_measure_t motor_driving[4] = {0}; //4 chassis driving moto
+moto_measure_t motor_steer[4] = {0};
 can_transmit_t hcan1_tx_msgs = {0};
 can_transmit_t hcan1_rx_msgs = {0};
 
@@ -100,14 +101,25 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
   //ignore can1 or can2.
   switch (hcan1_rx_msgs.header.rx.StdId)
   {
-  case CAN_2006Moto1_ID:
-  case CAN_2006Moto2_ID:
-  case CAN_2006Moto3_ID:
-  case CAN_2006Moto4_ID:
+  case DRIVING_MOTOR1_ID:
+  case DRIVING_MOTOR2_ID:
+  case DRIVING_MOTOR3_ID:
+  case DRIVING_MOTOR4_ID:
   {
     static uint8_t i;
-    i = hcan1_rx_msgs.header.rx.StdId - CAN_2006Moto1_ID;
-    moto_chassis[i].msg_cnt++ <= 2 ? get_moto_offset(&moto_chassis[i], hcan) : encoder_data_handler(&moto_chassis[i], hcan);
+    i = hcan1_rx_msgs.header.rx.StdId - DRIVING_MOTOR1_ID;
+    motor_driving[i].msg_cnt++ <= 50 ? get_moto_offset(&motor_driving[i], hcan) : encoder_data_handler(&motor_driving[i], hcan);
+  }
+  break;
+
+  case STEER_MOTOR1_ID:
+  case STEER_MOTOR2_ID:
+  case STEER_MOTOR3_ID:
+  case STEER_MOTOR4_ID:
+  {
+    static uint8_t i;
+    i = hcan1_rx_msgs.header.rx.StdId - STEER_MOTOR1_ID;
+    motor_steer[i].msg_cnt++ <= 50 ? get_moto_offset(&motor_steer[i], hcan) : encoder_data_handler(&motor_steer[i], hcan);
   }
   break;
   }
@@ -131,21 +143,17 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
   HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
 }
 
-/*******************************************************************************************
-  * @Func			void get_moto_measure(moto_measure_t *ptr, CAN_HandleTypeDef* hcan)
-  * @Brief    接收3508电机通过CAN发过来的信息
+/**
+  * @Brief    handle ecoder data 
   * @Param		
   * @Retval		None
-  * @Date     2015/11/24
- *******************************************************************************************/
+  * @Date     2018/11/03
+  */
 void encoder_data_handler(moto_measure_t *ptr, CAN_HandleTypeDef *hcan)
 {
   ptr->last_ecd = ptr->ecd;
   ptr->ecd = (uint16_t)(hcan1_rx_msgs.data[0] << 8 | hcan1_rx_msgs.data[1]);
   ptr->speed_rpm = (int16_t)(hcan1_rx_msgs.data[2] << 8 | hcan1_rx_msgs.data[3]);
-  // ptr->real_current = (hcan1_rx_msgs.data[4]<<8 | hcan1_rx_msgs.data[5])*5.f/16384.f;
-
-  // ptr->hall = hcan1_rx_msgs.data[6]; //not use
 
   //判断正反转
   if (ptr->ecd - ptr->last_ecd > 4096)
@@ -162,7 +170,7 @@ void encoder_data_handler(moto_measure_t *ptr, CAN_HandleTypeDef *hcan)
   {
     ptr->ecd_raw_rate = ptr->ecd - ptr->last_ecd;
   }
-  ptr->total_ecd = ptr->round_cnt * 8192 + ptr->ecd - ptr->offset_ecd;
+  ptr->total_ecd = ptr->round_cnt * 8192 + ptr->ecd - 4096; //- ptr->offset_ecd;
   ptr->total_angle = ptr->total_ecd / ENCODER_ANGLE_RATIO;
 
   ptr->speed_rpm = (int16_t)(hcan1_rx_msgs.data[2] << 8 | hcan1_rx_msgs.data[3]);
@@ -182,12 +190,9 @@ void get_moto_offset(moto_measure_t *ptr, CAN_HandleTypeDef *hcan)
   ptr->offset_ecd = ptr->ecd;
 }
 
-void send_chassis_current(int16_t iq1, int16_t iq2, int16_t iq3, int16_t iq4)
+void send_chassis_current(can_msg_id_e id, int16_t iq1, int16_t iq2, int16_t iq3, int16_t iq4)
 {
-  // CHASSIS_CAN.pTxMsg->StdId = 0x200;      //标识符
-  // CHASSIS_CAN.pTxMsg->IDE = CAN_ID_STD;   //标准标识符 CAN_ID_EXT 拓展标识符
-  // CHASSIS_CAN.pTxMsg->RTR = CAN_RTR_DATA; //数据帧 CAN_RTR_REMOTE 遥控帧
-  // CHASSIS_CAN.pTxMsg->DLC = 0x08;         //数据段长度
+  hcan1_tx_msgs.header.tx.StdId = id;
   hcan1_tx_msgs.data[0] = iq1 >> 8;
   hcan1_tx_msgs.data[1] = iq1;
   hcan1_tx_msgs.data[2] = iq2 >> 8;
@@ -197,7 +202,9 @@ void send_chassis_current(int16_t iq1, int16_t iq2, int16_t iq3, int16_t iq4)
   hcan1_tx_msgs.data[6] = iq4 >> 8;
   hcan1_tx_msgs.data[7] = iq4;
   uint32_t mailbox;
-  while (HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) < 1) {}
+  while (HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) < 1)
+  {
+  }
   HAL_CAN_AddTxMessage(&hcan1, &hcan1_tx_msgs.header.tx, hcan1_tx_msgs.data, &mailbox);
   // HAL_CAN_Transmit(&CHASSIS_CAN, 10);
 }

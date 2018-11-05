@@ -35,11 +35,18 @@
 /*CAN发送或是接收的ID*/
 typedef enum
 {
-  CAN_2006Moto_ALL_ID = 0x200,
-  CAN_2006Moto1_ID = 0x201,
-  CAN_2006Moto2_ID = 0x202,
-  CAN_2006Moto3_ID = 0x203,
-  CAN_2006Moto4_ID = 0x204,
+  CAN_HIGH_ID       = 0x1FF,
+  CAN_LOW_ID        = 0x200,
+
+  DRIVING_MOTOR1_ID = 0x201,
+  DRIVING_MOTOR2_ID = 0x202,
+  DRIVING_MOTOR3_ID = 0x203,
+  DRIVING_MOTOR4_ID = 0x204,
+
+  STEER_MOTOR1_ID   = 0x205,
+  STEER_MOTOR2_ID   = 0x206,
+  STEER_MOTOR3_ID   = 0x207,
+  STEER_MOTOR4_ID   = 0x208
 } can_msg_id_e;
 
 #define FILTER_BUF 5
@@ -75,7 +82,8 @@ typedef struct
 } can_transmit_t;
 
 /* Extern  ------------------------------------------------------------------*/
-extern moto_measure_t moto_chassis[];
+extern moto_measure_t motor_driving[];
+extern moto_measure_t motor_steer[];
 
 void can_device_init(void);
 void can_receive_start(void);
@@ -83,6 +91,6 @@ void can_receive_start(void);
 void get_moto_offset(moto_measure_t *ptr, CAN_HandleTypeDef *hcan);
 void encoder_data_handler(moto_measure_t *ptr, CAN_HandleTypeDef *hcan);
 
-void send_chassis_current(int16_t iq1, int16_t iq2, int16_t iq3, int16_t iq4);
+void send_chassis_current(can_msg_id_e id, int16_t iq1, int16_t iq2, int16_t iq3, int16_t iq4);
 //void set_moto_current(CAN_HandleTypeDef* hcan, s16 iq1, s16 iq2, s16 iq3, s16 iq4);
 #endif
