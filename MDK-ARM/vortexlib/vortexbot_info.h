@@ -14,5 +14,6 @@ typedef enum
 
 
 extern vortexbot_mode_e bot_mode;
+extern vortexbot_mode_e last_bot_mode;
 
 #endif // __VORTEXBOT_INFO_H__

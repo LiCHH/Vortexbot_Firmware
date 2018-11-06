@@ -10,5 +10,9 @@
 void mode_switch_task(void);
 
 static void get_vortex_bot_mode(void);
+static void get_chassis_mode(void);
+static void get_vortex_mode(void);
+
+static void get_last_mode(void);
 
 #endif // !__SWMODE_TASK_H__ 

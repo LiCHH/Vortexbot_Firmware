@@ -1,5 +1,7 @@
 
 #include "swmode_task.h"
+#include "chassis_task.h"
+#include "vortex_task.h"
 
 void mode_switch_task()
 {
@@ -32,9 +34,78 @@ static void get_vortex_bot_mode()
       bot_mode = SAFETY_MODE;
     } break;
   }
+
 }
 
-static void get_chassis_mode()
+static void chassis_mode_handler(void)
 {
+  switch(bot_mode)
+  {
+    case MANUL_CONTROL_MODE:
+    {
+      if(rc_info.sc == SW_UP){
+        chassis.ctrl_mode = OMNI_DIRECTIONAL;
+      } else if(rc_info.sc == SW_MID) {
+        chassis.ctrl_mode = DIFFERENTIAL;
+      } else if(rc_info.sc == SW_DOWN) {
+        chassis.ctrl_mode = CAR_LIKE;
+      } else {
+        chassis.ctrl_mode = CHASSIS_STOP;
+      }
+    } break;
 
+    case AUTO_CONTROL_MODE:
+    {
+      chassis.ctrl_mode = CHASSIS_STOP;
+    } break;
+
+    case SAFETY_MODE:
+    {
+      chassis.ctrl_mode = CHASSIS_STOP;
+    } break;
+
+    default:
+    {
+      chassis.ctrl_mode = CHASSIS_STOP;
+    } break;
+  }
+}
+
+static void get_chassis_mode(void)
+{
+  chassis_mode_handler();
+}
+
+static void vortex_mode_handler(void)
+{
+  switch(rc_info.sa)
+  {
+    case SW_UP:
+    {
+      vortex_info.ctrl_mode = VORTEX_OFF;
+    } break;
+
+    case SW_DOWN:
+    {
+      vortex_info.ctrl_mode = VORTEX_ON;
+    } break;
+
+    default:
+    {
+      vortex_info.ctrl_mode = VORTEX_ON;
+    } break;
+
+  }
+}
+
+static void get_vortex_mode(void)
+{
+  vortex_mode_handler();
+}
+
+static void get_last_mode()
+{
+  last_bot_mode = bot_mode;
+  chassis.last_ctrl_mode = chassis.ctrl_mode;
+  vortex_info.last_ctrl_mode = vortex_info.ctrl_mode;
 }
