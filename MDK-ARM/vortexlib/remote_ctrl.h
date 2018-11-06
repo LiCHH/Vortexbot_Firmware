@@ -1,3 +1,5 @@
+/* use for WFLY ET07 */
+
 #ifndef __REMOTE_CTRL_H__
 #define __REMOTE_CTRL_H__
 
