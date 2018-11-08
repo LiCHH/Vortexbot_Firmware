@@ -125,7 +125,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
   }
 
   // for test
-  chassis_task();
+  // chassis_task();
 
   HAL_GPIO_TogglePin(LEDB_GPIO_Port, LEDB_Pin);
   // Can be replace by HAL_GPIO_TogglePin()

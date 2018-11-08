@@ -12,6 +12,8 @@
 
 #include "stm32f4xx_hal.h"
 
+#define CHASSIS_TIMER_PERIOD 10
+
 typedef enum
 {
   CHASSIS_RELAX       = 0,
@@ -43,7 +45,7 @@ typedef struct
 
 } chassis_t;
 
-void chassis_task(void);
+void chassis_task(void const *argu);
 void chassis_param_init(void);
 void send_control_msgs(void);
 

@@ -51,6 +51,8 @@
 #include "tim.h"
 
 /* USER CODE BEGIN 0 */
+// 预分频后，定时器的频率为500kHz，即�?个计数周期为0.002ms，乘�?
+//  10000之后PWM的周期为20ms
 
 /* USER CODE END 0 */
 
@@ -217,7 +219,7 @@ void MX_TIM8_Init(void)
   TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig;
 
   htim8.Instance = TIM8;
-  htim8.Init.Prescaler = TIM_PSC_APB1;
+  htim8.Init.Prescaler = TIM_PSC_APB2;
   htim8.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim8.Init.Period = PWM_RESOLUTION-1;
   htim8.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;

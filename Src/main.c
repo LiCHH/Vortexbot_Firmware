@@ -61,6 +61,7 @@
 #include "bsp_can.h"
 #include "bsp_uart.h"
 #include "chassis_task.h"
+#include "vortex_task.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -143,6 +144,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   /* Software parameter init */
   chassis_param_init();
+  vortex_param_init();
 
   /* Hardware device init */
   can_device_init();
@@ -219,12 +221,6 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-    // chassis_task();
-    float count = 0;
-
-    count += 1;
-    //  }
-    HAL_Delay(100);
   }
   /* USER CODE END 3 */
 
@@ -255,10 +251,17 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 6;
-  RCC_OscInitStruct.PLL.PLLN = 168;
+  RCC_OscInitStruct.PLL.PLLN = 180;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 4;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Activate the Over-Drive mode 
+    */
+  if (HAL_PWREx_EnableOverDrive() != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }

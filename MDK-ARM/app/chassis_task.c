@@ -26,7 +26,7 @@ void get_chassis_info(void)
   }
 }
 
-void chassis_task(void)
+void chassis_task(void const *argu)
 {
   get_chassis_info();
   for (int i = 0; i < 4; ++i)
@@ -34,7 +34,6 @@ void chassis_task(void)
     // Steering DOF's double loop PID control
     pid_calc(&pid_steer_pos[i], chassis.steer_pos_fdb[i], chassis.steer_pos_ref[i]);
     chassis.steer_spd_ref[i] = pid_steer_pos[i].out;
-    // chassis.steer_spd_ref[i] = chassis.steer_pos_ref[i];
     pid_calc(&pid_steer_spd[i], chassis.steer_spd_fdb[i], chassis.steer_spd_ref[i]);
     chassis.steer_current[i] = pid_steer_spd[i].out;
 

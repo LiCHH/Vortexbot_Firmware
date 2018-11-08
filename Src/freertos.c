@@ -56,6 +56,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */     
+#include "chassis_task.h"
+#include "swmode_task.h"
+#include "vortex_task.h"
 
 /* USER CODE END Includes */
 
@@ -76,6 +79,10 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
+TaskHandle_t mode_sw_task_t;
+
+osTimerId chassis_timer_id;
+osTimerId vortex_timer_id;
 
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
@@ -109,6 +116,11 @@ void MX_FREERTOS_Init(void) {
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
+  osTimerDef(chassisTimer, chassis_task);
+  chassis_timer_id = osTimerCreate(osTimer(chassisTimer), osTimerPeriodic, NULL);
+
+  osTimerDef(vortexTimer, vortex_task);
+  vortex_timer_id = osTimerCreate(osTimer(vortexTimer), osTimerPeriodic, NULL);
   /* USER CODE END RTOS_TIMERS */
 
   /* Create the thread(s) */
@@ -118,6 +130,8 @@ void MX_FREERTOS_Init(void) {
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
+  osThreadDef(modeTask, mode_switch_task, osPriorityNormal, 0, 128);
+  mode_sw_task_t = osThreadCreate(osThread(modeTask), NULL);
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_QUEUES */

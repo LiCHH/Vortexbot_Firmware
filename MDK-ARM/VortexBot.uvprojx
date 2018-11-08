@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F427xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;   ../Drivers/STM32F4xx_HAL_Driver/Inc;   ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;   ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;   .\app;   .\bsp;   .\vortexlib;   ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;   ..\Middlewares\Third_Party\FreeRTOS\Source\include;   ..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS;   ..\Drivers\CMSIS\Include;   ..\Drivers\CMSIS\Device</IncludePath>
+              <IncludePath>../Inc;     ../Drivers/STM32F4xx_HAL_Driver/Inc;     ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;     ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;     .\app;     .\bsp;     .\vortexlib;     ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;     ..\Middlewares\Third_Party\FreeRTOS\Source\include;     ..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS;     ..\Drivers\CMSIS\Include;     ..\Drivers\CMSIS\Device</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -477,6 +477,11 @@
               <FileType>1</FileType>
               <FilePath>.\bsp\bsp_uart.c</FilePath>
             </File>
+            <File>
+              <FileName>bsp_io.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\bsp\bsp_io.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -492,6 +497,11 @@
               <FileType>1</FileType>
               <FilePath>.\vortexlib\remote_ctrl.c</FilePath>
             </File>
+            <File>
+              <FileName>votexbot_info.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\vortexlib\votexbot_info.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -501,6 +511,16 @@
               <FileName>chassis_task.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\app\chassis_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>swmode_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\app\swmode_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>vortex_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\app\vortex_task.c</FilePath>
             </File>
           </Files>
         </Group>
