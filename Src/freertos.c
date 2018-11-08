@@ -116,6 +116,8 @@ void MX_FREERTOS_Init(void) {
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
+  taskENTER_CRITICAL();
+
   osTimerDef(chassisTimer, chassis_task);
   chassis_timer_id = osTimerCreate(osTimer(chassisTimer), osTimerPeriodic, NULL);
 
@@ -132,6 +134,8 @@ void MX_FREERTOS_Init(void) {
   /* add threads, ... */
   osThreadDef(modeTask, mode_switch_task, osPriorityNormal, 0, 128);
   mode_sw_task_t = osThreadCreate(osThread(modeTask), NULL);
+
+  taskEXIT_CRITICAL();
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
