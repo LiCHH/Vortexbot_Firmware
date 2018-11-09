@@ -14,14 +14,24 @@
 
 /* math relevant */
 #define PI 3.1416f
+#define RAD_TO_ANG (180.f / PI)
+
+#define FLOAT_THRESHOLD 0.01
 
 typedef enum{
   fr_motor = 0,
-  fl_motor,
-  bl_motor,
-  br_motor
+  fl_motor = 1,
+  bl_motor = 2,
+  br_motor = 3
 } motor_seq_e;
 
+#define FR_BL_FLAG 1
+#define FL_BR_FLAG -1
+
+#define STEER_FR_OFFSET 0 
+#define STEER_FL_OFFSET 0 
+#define STEER_BR_OFFSET 0 
+#define STEER_BL_OFFSET 0
 
 /* chassis relevant */
 /* the ratio of motor encoder value translate to degree */
