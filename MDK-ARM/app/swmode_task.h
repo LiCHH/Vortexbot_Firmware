@@ -7,7 +7,7 @@
 #include "vortexbot_info.h"
 
 /* Switch mode task period time (ms) */
-#define SWMODE_TASK_PERIOD 5
+#define SWMODE_TASK_PERIOD 10
 
 void mode_switch_task(void const *argu);
 

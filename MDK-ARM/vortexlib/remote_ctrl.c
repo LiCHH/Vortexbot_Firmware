@@ -30,11 +30,11 @@ void rc_callback_handler(rc_info_t *rc, uint8_t *buf)
   rc->l_rocker_ud = (buf[2] >> 3 | buf[3] << 5) & 0x07ff;
   rc->l_rocker_ud -= ROCKER_OFFSET;
   rc->r_rocker_ud = (buf[3] >> 6 | buf[4] << 2 | buf[5] << 10) & 0x07ff;
-  rc->r_rocker_ud -= ROCKER_OFFSET;
+  // rc->r_rocker_ud -= ROCKER_OFFSET;
   rc->l_rocker_lr = (buf[5] >> 1 | buf[6] << 7) & 0x07ff;
   rc->l_rocker_lr -= ROCKER_OFFSET;
 
-  rc->knob_v1     = (buf[7] >> 7 | buf[8] << 1 | buf[9] << 8) & 0x07ff;
+  rc->knob_v1     = (buf[7] >> 7 | buf[8] << 1 | buf[9] << 9) & 0x07ff;
   rc->knob_v2     = (buf[9] >> 2 | buf[10] << 6)  & 0x07ff;
 
   rc->sa          = (buf[11] >> 6) & 0x03;

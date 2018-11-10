@@ -15,8 +15,16 @@
 #include "pid.h"
 #include "string.h"
 #include "bsp_can.h"
+#include "cmsis_os.h"
+#include "remote_ctrl.h"
+#include "vortexbot_info.h"
 
 chassis_t chassis;
+
+static void omnidirection_handler(void);
+static void differential_handler(void);
+static void carlike_handler(void);
+static void stop_handler(void);
 
 void get_chassis_info(void)
 {
@@ -33,26 +41,31 @@ void chassis_task(void const *argu)
 {
   get_chassis_info();
 
-  switch(chassis.ctrl_mode)
+  switch (chassis.ctrl_mode)
   {
-    case OMNI_DIRECTIONAL:
-    {
-      omnidirection_handler();
-    } break;
+  case OMNI_DIRECTIONAL:
+  {
+    omnidirection_handler();
+  }
+  break;
 
-    case DIFFERENTIAL:
-    {
-      differential_handler();
-    } break;
+  case DIFFERENTIAL:
+  {
+    differential_handler();
+  }
+  break;
 
-    case CAR_LIKE:
-    {
-      carlike_handler();
-    } break;
+  case CAR_LIKE:
+  {
+    carlike_handler();
+  }
+  break;
 
-    default:
-    {
-    } break;
+  default:
+  {
+    stop_handler();
+  }
+  break;
   }
 
   for (int i = 0; i < 4; ++i)
@@ -72,33 +85,59 @@ void chassis_task(void const *argu)
 
 static void omnidirection_handler(void)
 {
-  float angle;
-  if (fabs(chassis.vx) < FLOAT_THRESHOLD)
-    angle = 90;
-  else
-    // TODO: check the output of atan2
-    angle = atan2(chassis.vy, chassis.vx) * RAD_TO_ANG;
+  // if (chassis.last_ctrl_mode == CHASSIS_STOP || chassis.last_ctrl_mode == CHASSIS_RELAX)
+  // {
+  //   chassis.steer_pos_ref[fr_motor] = (FR_BL_POS_F * OMNI_INIT_ANGLE + STEER_FR_OFFSET) * MOTOR_REDUCTION_RATIO;
+  //   chassis.steer_pos_ref[bl_motor] = (FR_BL_POS_F * OMNI_INIT_ANGLE + STEER_BL_OFFSET) * MOTOR_REDUCTION_RATIO;
+  //   chassis.steer_pos_ref[fl_motor] = (FL_BR_POS_F * OMNI_INIT_ANGLE + STEER_FL_OFFSET) * MOTOR_REDUCTION_RATIO;
+  //   chassis.steer_pos_ref[br_motor] = (FL_BR_POS_F * OMNI_INIT_ANGLE + STEER_BR_OFFSET) * MOTOR_REDUCTION_RATIO;
+  // }
 
-  chassis.steer_pos_ref[fr_motor] = FR_BL_FLAG * angle + STEER_FR_OFFSET;
-  chassis.steer_pos_ref[bl_motor] = FR_BL_FLAG * angle + STEER_BL_OFFSET;
-  chassis.steer_pos_ref[fl_motor] = FL_BR_FLAG * angle + STEER_FL_OFFSET;
-  chassis.steer_pos_ref[br_motor] = FL_BR_FLAG * angle + STEER_BR_OFFSET;
+  // else
+  // {
 
-  // TODO: check spd and where to get vx, vy
-  int16_t spd_ref = sqrt(chassis.vx * chassis.vx + chassis.vy * chassis.vy);
-  for (int i = 0; i < 4; ++i)
-  {
-    chassis.driving_spd_ref[i] = spd_ref;
-  }
+    if (bot_mode == MANUL_CONTROL_MODE)
+    {
+      chassis.power_ratio = (float)(rc_info.r_rocker_ud - ROCKER_MIN) / ROCKER_RANGE;
+      chassis.vx = rc_info.l_rocker_ud;
+      chassis.vy = rc_info.l_rocker_lr;
+    }
+
+    float angle;
+    if (fabs(chassis.vy) < FLOAT_THRESHOLD)
+    {
+      angle = 0;
+    }
+    else if (fabs(chassis.vx) < FLOAT_THRESHOLD)
+      angle = FLAG(chassis.vy) * 90;
+    else
+      // TODO: check the output of atan2
+      angle = atan2(chassis.vy, fabs(chassis.vx)) * RAD_TO_ANG;
+
+    chassis.steer_pos_ref[fr_motor] = (FR_BL_POS_F * OMNI_INIT_ANGLE + angle + STEER_FR_OFFSET) * MOTOR_REDUCTION_RATIO;
+    chassis.steer_pos_ref[bl_motor] = (FR_BL_POS_F * OMNI_INIT_ANGLE + angle + STEER_BL_OFFSET) * MOTOR_REDUCTION_RATIO;
+    chassis.steer_pos_ref[fl_motor] = (FL_BR_POS_F * OMNI_INIT_ANGLE + angle + STEER_FL_OFFSET) * MOTOR_REDUCTION_RATIO;
+    chassis.steer_pos_ref[br_motor] = (FL_BR_POS_F * OMNI_INIT_ANGLE + angle + STEER_BR_OFFSET) * MOTOR_REDUCTION_RATIO;
+
+    // TODO: check spd and where to get vx, vy
+    int16_t spd_ref = 0;
+    if(!(fabs(chassis.vx) < FLOAT_THRESHOLD && fabs(chassis.vy) < FLOAT_THRESHOLD))
+      spd_ref = FLAG(chassis.vx) * MOTOR_SPEED_MAX * chassis.power_ratio * MOTOR_REDUCTION_RATIO;
+    chassis.driving_spd_ref[fr_motor] = FR_BR_SPD_F * spd_ref;
+    chassis.driving_spd_ref[br_motor] = FR_BR_SPD_F * spd_ref;
+    chassis.driving_spd_ref[fl_motor] = FL_BL_SPD_F * spd_ref;
+    chassis.driving_spd_ref[bl_motor] = FL_BL_SPD_F * spd_ref;
+ 
+  // }
 }
 
 static void differential_handler(void)
 {
-
 }
 
 static void carlike_handler(void)
-{}
+{
+}
 
 void chassis_param_init(void)
 {
@@ -110,10 +149,25 @@ void chassis_param_init(void)
     PID_struct_init(&pid_steer_spd[i], POSITION_PID, 10000, 500, 4.5f, 0.03f, 0.f);
     PID_struct_init(&pid_steer_pos[i], POSITION_PID, 17000, 80, 3.f, 0.03f, 0.f);
   }
+
+  chassis.steer_pos_ref[fr_motor] = STEER_FR_OFFSET * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[bl_motor] = STEER_BL_OFFSET * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[fl_motor] = STEER_FL_OFFSET * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[br_motor] = STEER_BR_OFFSET * MOTOR_REDUCTION_RATIO;
 }
 
 void send_control_msgs(void)
 {
   send_chassis_current(CAN_LOW_ID, chassis.driving_current[0], chassis.driving_current[1], chassis.driving_current[2], chassis.driving_current[3]);
   send_chassis_current(CAN_HIGH_ID, chassis.steer_current[0], chassis.steer_current[1], chassis.steer_current[2], chassis.steer_current[3]);
+}
+
+static void stop_handler(void)
+{
+  chassis.steer_pos_ref[fr_motor] = STEER_FR_OFFSET * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[bl_motor] = STEER_BL_OFFSET * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[fl_motor] = STEER_FL_OFFSET * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[br_motor] = STEER_BR_OFFSET * MOTOR_REDUCTION_RATIO;
+
+  memset(&chassis.driving_spd_ref, 0, sizeof(chassis.driving_spd_ref));
 }

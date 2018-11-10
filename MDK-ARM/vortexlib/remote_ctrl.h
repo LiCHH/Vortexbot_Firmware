@@ -11,13 +11,14 @@
 #define ROCKER_MAX      1695
 #define ROCKER_MIN      353
 #define ROCKER_OFFSET   1024
+#define ROCKER_RANGE    (ROCKER_MAX - ROCKER_MIN)
 
 #define KNOB_V2_MAX     1695
 #define KNOB_V2_MIN     353
 #define KNOB_V2_OFFSET  1024 
 
 #define KNOB_V1_MIN     353
-#define KNOB_V1_MAX     927 
+#define KNOB_V1_MAX     1695 
 #define KNOB_V1_RANGE   (KNOB_V1_MAX - KNOB_V1_MIN)
 
 typedef enum

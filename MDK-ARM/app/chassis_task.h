@@ -14,6 +14,8 @@
 
 #define CHASSIS_TIMER_PERIOD 10
 
+#define OMNI_INIT_ANGLE      45
+
 typedef enum
 {
   CHASSIS_RELAX       = 0,
@@ -29,6 +31,8 @@ typedef struct
   float vx;
   float vy;
   float vw;
+
+  float power_ratio;
 
   chassis_mode_e ctrl_mode;
   chassis_mode_e last_ctrl_mode;

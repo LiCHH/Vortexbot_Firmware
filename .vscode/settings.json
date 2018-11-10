@@ -6,7 +6,8 @@
         "stm32f4xx_hal.h": "c",
         "stm32f4xx_hal_conf.h": "c",
         "gpio.h": "c",
-        "cmsis_os.h": "c"
+        "cmsis_os.h": "c",
+        "remote_ctrl.h": "c"
     },
 
     "C_Cpp.clang_format_path": "C:/Program Files/LLVM/bin/clang-format.exe"

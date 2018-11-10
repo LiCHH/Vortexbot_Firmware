@@ -154,37 +154,18 @@ int main(void)
   testctrl_uart_init();
   rc_uart_init();
 
-  chassis.steer_pos_ref[0] = 2000; //buf[1] | (buf[0] << 8);
-  chassis.steer_pos_ref[1] = 2000; //buf[3] | (buf[2] << 8);
-  chassis.steer_pos_ref[2] = 2000; //buf[5] | (buf[4] << 8);
-  chassis.steer_pos_ref[3] = 2000; //buf[7] | (buf[6] << 8);
+  // chassis.steer_pos_ref[0] = 2000; //buf[1] | (buf[0] << 8);
+  // chassis.steer_pos_ref[1] = 2000; //buf[3] | (buf[2] << 8);
+  // chassis.steer_pos_ref[2] = 2000; //buf[5] | (buf[4] << 8);
+  // chassis.steer_pos_ref[3] = 2000; //buf[7] | (buf[6] << 8);
 
-  chassis.driving_spd_ref[0] = 0x3840;
-  chassis.driving_spd_ref[1] = 0x0;
-  chassis.driving_spd_ref[2] = 0xFFFF;
-  chassis.driving_spd_ref[3] = 0xFFFF;
+  // chassis.driving_spd_ref[0] = 0x3840;
+  // chassis.driving_spd_ref[1] = 0x0;
+  // chassis.driving_spd_ref[2] = 0xFFFF;
+  // chassis.driving_spd_ref[3] = 0xFFFF;
 
   /* PWM device init */
-  //  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
-  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
-  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
-  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
 
-  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
-  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
-  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
-
-  HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_2);
-  HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_3);
-  HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_4);
-
-  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_2);
-  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_3);
-  HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_4);
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in freertos.c) */
@@ -197,25 +178,6 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-
-  //  PWM_SetDuty(&htim2, TIM_CHANNEL_1, 0.10);
-  //  PWM_SetDuty(&htim2, TIM_CHANNEL_2, 0.10);
-  //  PWM_SetDuty(&htim2, TIM_CHANNEL_3, 0.10);
-  //  PWM_SetDuty(&htim2, TIM_CHANNEL_4, 0.10);
-
-  //  HAL_Delay(5000);
-
-  //  PWM_SetDuty(&htim2, TIM_CHANNEL_1, 0.05);
-  //  PWM_SetDuty(&htim2, TIM_CHANNEL_2, 0.05);
-  //  PWM_SetDuty(&htim2, TIM_CHANNEL_3, 0.05);
-
-  //  HAL_Delay(1000);
-
-  //  PWM_SetDuty(&htim2, TIM_CHANNEL_1, 0.10);
-  //  PWM_SetDuty(&htim2, TIM_CHANNEL_2, 0.10);
-  //  PWM_SetDuty(&htim2, TIM_CHANNEL_3, 0.10);
-  //  PWM_SetDuty(&htim2, TIM_CHANNEL_4, 0.10);
-
   while (1)
   {
   /* USER CODE END WHILE */

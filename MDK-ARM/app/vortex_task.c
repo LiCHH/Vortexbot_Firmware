@@ -16,7 +16,7 @@ void vortex_task(void const *argu)
     {
       taskENTER_CRITICAL();
 
-      vortex_info.spd_ratio = ((float)rc_info.knob_v1 - KNOB_V1_MIN) / KNOB_V1_RANGE;
+      vortex_info.spd_ratio = (float)(rc_info.knob_v1 - KNOB_V1_MIN) / KNOB_V1_RANGE;
       turn_on_vortex(vortex_info.spd_ratio);
 
       taskEXIT_CRITICAL();
