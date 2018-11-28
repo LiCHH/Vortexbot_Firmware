@@ -27,7 +27,7 @@ typedef enum{
   br_motor = 3
 } motor_seq_e;
 
-#define MOTOR_SPEED_MAX 400
+#define MOTOR_SPEED_MAX       150
 
 #define MOTOR_REDUCTION_RATIO 36
 

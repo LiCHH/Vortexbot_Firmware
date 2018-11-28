@@ -145,9 +145,9 @@ void chassis_param_init(void)
 
   for (int i = 0; i < 4; i++)
   {
-    PID_struct_init(&pid_driving_spd[i], POSITION_PID, 10000, 500, 4.5f, 0.05f, 0.f);
-    PID_struct_init(&pid_steer_spd[i], POSITION_PID, 10000, 500, 4.5f, 0.03f, 0.f);
-    PID_struct_init(&pid_steer_pos[i], POSITION_PID, 17000, 80, 3.f, 0.03f, 0.f);
+    PID_struct_init(&pid_driving_spd[i], POSITION_PID, 10000, 500, 2.5f, 0.03f, 0.f);
+    PID_struct_init(&pid_steer_spd[i], POSITION_PID, 10000, 500, 4.5f, 0.01f, 0.f);
+    PID_struct_init(&pid_steer_pos[i], POSITION_PID, 17000, 80, 3.f, 0.01f, 0.f);
   }
 
   chassis.steer_pos_ref[fr_motor] = STEER_FR_OFFSET * MOTOR_REDUCTION_RATIO;

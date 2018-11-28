@@ -6,11 +6,12 @@
 #include "main.h"
 #include "tim.h"
 
-#define VORTEX_PORT       TIM4->CCR1    // 设置风扇输出占空比
-#define VORTEX_TIM        htim4         // 风扇对应htim
-#define VORTEX_CHANNEL    TIM_CHANNEL_1 // 风扇PWM对应通道
-#define VORTEX_STOP_DUTY  500          // 停止时占空比
-#define VORTEX_DUTY_RANGE 500          // 占空比调整范围
+#define VORTEX_PORT         TIM4->CCR1    // 设置风扇输出占空比
+#define VORTEX_TIM          htim4         // 风扇对应htim
+#define VORTEX_CHANNEL      TIM_CHANNEL_1 // 风扇PWM对应通道
+#define VORTEX_STOP_DUTY    500           // 停止时占空比
+#define VORTEX_DUTY_RANGE   200           // 占空比调整范围
+#define VORTEX_DUTY_OFFSET  150           // 占空比到达40%以上时电机开启
 
 void pwm_device_init(void);
 

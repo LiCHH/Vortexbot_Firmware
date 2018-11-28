@@ -3,7 +3,7 @@
 
 void turn_on_vortex(float spd_ratio)
 {
-  VORTEX_PORT = VORTEX_STOP_DUTY + spd_ratio * VORTEX_DUTY_RANGE;
+  VORTEX_PORT = VORTEX_STOP_DUTY + spd_ratio * VORTEX_DUTY_RANGE + VORTEX_DUTY_OFFSET;
 }
 
 void turn_off_vortex(void)

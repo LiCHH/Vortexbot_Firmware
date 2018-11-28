@@ -60,6 +60,7 @@
 /* USER CODE BEGIN Includes */
 #include "bsp_can.h"
 #include "bsp_uart.h"
+#include "bsp_io.h"
 #include "chassis_task.h"
 #include "vortex_task.h"
 /* USER CODE END Includes */
@@ -141,6 +142,7 @@ int main(void)
   MX_TIM5_Init();
   MX_TIM2_Init();
   MX_TIM8_Init();
+  MX_UART8_Init();
   /* USER CODE BEGIN 2 */
   /* Software parameter init */
   chassis_param_init();
@@ -165,6 +167,7 @@ int main(void)
   // chassis.driving_spd_ref[3] = 0xFFFF;
 
   /* PWM device init */
+  pwm_device_init();
 
   /* USER CODE END 2 */
 

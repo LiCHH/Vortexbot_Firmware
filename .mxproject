@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=C:/Users/51611/Desktop/Vortexbot_Firmware/Inc
+HeaderPath=C:/Users/chli/OneDrive - zju.edu.cn/Desktop/STM32Projects/Vortexbot_Firmware/Inc
 HeaderFiles=gpio.h;can.h;dma.h;tim.h;usart.h;stm32f4xx_it.h;stm32f4xx_hal_conf.h;main.h;rtc.h;FreeRTOSConfig.h;
-SourcePath=C:/Users/51611/Desktop/Vortexbot_Firmware/Src
+SourcePath=C:/Users/chli/OneDrive - zju.edu.cn/Desktop/STM32Projects/Vortexbot_Firmware/Src
 SourceFiles=gpio.c;can.c;dma.c;tim.c;usart.c;stm32f4xx_it.c;stm32f4xx_hal_msp.c;stm32f4xx_hal_timebase_TIM.c;main.c;rtc.c;freertos.c;
 
 [PreviousLibFiles]
