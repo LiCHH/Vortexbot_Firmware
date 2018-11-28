@@ -1,0 +1,83 @@
+/** @file steer_ctrl.h
+ *  @version 1.0
+ *  @date Nov 2018
+ *
+ *  @brief control steer servo through uart messages
+ *
+ *  @copyright 2018 Vortex Lab. All rights reserved.
+ *
+ */
+
+#ifndef __STEER_CTRL_H__
+#define __STEER_CTRL_H__
+
+#include "stm32f4xx_hal.h"
+
+#include "sys_config.h"
+#include "usart.h"
+
+#define STEER_CTRL_MAX_SIZE 50
+
+typedef enum
+{
+  SERVO_ID     = 0x05,
+  TARGET_POS   = 0x2A,
+  RUNNING_TIME = 0x2C,
+  RUNNING_SPD  = 0x2E
+} servo_addr_e;
+
+typedef enum
+{
+  FRAME_HEADER_1   = 0xFF,
+  FRAME_HEADER_2   = 0xFF,
+
+  SERVO_PING       = 0x01,
+  SERVO_READ       = 0x02,
+  SERVO_WRITE      = 0x03,
+  SERVO_REG_WRITE  = 0x04,
+  SERVO_ACTION     = 0x05,
+  SERVO_SYCN_WRITE = 0x83,
+  SERVO_RESET      = 0x06
+
+} servo_cmd_e;
+
+typedef enum
+{
+  FR_SERVO  = 0x01,
+  FL_SERVO  = 0x02,
+  BL_SERVO  = 0x03,
+  BR_SERVO  = 0x04,
+  ALL_SERVO = 0xFE
+} servo_id_e;
+
+typedef __packed struct
+{
+  uint8_t servo_id;
+  uint8_t pos_low;
+  uint8_t pos_high;
+  uint8_t runtime_low;
+  uint8_t runtime_high;
+  uint8_t spd_low;
+  uint8_t spd_high;
+} single_servo_t;
+
+typedef __packed struct
+{
+  uint8_t header_1;
+  uint8_t header_2;
+  uint8_t servo_id;
+  uint8_t total_length;
+  uint8_t cmd_type;
+  uint8_t start_addr;
+  uint8_t single_length;
+  single_servo_t ctrl_info[4];
+  uint8_t check_sum;
+
+} servo_sync_ctrl_t;
+
+extern servo_sync_ctrl_t servo_packet;
+
+void send_servo_packet(void);
+void servo_init(void);
+
+#endif

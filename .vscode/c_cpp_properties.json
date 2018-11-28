@@ -5,7 +5,8 @@
             "compilerPath": "C:/Program Files/LLVM/bin/gcc.exe",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:/Keil_v5/ARM/ARMCC/include"
+                "C:/Keil_v5/ARM/ARMCC/include",
+                "${workspaceFolder}/MDK-ARM/app"
             ],
             "defines": [
                 "_DEBUG",

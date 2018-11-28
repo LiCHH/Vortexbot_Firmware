@@ -11,6 +11,7 @@
 #define PC_HUART    huart6
 #define TEST_HUART  huart7
 #define RC_HUART    huart1
+#define STEER_HUART huart8
 
 /* math relevant */
 #define PI 3.1416f

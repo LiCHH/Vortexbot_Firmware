@@ -93,7 +93,7 @@ void uart_receive_handler(UART_HandleTypeDef *huart)
 }
 
 /**
-  * @brief   enable global uart it and do not use DMA transfer done it
+  * @brief   enable global uart interrupt and do not use DMA transfer done interrupt
   * @param   uart IRQHandler id, receive buff, buff size
   * @retval  set success or fail
   */
@@ -253,7 +253,7 @@ void rc_uart_init(void)
   __HAL_UART_CLEAR_IDLEFLAG(&RC_HUART);
   __HAL_UART_ENABLE_IT(&RC_HUART, UART_IT_IDLE);
 
-  UART_Receive_DMA_No_IT(&RC_HUART, rc_buf, UART_IT_IDLE);
+  UART_Receive_DMA_No_IT(&RC_HUART, rc_buf, RC_MAX_LEN);
 }
 
 void computer_uart_init(void)
@@ -270,6 +270,16 @@ void computer_uart_init(void)
                             (uint32_t)pc_dma_rxbuff[0],
                             (uint32_t)pc_dma_rxbuff[1],
                             UART_RX_DMA_SIZE);
+}
+
+void steer_uart_init(void)
+{
+  __HAL_UART_CLEAR_IDLEFLAG(&STEER_HUART);
+  __HAL_UART_ENABLE_IT(&STEER_HUART, UART_IT_IDLE);
+
+  SET_BIT(STEER_HUART.Instance->CR3, USART_CR3_DMAR);
+
+
 }
 
 /**
@@ -306,6 +316,8 @@ uint16_t dma_current_data_counter(DMA_Stream_TypeDef *dma_stream)
   /* Return the number of remaining data units for DMAy Streamx */
   return ((uint16_t)(dma_stream->NDTR));
 }
+
+
 
 // TODO: ?
 // void testctrl_return_transmit(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t size)
