@@ -45,5 +45,5 @@ uint16_t dma_current_data_counter(DMA_Stream_TypeDef *dma_stream);
 
 extern uint8_t judge_dma_rxbuff[2][UART_RX_DMA_SIZE];
 extern uint8_t pc_dma_rxbuff[2][UART_RX_DMA_SIZE];
-
+extern uint8_t servo_dma_rxbuff[UART_RX_DMA_SIZE];
 #endif

@@ -507,6 +507,11 @@
               <FileType>1</FileType>
               <FilePath>.\app\cpu_utils.c</FilePath>
             </File>
+            <File>
+              <FileName>steer_ctrl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\vortexlib\steer_ctrl.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

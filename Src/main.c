@@ -63,6 +63,7 @@
 #include "bsp_io.h"
 #include "chassis_task.h"
 #include "vortex_task.h"
+#include "steer_ctrl.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -147,6 +148,7 @@ int main(void)
   /* Software parameter init */
   chassis_param_init();
   vortex_param_init();
+  servo_init();
 
   /* Hardware device init */
   can_device_init();
@@ -155,6 +157,7 @@ int main(void)
   can_receive_start();
   testctrl_uart_init();
   rc_uart_init();
+  steer_uart_init();
 
   // chassis.steer_pos_ref[0] = 2000; //buf[1] | (buf[0] << 8);
   // chassis.steer_pos_ref[1] = 2000; //buf[3] | (buf[2] << 8);

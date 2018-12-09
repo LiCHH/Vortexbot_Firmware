@@ -18,6 +18,10 @@
 
 #define STEER_CTRL_MAX_SIZE 50
 
+#define SERVO_POS_RANGE 4192
+#define SERVO_SPD_RANGE 3000
+#define SERVO_ACC_RANGE 100
+
 typedef enum
 {
   SERVO_ID     = 0x05,
@@ -75,9 +79,30 @@ typedef __packed struct
 
 } servo_sync_ctrl_t;
 
+
+typedef __packed struct
+{
+  uint8_t header_1;
+  uint8_t header_2;
+  uint8_t servo_id;
+  uint8_t data_length;
+  uint8_t cmd_type;
+  uint8_t start_addr;
+  uint8_t pos_low;
+  uint8_t pos_high;
+  uint8_t time_low;
+  uint8_t time_high;
+  uint8_t spd_low;
+  uint8_t spd_high;
+  uint8_t check_sum;
+} servo_async_ctrl_t;
+
 extern servo_sync_ctrl_t servo_packet;
+extern servo_async_ctrl_t single_packet;
+
 
 void send_servo_packet(void);
 void servo_init(void);
+void set_servo_pos(void);
 
 #endif

@@ -34,6 +34,7 @@
 /* dma double buffer */
 uint8_t judge_dma_rxbuff[2][UART_RX_DMA_SIZE];
 uint8_t pc_dma_rxbuff[2][UART_RX_DMA_SIZE];
+uint8_t servo_dma_rxbuff[UART_RX_DMA_SIZE];
 
 /**
   * @brief   clear idle it flag after uart receive a frame data
@@ -176,8 +177,8 @@ static HAL_StatusTypeDef DMAEx_MultiBufferStart_IT(DMA_HandleTypeDef *hdma,
     hdma->ErrorCode = HAL_DMA_ERROR_PARAM;
     return HAL_ERROR;
   }
-
   /* Process locked */
+
   __HAL_LOCK(hdma);
 
   if (HAL_DMA_STATE_READY == hdma->State)
@@ -277,9 +278,8 @@ void steer_uart_init(void)
   __HAL_UART_CLEAR_IDLEFLAG(&STEER_HUART);
   __HAL_UART_ENABLE_IT(&STEER_HUART, UART_IT_IDLE);
 
-  SET_BIT(STEER_HUART.Instance->CR3, USART_CR3_DMAR);
-
-
+  // SET_BIT(STEER_HUART.Instance->CR3, USART_CR3_DMAR);
+  UART_Receive_DMA_No_IT(&STEER_HUART, servo_dma_rxbuff, UART_RX_DMA_SIZE);
 }
 
 /**
