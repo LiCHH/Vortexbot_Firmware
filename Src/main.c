@@ -10,7 +10,7 @@
   * inserted by the user or by software development tools
   * are owned by their respective copyright owners.
   *
-  * Copyright (c) 2018 STMicroelectronics International N.V. 
+  * Copyright (c) 2019 STMicroelectronics International N.V. 
   * All rights reserved.
   *
   * Redistribution and use in source and binary forms, with or without 
@@ -53,6 +53,7 @@
 #include "can.h"
 #include "dma.h"
 #include "rtc.h"
+#include "spi.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -144,6 +145,7 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM8_Init();
   MX_UART8_Init();
+  MX_SPI5_Init();
   /* USER CODE BEGIN 2 */
   /* Software parameter init */
   chassis_param_init();
