@@ -15,6 +15,13 @@
 
 servo_sync_ctrl_t servo_packet;
 servo_async_ctrl_t single_packet;
+servo_request_t request_packet;
+
+uint8_t servo_buf[SERVO_BUF_LEN];
+servo_info_t servo_infos[4];
+
+uint8_t info_received;
+uint8_t receive_fail;
 
 static uint8_t get_check_sum(uint8_t *pack, uint16_t length)
 {
@@ -30,7 +37,6 @@ static uint8_t get_check_sum(uint8_t *pack, uint16_t length)
 void send_servo_packet(void)
 {
   HAL_UART_Transmit_DMA(&STEER_HUART, (uint8_t *)(&servo_packet), sizeof(servo_packet));
-  
   // HAL_UART_Transmit_DMA(&STEER_HUART, (uint8_t *)(&single_packet), sizeof(single_packet));
 }
 
@@ -75,6 +81,14 @@ void servo_init(void)
   // single_packet.spd_high = 0x03;
   // single_packet.check_sum = get_check_sum((uint8_t *)&single_packet, sizeof(single_packet));
 
+  request_packet.header_1 = FRAME_HEADER_1;
+  request_packet.header_2 = FRAME_HEADER_2;
+  request_packet.servo_id = 0;
+  request_packet.data_length = 4;
+  request_packet.cmd_type = SERVO_READ;
+  request_packet.start_addr = CURR_POS;
+  request_packet.data_num = 0x04;
+  request_packet.check_sum = get_check_sum((uint8_t *)&request_packet, sizeof(request_packet));
 }
 
 void set_servo_pos(void)
@@ -101,4 +115,33 @@ void set_servo_pos(void)
   servo_packet.check_sum = get_check_sum((uint8_t *)(&servo_packet), sizeof(servo_packet));
 }
 
+uint8_t verify_check_sum(uint8_t *pack, uint16_t length)
+{
+  return pack[length - 1] == get_check_sum(pack, length);
+}
 
+void send_request(uint8_t id)
+{
+  receive_fail = 0;
+  info_received = 0;
+  request_packet.servo_id = id;
+  request_packet.check_sum = get_check_sum((uint8_t *)&request_packet, sizeof(request_packet));
+  HAL_UART_Transmit_DMA(&STEER_HUART, (uint8_t *)(&request_packet), sizeof(request_packet));
+}
+
+void steer_callback_handler(servo_info_t *sv, uint8_t *buf)
+{
+  if(verify_check_sum(buf, buf[3] + 4))
+  {
+    int id = buf[2] - 1;
+    sv[id].last_position = sv[id].curr_position;
+    sv[id].last_speed = sv[id].curr_speed;
+    sv[id].curr_position = buf[5] || buf[6] << 8;
+    sv[id].curr_speed = buf[7] || buf[8] << 8;
+    info_received = 1;
+  } 
+  else
+  {
+    receive_fail = 1;
+  }
+}

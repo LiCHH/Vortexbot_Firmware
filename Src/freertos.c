@@ -59,6 +59,8 @@
 #include "chassis_task.h"
 #include "swmode_task.h"
 #include "vortex_task.h"
+#include "imu_task.h"
+#include "servo_info_task.h"
 
 /* USER CODE END Includes */
 
@@ -80,6 +82,8 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
 TaskHandle_t mode_sw_task_t;
+TaskHandle_t imu_task_t;
+TaskHandle_t servo_info_task_t;
 
 osTimerId chassis_timer_id;
 osTimerId vortex_timer_id;
@@ -174,6 +178,12 @@ void MX_FREERTOS_Init(void) {
   /* add threads, ... */
   osThreadDef(modeTask, mode_switch_task, osPriorityNormal, 0, 128);
   mode_sw_task_t = osThreadCreate(osThread(modeTask), NULL);
+
+  osThreadDef(imuTask, imu_task, osPriorityNormal, 0, 128);
+  imu_task_t = osThreadCreate(osThread(imuTask), NULL);
+
+  osThreadDef(servoInfoTask, servo_info_task, osPriorityNormal, 0, 128);
+  servo_info_task_t = osThreadCreate(osThread(servoInfoTask), NULL);
 
   taskEXIT_CRITICAL();
   /* USER CODE END RTOS_THREADS */
