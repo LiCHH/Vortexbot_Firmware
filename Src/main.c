@@ -53,7 +53,6 @@
 #include "can.h"
 #include "dma.h"
 #include "rtc.h"
-#include "spi.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -145,7 +144,6 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM8_Init();
   MX_UART8_Init();
-  MX_SPI5_Init();
   /* USER CODE BEGIN 2 */
   /* Software parameter init */
   chassis_param_init();
