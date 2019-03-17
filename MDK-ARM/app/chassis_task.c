@@ -21,6 +21,8 @@
 #include "vortexbot_info.h"
 #include "steer_ctrl.h"
 
+#include "test_ctrl.h"
+
 chassis_t chassis;
 
 static void omnidirection_handler(void);
@@ -101,6 +103,8 @@ static void omnidirection_handler(void)
   if (bot_mode == MANUL_CONTROL_MODE)
   {
     chassis.power_ratio = (float)(rc_info.r_rocker_ud - ROCKER_MIN) / ROCKER_RANGE;
+    ///! 防止抖动
+    chassis.power_ratio = (chassis.power_ratio > 0.05f) ? chassis.power_ratio : 0;
     chassis.vx = rc_info.l_rocker_ud;
     chassis.vy = rc_info.l_rocker_lr;
   }
@@ -120,6 +124,9 @@ static void omnidirection_handler(void)
   //               FR_BL_POS_F * OMNI_INIT_ANGLE + angle,
   //               FL_BR_POS_F * OMNI_INIT_ANGLE + angle,
   //               FL_BR_POS_F * OMNI_INIT_ANGLE + angle);
+  sprintf(test_buf, "Angle: %f\r\n", angle);
+  HAL_UART_Transmit_DMA(&TEST_HUART, test_buf, 20);
+
 
   chassis.steer_pos_ref[fr_motor] = FR_BL_POS_F * OMNI_INIT_ANGLE + 180 - angle; //+ STEER_FR_OFFSET) * MOTOR_REDUCTION_RATIO;
   chassis.steer_pos_ref[bl_motor] = FR_BL_POS_F * OMNI_INIT_ANGLE + 180 - angle; //+ STEER_BL_OFFSET) * MOTOR_REDUCTION_RATIO;

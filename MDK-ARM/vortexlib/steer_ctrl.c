@@ -9,8 +9,10 @@
  */
 
 #include "string.h"
+#include "cmsis_os.h"
 
 #include "steer_ctrl.h"
+#include "test_ctrl.h"
 #include "chassis_task.h"
 
 servo_sync_ctrl_t servo_packet;
@@ -36,7 +38,7 @@ static uint8_t get_check_sum(uint8_t *pack, uint16_t length)
 
 void send_servo_packet(void)
 {
-  HAL_UART_Transmit_DMA(&STEER_HUART, (uint8_t *)(&servo_packet), sizeof(servo_packet));
+  HAL_UART_Transmit(&STEER_HUART, (uint8_t *)(&servo_packet), sizeof(servo_packet), 100);
   // HAL_UART_Transmit_DMA(&STEER_HUART, (uint8_t *)(&single_packet), sizeof(single_packet));
 }
 
@@ -83,8 +85,8 @@ void servo_init(void)
 
   request_packet.header_1 = FRAME_HEADER_1;
   request_packet.header_2 = FRAME_HEADER_2;
-  request_packet.servo_id = 0;
-  request_packet.data_length = 4;
+  request_packet.servo_id = 0x00;
+  request_packet.data_length = 0x04;
   request_packet.cmd_type = SERVO_READ;
   request_packet.start_addr = CURR_POS;
   request_packet.data_num = 0x04;
@@ -111,7 +113,7 @@ void set_servo_pos(void)
   servo_packet.ctrl_info[BL_SERVO - 1].pos_high = (bl_angle >> 8) & 0xFF;
   servo_packet.ctrl_info[BR_SERVO - 1].pos_low = br_angle & 0xFF;
   servo_packet.ctrl_info[BR_SERVO - 1].pos_high = (br_angle >> 8) & 0xFF;
-  
+
   servo_packet.check_sum = get_check_sum((uint8_t *)(&servo_packet), sizeof(servo_packet));
 }
 
@@ -124,24 +126,56 @@ void send_request(uint8_t id)
 {
   receive_fail = 0;
   info_received = 0;
-  request_packet.servo_id = id;
+  request_packet.servo_id = id + 1;
+  request_packet.data_num = 0x04;
   request_packet.check_sum = get_check_sum((uint8_t *)&request_packet, sizeof(request_packet));
+
+  static int count = 0;
+  if (count++ == 100)
+  {
+    HAL_GPIO_TogglePin(LEDA_GPIO_Port, LEDA_Pin);
+    count = 0;
+  }
   HAL_UART_Transmit_DMA(&STEER_HUART, (uint8_t *)(&request_packet), sizeof(request_packet));
+
+  // sprintf((char *)test_buf, "servo id: %d \r\n", id);
+  // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)test_buf, 50, 100);
+  // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)(&request_packet), sizeof(request_packet), 100);
+  //  sprintf((char *)test_buf, "\r\n");
+  //  HAL_UART_Transmit(&TEST_HUART, (uint8_t *)test_buf, 50, 100);
 }
 
-void steer_callback_handler(servo_info_t *sv, uint8_t *buf)
+void steer_callback_handler(servo_info_t *servo, uint8_t *buf)
 {
-  if(verify_check_sum(buf, buf[3] + 4))
+  static int count = 0;
+  if (count++ == 500)
+  {
+    HAL_GPIO_TogglePin(LEDD_GPIO_Port, LEDD_Pin);
+    count = 0;
+  }
+
+  if (verify_check_sum(buf, buf[3] + 4))
   {
     int id = buf[2] - 1;
-    sv[id].last_position = sv[id].curr_position;
-    sv[id].last_speed = sv[id].curr_speed;
-    sv[id].curr_position = buf[5] || buf[6] << 8;
-    sv[id].curr_speed = buf[7] || buf[8] << 8;
+    servo[id].last_position = servo[id].curr_position;
+    servo[id].last_speed = servo[id].curr_speed;
+    servo[id].curr_position = buf[5] | buf[6] << 8;
+    servo[id].curr_speed = buf[7] | buf[8] << 8;
     info_received = 1;
-  } 
+
+    // sprintf((char *)test_buf, "Receivied servo %d info, position: %d\r\n", id, servo[id].curr_position);
+    // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)test_buf, 50, 100);
+  }
   else
   {
+    if (count++ == 500)
+    {
+      HAL_GPIO_TogglePin(LEDD_GPIO_Port, LEDD_Pin);
+      count = 0;
+    }
+    sprintf((char *)test_buf, "Fail!!!\r\n");
+    HAL_UART_Transmit(&TEST_HUART, (uint8_t *)test_buf, 50, 100);
+    HAL_GPIO_TogglePin(LEDC_GPIO_Port, LEDC_Pin);
     receive_fail = 1;
   }
 }

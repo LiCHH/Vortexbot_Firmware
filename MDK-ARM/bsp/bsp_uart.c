@@ -30,6 +30,7 @@
 // #include "cmsis_os.h"
 #include "test_ctrl.h"
 #include "remote_ctrl.h"
+#include "steer_ctrl.h"
 
 /* dma double buffer */
 uint8_t judge_dma_rxbuff[2][UART_RX_DMA_SIZE];
@@ -71,23 +72,26 @@ static void uart_rx_idle_callback(UART_HandleTypeDef *huart)
 
     if (1)
     {
-      rc_callback_handler(&rc_info ,rc_buf);
+      rc_callback_handler(&rc_info, rc_buf);
     }
 
     __HAL_DMA_SET_COUNTER(huart->hdmarx, RC_MAX_LEN);
     __HAL_DMA_ENABLE(huart->hdmarx);
   }
-  else if(huart == &STEER_HUART)
+  else if (huart == &STEER_HUART)
   {
     __HAL_DMA_DISABLE(huart->hdmarx);
     __HAL_DMA_CLEAR_FLAG(huart->hdmarx, __HAL_DMA_GET_TC_FLAG_INDEX(huart->hdmarx));
 
+    sprintf(test_buf, "receive info", 20);
+    HAL_UART_Transmit(&TEST_HUART, test_buf, 20, 100);
+
     if (1)
     {
-      rc_callback_handler(&rc_info ,rc_buf);
+      steer_callback_handler(servo_infos, servo_buf);
     }
 
-    __HAL_DMA_SET_COUNTER(huart->hdmarx, RC_MAX_LEN);
+    __HAL_DMA_SET_COUNTER(huart->hdmarx, SERVO_BUF_LEN);
     __HAL_DMA_ENABLE(huart->hdmarx);
   }
 }
@@ -329,8 +333,6 @@ uint16_t dma_current_data_counter(DMA_Stream_TypeDef *dma_stream)
   /* Return the number of remaining data units for DMAy Streamx */
   return ((uint16_t)(dma_stream->NDTR));
 }
-
-
 
 // TODO: ?
 // void testctrl_return_transmit(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t size)

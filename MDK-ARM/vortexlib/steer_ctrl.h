@@ -121,7 +121,7 @@ typedef struct
 
 } servo_info_t;
 
-extern uint8_t buf[];
+extern uint8_t servo_buf[];
 extern servo_info_t servo_infos[];
 
 extern servo_sync_ctrl_t servo_packet;
@@ -136,5 +136,7 @@ void send_servo_packet(void);
 void servo_init(void);
 void set_servo_pos(void);
 void send_request(uint8_t id);
+
+void steer_callback_handler(servo_info_t *servo, uint8_t *buf);
 
 #endif

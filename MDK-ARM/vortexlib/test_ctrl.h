@@ -12,8 +12,8 @@
 
 #include "stm32f4xx_hal.h"
 
-#define TEST_BUF_LEN 8
-#define TEST_MAX_LEN 20
+#define TEST_BUF_LEN 100
+#define TEST_MAX_LEN 120
 
 typedef __packed struct
 {

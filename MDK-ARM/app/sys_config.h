@@ -18,7 +18,7 @@
 #define PI 3.1416f
 #define RAD_TO_ANG (180.f / PI)
 
-#define FLOAT_THRESHOLD 10
+#define FLOAT_THRESHOLD 50
 
 #define FLAG(x) ((x < 0) ? -1 : 1)
 #define INT_LIMIT(x, range) ((abs(x) < range ? x : range * FLAG(x)))
@@ -57,5 +57,6 @@ typedef enum
 
 ///! setup imu temperature control
 #define DEFAULT_IMU_TEMP 50
+
 
 #endif
