@@ -174,7 +174,7 @@ void steer_callback_handler(servo_info_t *servo, uint8_t *buf)
       count = 0;
     }
     sprintf((char *)test_buf, "Fail!!!\r\n");
-    HAL_UART_Transmit(&TEST_HUART, (uint8_t *)test_buf, 50, 100);
+    // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)test_buf, 50, 100);
     HAL_GPIO_TogglePin(LEDC_GPIO_Port, LEDC_Pin);
     receive_fail = 1;
   }

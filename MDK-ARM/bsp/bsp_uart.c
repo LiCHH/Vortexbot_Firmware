@@ -31,11 +31,11 @@
 #include "test_ctrl.h"
 #include "remote_ctrl.h"
 #include "steer_ctrl.h"
+#include "uwb_info.h"
 
 /* dma double buffer */
 uint8_t judge_dma_rxbuff[2][UART_RX_DMA_SIZE];
 uint8_t pc_dma_rxbuff[2][UART_RX_DMA_SIZE];
-uint8_t servo_dma_rxbuff[UART_RX_DMA_SIZE];
 
 /**
   * @brief   clear idle it flag after uart receive a frame data
@@ -89,6 +89,19 @@ static void uart_rx_idle_callback(UART_HandleTypeDef *huart)
     if (1)
     {
       steer_callback_handler(servo_infos, servo_buf);
+    }
+
+    __HAL_DMA_SET_COUNTER(huart->hdmarx, SERVO_BUF_LEN);
+    __HAL_DMA_ENABLE(huart->hdmarx);
+  }
+  else if (huart == &UWB_HUART)
+  {
+    __HAL_DMA_DISABLE(huart->hdmarx);
+    __HAL_DMA_CLEAR_FLAG(huart->hdmarx, __HAL_DMA_GET_TC_FLAG_INDEX(huart->hdmarx));
+
+    if (1)
+    {
+      steer_callback_handler(&uwb_data, uwb_buff);
     }
 
     __HAL_DMA_SET_COUNTER(huart->hdmarx, SERVO_BUF_LEN);
@@ -276,18 +289,18 @@ void rc_uart_init(void)
 
 void computer_uart_init(void)
 {
-  //open uart idle it
-  __HAL_UART_CLEAR_IDLEFLAG(&PC_HUART);
-  __HAL_UART_ENABLE_IT(&PC_HUART, UART_IT_IDLE);
+  // //! open uart idle it
+  // __HAL_UART_CLEAR_IDLEFLAG(&PC_HUART);
+  // __HAL_UART_ENABLE_IT(&PC_HUART, UART_IT_IDLE);
 
-  // Enable the DMA transfer for the receiver request
-  SET_BIT(PC_HUART.Instance->CR3, USART_CR3_DMAR);
+  // //! Enable the DMA transfer for the receiver request
+  // SET_BIT(PC_HUART.Instance->CR3, USART_CR3_DMAR);
 
-  DMAEx_MultiBufferStart_IT(PC_HUART.hdmarx,
-                            (uint32_t)&PC_HUART.Instance->DR,
-                            (uint32_t)pc_dma_rxbuff[0],
-                            (uint32_t)pc_dma_rxbuff[1],
-                            UART_RX_DMA_SIZE);
+  // DMAEx_MultiBufferStart_IT(PC_HUART.hdmarx,
+  //                           (uint32_t)&PC_HUART.Instance->DR,
+  //                           (uint32_t)pc_dma_rxbuff[0],
+  //                           (uint32_t)pc_dma_rxbuff[1],
+  //                           UART_RX_DMA_SIZE);
 }
 
 void steer_uart_init(void)
@@ -296,7 +309,15 @@ void steer_uart_init(void)
   __HAL_UART_ENABLE_IT(&STEER_HUART, UART_IT_IDLE);
 
   // SET_BIT(STEER_HUART.Instance->CR3, USART_CR3_DMAR);
-  UART_Receive_DMA_No_IT(&STEER_HUART, servo_dma_rxbuff, UART_RX_DMA_SIZE);
+  UART_Receive_DMA_No_IT(&STEER_HUART, servo_buf, SERVO_BUF_LEN);
+}
+
+void uwb_uart_init(void)
+{
+  __HAL_UART_CLEAR_IDLEFLAG(&UWB_HUART);
+  __HAL_UART_ENABLE_IT(&UWB_HUART, UART_IT_IDLE);
+
+  UART_Receive_DMA_No_IT(&uwb_uart_init, uwb_buff, UWB_MAX_BUF);
 }
 
 /**

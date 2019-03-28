@@ -61,6 +61,7 @@
 #include "vortex_task.h"
 #include "imu_task.h"
 #include "servo_info_task.h"
+#include "uwb_task.h"
 
 /* USER CODE END Includes */
 
@@ -84,6 +85,7 @@
 TaskHandle_t mode_sw_task_t;
 TaskHandle_t imu_task_t;
 TaskHandle_t servo_info_task_t;
+TaskHandle_t uwb_task_t;
 
 osTimerId chassis_timer_id;
 osTimerId vortex_timer_id;
@@ -184,6 +186,9 @@ void MX_FREERTOS_Init(void) {
 
   osThreadDef(servoInfoTask, servo_info_task, osPriorityNormal, 0, 128);
   servo_info_task_t = osThreadCreate(osThread(servoInfoTask), NULL);
+
+  osThreadDef(uwbTask, uwb_task, osPriorityNormal, 0, 128);
+  uwb_task_t = osThreadCreate(osThread(uwbTask), NULL);
 
   taskEXIT_CRITICAL();
   /* USER CODE END RTOS_THREADS */

@@ -137,6 +137,7 @@ int main(void)
   vortex_param_init();
   imu_param_init();
   servo_init();
+  mpu_device_init();
 
   /* Hardware device init */
   can_device_init();
@@ -146,6 +147,7 @@ int main(void)
   testctrl_uart_init();
   rc_uart_init();
   steer_uart_init();
+  uwb_uart_init();
 
   // chassis.steer_pos_ref[0] = 2000; //buf[1] | (buf[0] << 8);
   // chassis.steer_pos_ref[1] = 2000; //buf[3] | (buf[2] << 8);

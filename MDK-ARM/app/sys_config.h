@@ -9,19 +9,26 @@
 #define CHASSIS_CAN hcan1
 
 /* uart relevant */
-#define PC_HUART huart6
+#define PC_HUART huart7
 #define TEST_HUART huart7
 #define RC_HUART huart1
 #define STEER_HUART huart8
+#define UWB_HUART huart6
 
 /* math relevant */
 #define PI 3.1416f
-#define RAD_TO_ANG (180.f / PI)
+#define RAD_TO_DEG (180.f / PI)
+#define DEG_TO_RAD (PI / 180.f)
 
 #define FLOAT_THRESHOLD 50
 
-#define FLAG(x) ((x < 0) ? -1 : 1)
-#define INT_LIMIT(x, range) ((abs(x) < range ? x : range * FLAG(x)))
+#define SIGN(x) ((x < 0) ? -1 : 1)
+#define INT_LIMIT(x, range) ((abs(x) < range ? x : range * SIGN(x)))
+
+#define RESTRICT_ANGLE(angle) do {  \
+  while(angle > 180) angle -= 360;     \
+  while(angle < -180) angle += 360;\
+} while(0);
 
 typedef enum
 {
