@@ -8,6 +8,16 @@
 
 #define SERVO_INFO_PERIOD 20
 
+servo_info_t servo_infos[4];
+
+static void update_angle()
+{
+  servo_infos[fr_motor].angle = FR_BL_POS_F * OMNI_INIT_ANGLE + 180 - servo_infos[fr_motor].curr_position;
+  servo_infos[bl_motor].angle = FR_BL_POS_F * OMNI_INIT_ANGLE + 180 - servo_infos[bl_motor].curr_position;
+  servo_infos[fr_motor].angle = FL_BR_POS_F * OMNI_INIT_ANGLE + 180 - servo_infos[fl_motor].curr_position;
+  servo_infos[br_motor].angle = FL_BR_POS_F * OMNI_INIT_ANGLE + 180 - servo_infos[br_motor].curr_position;
+}
+
 void servo_info_task(void const *argu)
 {
   uint32_t servo_wake_time = osKernelSysTick();
@@ -24,7 +34,9 @@ void servo_info_task(void const *argu)
       //   if(receive_fail) send_request(i);
       // }
     }
-    // taskEXIT_CRITICAL();
+    taskENTER_CRITICAL();
+    update_angle();
+    taskEXIT_CRITICAL();
     osDelayUntil(&servo_wake_time, SERVO_INFO_PERIOD); 
   }
 }

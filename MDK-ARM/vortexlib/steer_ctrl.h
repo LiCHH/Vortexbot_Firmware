@@ -112,17 +112,8 @@ typedef __packed struct
   uint8_t check_sum;
 } servo_request_t;
 
-typedef struct 
-{
-  int16_t curr_position;
-  int16_t last_position;
-  int16_t curr_speed;
-  int16_t last_speed;
-
-} servo_info_t;
 
 extern uint8_t servo_buf[];
-extern servo_info_t servo_infos[];
 
 extern servo_sync_ctrl_t servo_packet;
 extern servo_async_ctrl_t single_packet;

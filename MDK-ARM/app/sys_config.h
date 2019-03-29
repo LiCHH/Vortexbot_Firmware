@@ -53,6 +53,7 @@ typedef enum
 #define STEER_BR_OFFSET ((float)0x00D5 / ENCODER_ANGLE_RATIO / MOTOR_REDUCTION_RATIO)
 #define STEER_BL_OFFSET ((float)0x0061 / ENCODER_ANGLE_RATIO / MOTOR_REDUCTION_RATIO)
 
+#define OMNI_INIT_ANGLE      45
 #define STEER_SERVO_OFFSET 2048
 
 /* chassis relevant */

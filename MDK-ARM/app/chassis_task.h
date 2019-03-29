@@ -14,7 +14,6 @@
 
 #define CHASSIS_TIMER_PERIOD 10
 
-#define OMNI_INIT_ANGLE      45
 
 typedef enum
 {

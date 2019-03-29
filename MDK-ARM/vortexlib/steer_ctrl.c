@@ -14,13 +14,13 @@
 #include "steer_ctrl.h"
 #include "test_ctrl.h"
 #include "chassis_task.h"
+#include "servo_info_task.h"
 
 servo_sync_ctrl_t servo_packet;
 servo_async_ctrl_t single_packet;
 servo_request_t request_packet;
 
 uint8_t servo_buf[SERVO_BUF_LEN];
-servo_info_t servo_infos[4];
 
 uint8_t info_received;
 uint8_t receive_fail;
