@@ -15,6 +15,7 @@
 
 #include "sys_config.h"
 #include "usart.h"
+#include "servo_info_task.h"
 
 #define STEER_CTRL_MAX_SIZE 50
 

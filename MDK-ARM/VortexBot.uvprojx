@@ -473,11 +473,6 @@
               <FilePath>.\bsp\bsp_can.c</FilePath>
             </File>
             <File>
-              <FileName>pid.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\bsp\pid.c</FilePath>
-            </File>
-            <File>
               <FileName>bsp_uart.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\bsp\bsp_uart.c</FilePath>
@@ -521,6 +516,11 @@
               <FileName>steer_ctrl.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\vortexlib\steer_ctrl.c</FilePath>
+            </File>
+            <File>
+              <FileName>pid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\vortexlib\pid.c</FilePath>
             </File>
           </Files>
         </Group>

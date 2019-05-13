@@ -103,7 +103,7 @@ static void omnidirection_handler(void)
   if (bot_mode == MANUL_CONTROL_MODE)
   {
     chassis.power_ratio = (float)(rc_info.r_rocker_ud - ROCKER_MIN) / ROCKER_RANGE;
-    ///! 防止抖动
+    //! 防止抖动
     chassis.power_ratio = (chassis.power_ratio > 0.05f) ? chassis.power_ratio : 0;
     chassis.vx = rc_info.l_rocker_ud;
     chassis.vy = rc_info.l_rocker_lr;
