@@ -63,6 +63,7 @@
 #include "bsp_io.h"
 #include "chassis_task.h"
 #include "vortex_task.h"
+#include "imu_task.h"
 #include "steer_ctrl.h"
 /* USER CODE END Includes */
 
@@ -83,25 +84,7 @@ void MX_FREERTOS_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-// test code
-void PWM_SetDuty(TIM_HandleTypeDef *htim, uint32_t channel, float duty)
-{
-  switch (channel)
-  {
-  case TIM_CHANNEL_1:
-    htim->Instance->CCR1 = (PWM_RESOLUTION * duty) - 1;
-    break;
-  case TIM_CHANNEL_2:
-    htim->Instance->CCR2 = (PWM_RESOLUTION * duty) - 1;
-    break;
-  case TIM_CHANNEL_3:
-    htim->Instance->CCR3 = (PWM_RESOLUTION * duty) - 1;
-    break;
-  case TIM_CHANNEL_4:
-    htim->Instance->CCR4 = (PWM_RESOLUTION * duty) - 1;
-    break;
-  }
-}
+
 /* USER CODE END 0 */
 
 /**
@@ -144,11 +127,16 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM8_Init();
   MX_UART8_Init();
+  MX_SPI5_Init();
+  MX_TIM3_Init();
+  MX_TIM12_Init();
   /* USER CODE BEGIN 2 */
   /* Software parameter init */
   chassis_param_init();
   vortex_param_init();
+  imu_param_init();
   servo_init();
+  mpu_device_init();
 
   /* Hardware device init */
   can_device_init();
@@ -158,6 +146,7 @@ int main(void)
   testctrl_uart_init();
   rc_uart_init();
   steer_uart_init();
+  uwb_uart_init();
 
   // chassis.steer_pos_ref[0] = 2000; //buf[1] | (buf[0] << 8);
   // chassis.steer_pos_ref[1] = 2000; //buf[3] | (buf[2] << 8);

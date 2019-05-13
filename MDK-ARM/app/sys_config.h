@@ -9,19 +9,26 @@
 #define CHASSIS_CAN hcan1
 
 /* uart relevant */
-#define PC_HUART huart6
+#define PC_HUART huart7
 #define TEST_HUART huart7
 #define RC_HUART huart1
 #define STEER_HUART huart8
+#define UWB_HUART huart6
 
 /* math relevant */
 #define PI 3.1416f
-#define RAD_TO_ANG (180.f / PI)
+#define RAD_TO_DEG (180.f / PI)
+#define DEG_TO_RAD (PI / 180.f)
 
-#define FLOAT_THRESHOLD 10
+#define FLOAT_THRESHOLD 50
 
-#define FLAG(x) ((x < 0) ? -1 : 1)
-#define INT_LIMIT(x, range) ((abs(x) < range ? x : range * FLAG(x)))
+#define SIGN(x) ((x < 0) ? -1 : 1)
+#define INT_LIMIT(x, range) ((abs(x) < range ? x : range * SIGN(x)))
+
+#define RESTRICT_ANGLE(angle) do {  \
+  while(angle > 180) angle -= 360;     \
+  while(angle < -180) angle += 360;\
+} while(0);
 
 typedef enum
 {
@@ -46,10 +53,18 @@ typedef enum
 #define STEER_BR_OFFSET ((float)0x00D5 / ENCODER_ANGLE_RATIO / MOTOR_REDUCTION_RATIO)
 #define STEER_BL_OFFSET ((float)0x0061 / ENCODER_ANGLE_RATIO / MOTOR_REDUCTION_RATIO)
 
+#define OMNI_INIT_ANGLE      45
 #define STEER_SERVO_OFFSET 2048
 
 /* chassis relevant */
 /* the ratio of motor encoder value translate to degree */
 #define ENCODER_ANGLE_RATIO (8192.0f / 360.0f)
+
+///! setup robot's initial pitch angle on wall
+#define ROBOT_INIT_PITCH 0.f
+
+///! setup imu temperature control
+#define DEFAULT_IMU_TEMP 50
+
 
 #endif

@@ -21,6 +21,8 @@
 #include "vortexbot_info.h"
 #include "steer_ctrl.h"
 
+#include "test_ctrl.h"
+
 chassis_t chassis;
 
 static void omnidirection_handler(void);
@@ -101,6 +103,8 @@ static void omnidirection_handler(void)
   if (bot_mode == MANUL_CONTROL_MODE)
   {
     chassis.power_ratio = (float)(rc_info.r_rocker_ud - ROCKER_MIN) / ROCKER_RANGE;
+    //! 防止抖动
+    chassis.power_ratio = (chassis.power_ratio > 0.05f) ? chassis.power_ratio : 0;
     chassis.vx = rc_info.l_rocker_ud;
     chassis.vy = rc_info.l_rocker_lr;
   }
@@ -111,15 +115,17 @@ static void omnidirection_handler(void)
     angle = 0;
   }
   else if (fabs(chassis.vx) < FLOAT_THRESHOLD)
-    angle = FLAG(chassis.vy) * 90;
+    angle = SIGN(chassis.vy) * 90;
   else
-    // TODO: check the output of atan2
-    angle = atan2(chassis.vy, fabs(chassis.vx)) * RAD_TO_ANG;
+    angle = atan2(chassis.vy, fabs(chassis.vx)) * RAD_TO_DEG;
 
   // set_servo_pos(FR_BL_POS_F * OMNI_INIT_ANGLE + angle,
   //               FR_BL_POS_F * OMNI_INIT_ANGLE + angle,
   //               FL_BR_POS_F * OMNI_INIT_ANGLE + angle,
   //               FL_BR_POS_F * OMNI_INIT_ANGLE + angle);
+  sprintf(test_buf, "Angle: %f\r\n", angle);
+  HAL_UART_Transmit_DMA(&TEST_HUART, test_buf, 20);
+
 
   chassis.steer_pos_ref[fr_motor] = FR_BL_POS_F * OMNI_INIT_ANGLE + 180 - angle; //+ STEER_FR_OFFSET) * MOTOR_REDUCTION_RATIO;
   chassis.steer_pos_ref[bl_motor] = FR_BL_POS_F * OMNI_INIT_ANGLE + 180 - angle; //+ STEER_BL_OFFSET) * MOTOR_REDUCTION_RATIO;
@@ -127,10 +133,9 @@ static void omnidirection_handler(void)
   chassis.steer_pos_ref[br_motor] = FL_BR_POS_F * OMNI_INIT_ANGLE + 180 - angle; //+ STEER_BR_OFFSET) * MOTOR_REDUCTION_RATIO;
   set_servo_pos();
 
-  // TODO: check spd and where to get vx, vy
   int16_t spd_ref = 0;
   if (!(fabs(chassis.vx) < FLOAT_THRESHOLD && fabs(chassis.vy) < FLOAT_THRESHOLD))
-    spd_ref = FLAG(chassis.vx) * MOTOR_SPEED_MAX * chassis.power_ratio * MOTOR_REDUCTION_RATIO;
+    spd_ref = SIGN(chassis.vx) * MOTOR_SPEED_MAX * chassis.power_ratio * MOTOR_REDUCTION_RATIO;
   chassis.driving_spd_ref[fr_motor] = FR_BR_SPD_F * spd_ref;
   chassis.driving_spd_ref[br_motor] = FR_BR_SPD_F * spd_ref;
   chassis.driving_spd_ref[fl_motor] = FL_BL_SPD_F * spd_ref;
