@@ -91,6 +91,8 @@ typedef struct
 } kf_init_t;
 
 void kfInit(void);
+void kfPredict(float theta, float rot, float trans);
+void kfMeasure(float zx, float zy);
 
 extern kf_t kf;
 

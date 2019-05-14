@@ -8,7 +8,8 @@
         "gpio.h": "c",
         "cmsis_os.h": "c",
         "remote_ctrl.h": "c",
-        "bsp_io.h": "c"
+        "bsp_io.h": "c",
+        "imu_task.h": "c"
     },
 
     "C_Cpp.clang_format_path": "C:/Program Files/LLVM/bin/clang-format.exe"

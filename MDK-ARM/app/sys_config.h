@@ -17,8 +17,10 @@
 
 /* math relevant */
 #define PI 3.1416f
-#define RAD_TO_DEG (180.f / PI)
-#define DEG_TO_RAD (PI / 180.f)
+#define RAD_TO_DEG 57.3f
+#define DEG_TO_RAD 0.0175f 
+
+#define RPM_TO_RPS 0.0167f
 
 #define FLOAT_THRESHOLD 50
 
@@ -41,6 +43,8 @@ typedef enum
 #define MOTOR_SPEED_MAX 150
 
 #define MOTOR_REDUCTION_RATIO 36
+
+#define WHEEL_RADIUS 0.045f
 
 #define FR_BL_POS_F -1
 #define FL_BR_POS_F 1
