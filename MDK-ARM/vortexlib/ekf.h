@@ -24,10 +24,12 @@ typedef struct
   mat sigma_hat;
   mat sigma_curr;
 
+  mat z;
+
   mat G;
   mat GT;
-  mat Gsigma_last;
-  mat Gsigma_lastGT;
+  mat Gsigma;
+  mat GsigmaGT;
   mat V;
   mat VT;
   mat M;
@@ -36,6 +38,16 @@ typedef struct
   mat Q;
   mat C;
   mat CT;
+  mat sigmaCT;
+  mat CsigmaCT;
+  mat CsigmaCT_Q;
+  mat invCsigmaCT_Q;
+  mat Cmu;
+  mat z_Cmu;
+  mat K_z_Cmu;
+  mat KC;
+  mat I;
+  mat I_KC;
   mat K;
 
 } ekf_t;
@@ -50,12 +62,31 @@ typedef struct
   float sigma_hat_data[9];
   float sigma_curr_data[9];
 
-  float G_curr_data[9];
-  float V_curr_data[9];
-  float M_curr_data[9];
-  float Q_curr_data[9];
-  float C_curr_data[6];
-  float K_curr_data[6];
+  float z_data[2];
+
+  float G_data[9];                
+  float GT_data[9];
+  float Gsigma_data[9];
+  float GsigmaGT_data[9];
+  float V_data[9];
+  float VT_data[9];
+  float M_data[9];
+  float VM_data[9];
+  float VMVT_data[9];
+  float Q_data[4];
+  float C_data[6];
+  float CT_data[6];
+  float sigmaCT_data[6];
+  float CsigmaCT_data[4];
+  float CsigmaCT_Q_data[4];
+  float invCsigmaCT_Q_data[4];
+  float Cmu_data[2];
+  float z_Cmu_data[2];
+  float K_z_Cmu_data[3]; // 3x1
+  float KC_data[9]; // 3x3
+  float I_data[9];
+  float I_KC_data[9];
+  float K_data[6]; // 3x2
 
 } ekf_init_t;
 
