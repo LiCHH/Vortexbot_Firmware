@@ -335,8 +335,8 @@
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls></MiscControls>
-              <Define>USE_HAL_DRIVER,STM32F427xx</Define>
+              <MiscControls>--C99</MiscControls>
+              <Define>USE_HAL_DRIVER,STM32F427xx,ARM_MATH_CM4,__FPU_PRESENT</Define>
               <Undefine></Undefine>
               <IncludePath>../Inc;     ../Drivers/STM32F4xx_HAL_Driver/Inc;     ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;     ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;     .\app;     .\bsp;     .\vortexlib;     ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;     ..\Middlewares\Third_Party\FreeRTOS\Source\include;     ..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS;     ..\Drivers\CMSIS\Include;     ..\Drivers\CMSIS\Device</IncludePath>
             </VariousControls>
@@ -462,6 +462,61 @@
               <FileType>1</FileType>
               <FilePath>..//Src/system_stm32f4xx.c</FilePath>
             </File>
+            <File>
+              <FileName>arm_mat_add_f32.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\CMSIS\DSP_Lib\Source\MatrixFunctions\arm_mat_add_f32.c</FilePath>
+            </File>
+            <File>
+              <FileName>arm_mat_cmplx_mult_f32.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\CMSIS\DSP_Lib\Source\MatrixFunctions\arm_mat_cmplx_mult_f32.c</FilePath>
+            </File>
+            <File>
+              <FileName>arm_mat_init_f32.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\CMSIS\DSP_Lib\Source\MatrixFunctions\arm_mat_init_f32.c</FilePath>
+            </File>
+            <File>
+              <FileName>arm_mat_inverse_f32.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\CMSIS\DSP_Lib\Source\MatrixFunctions\arm_mat_inverse_f32.c</FilePath>
+            </File>
+            <File>
+              <FileName>arm_mat_inverse_f64.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\CMSIS\DSP_Lib\Source\MatrixFunctions\arm_mat_inverse_f64.c</FilePath>
+            </File>
+            <File>
+              <FileName>arm_mat_mult_f32.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\CMSIS\DSP_Lib\Source\MatrixFunctions\arm_mat_mult_f32.c</FilePath>
+            </File>
+            <File>
+              <FileName>arm_mat_sub_f32.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\CMSIS\DSP_Lib\Source\MatrixFunctions\arm_mat_sub_f32.c</FilePath>
+            </File>
+            <File>
+              <FileName>arm_mat_trans_f32.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\CMSIS\DSP_Lib\Source\MatrixFunctions\arm_mat_trans_f32.c</FilePath>
+            </File>
+            <File>
+              <FileName>arm_cos_f32.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\CMSIS\DSP_Lib\Source\FastMathFunctions\arm_cos_f32.c</FilePath>
+            </File>
+            <File>
+              <FileName>arm_sin_f32.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\CMSIS\DSP_Lib\Source\FastMathFunctions\arm_sin_f32.c</FilePath>
+            </File>
+            <File>
+              <FileName>arm_common_tables.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\CMSIS\DSP_Lib\Source\CommonTables\arm_common_tables.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -522,6 +577,16 @@
               <FileType>1</FileType>
               <FilePath>.\vortexlib\pid.c</FilePath>
             </File>
+            <File>
+              <FileName>uwb_info.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\vortexlib\uwb_info.c</FilePath>
+            </File>
+            <File>
+              <FileName>kf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\vortexlib\kf.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -551,6 +616,11 @@
               <FileName>servo_info_task.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\app\servo_info_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>uwb_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\app\uwb_task.c</FilePath>
             </File>
           </Files>
         </Group>

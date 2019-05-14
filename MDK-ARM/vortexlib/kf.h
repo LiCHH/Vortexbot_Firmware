@@ -40,7 +40,11 @@ typedef struct
   mat M;
   mat VM;
   mat VMVT;
+
   mat Q;
+  mat CsigmaCT_Q;
+  mat invCsigmaCT_Q;
+
   mat C;
   mat CT;
   mat z_Cmu;
@@ -65,12 +69,16 @@ typedef struct
 
   float A_data[4];                
   float AT_data[4];
-  float V_data[4];
-  float VT_data[4];
-  float M_data[4];
-  float VM_data[4];
+  float V_data[6];
+  float VT_data[6];
+  float M_data[9];
+  float VM_data[6];
   float VMVT_data[4];
+
   float Q_data[4];
+  float CsigmaCT_Q_data[4];
+  float invCsigmaCT_Q_data[4];
+
   float C_data[4];
   float CT_data[4];
   float z_Cmu_data[2];
@@ -84,4 +92,6 @@ typedef struct
 
 void kfInit(void);
 
-#endif // !1
+extern kf_t kf;
+
+#endif // !

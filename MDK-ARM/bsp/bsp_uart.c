@@ -101,7 +101,7 @@ static void uart_rx_idle_callback(UART_HandleTypeDef *huart)
 
     if (1)
     {
-      steer_callback_handler(&uwb_data, uwb_buff);
+      uwb_receive_callback(&uwb_data, uwb_buff);
     }
 
     __HAL_DMA_SET_COUNTER(huart->hdmarx, SERVO_BUF_LEN);
@@ -317,7 +317,7 @@ void uwb_uart_init(void)
   __HAL_UART_CLEAR_IDLEFLAG(&UWB_HUART);
   __HAL_UART_ENABLE_IT(&UWB_HUART, UART_IT_IDLE);
 
-  UART_Receive_DMA_No_IT(&uwb_uart_init, uwb_buff, UWB_MAX_BUF);
+  UART_Receive_DMA_No_IT(&UWB_HUART, uwb_buff, UWB_MAX_BUF);
 }
 
 /**

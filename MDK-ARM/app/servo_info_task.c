@@ -5,6 +5,8 @@
 
 #include "test_ctrl.h"
 #include "bsp_uart.h"
+#include "sys_config.h"
+
 
 #define SERVO_INFO_PERIOD 20
 
