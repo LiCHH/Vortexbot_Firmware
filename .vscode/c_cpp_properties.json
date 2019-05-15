@@ -6,7 +6,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "C:/Keil_v5/ARM/ARMCC/include",
-                "${workspaceFolder}/MDK-ARM/app"
+                "${workspaceFolder}/MDK-ARM/app",
+                "${workspaceFolder}/Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F"
             ],
             "defines": [
                 "_DEBUG",

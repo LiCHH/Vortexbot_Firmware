@@ -170,8 +170,10 @@ void encoder_data_handler(moto_measure_t *ptr, CAN_HandleTypeDef *hcan)
   {
     ptr->ecd_raw_rate = ptr->ecd - ptr->last_ecd;
   }
-  ptr->total_ecd = ptr->round_cnt * 8192 + ptr->ecd - 4096; //- ptr->offset_ecd;
-  ptr->total_angle = ptr->total_ecd / ENCODER_ANGLE_RATIO;
+  ptr->total_ecd = ptr->round_cnt * 8192 + ptr->ecd - ptr->offset_ecd;
+  ptr->last_total_angle = ptr->total_angle;
+  ptr->total_angle = ptr->total_ecd * ENCODER_ANGLE_RATIO;
+  ptr->pass_angle = ptr->total_angle - ptr->last_total_angle;
 
   ptr->speed_rpm = (int16_t)(hcan1_rx_msgs.data[2] << 8 | hcan1_rx_msgs.data[3]);
   ptr->given_current = (int16_t)(hcan1_rx_msgs.data[4] << 8 | hcan1_rx_msgs.data[5]);

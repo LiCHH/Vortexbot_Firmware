@@ -21,11 +21,16 @@ void odomTask(void const* argu) {
     odom.theta = imu.yaw;
     odom.duration = HAL_GetTick() - odom.last_tick;
     odom.last_tick = HAL_GetTick();
-    odom.trans = (motor_driving[0].speed_rpm + motor_driving[1].speed_rpm +
-                  motor_driving[2].speed_rpm + motor_driving[3].speed_rpm) /
-                 4.f * RPM_TO_RPS * WHEEL_RADIUS * 2 * PI * odom.duration;
+    // odom.trans = (motor_driving[0].speed_rpm + motor_driving[1].speed_rpm +
+    //               motor_driving[2].speed_rpm + motor_driving[3].speed_rpm) /
+    //              4.f * RPM_TO_RPS * WHEEL_RADIUS * 2 * PI * odom.duration;
+    odom.trans = (motor_driving[0].pass_angle + motor_driving[1].pass_angle +
+                  motor_driving[2].pass_angle + motor_driving[3].pass_angle) /
+                 4 / MOTOR_REDUCTION_RATIO * DEG_TO_RAD * WHEEL_RADIUS;
+
     odom.rot = (servo_infos[0].angle + servo_infos[1].angle +
-                servo_infos[2].angle + servo_infos[3].angle) / 4;
+                servo_infos[2].angle + servo_infos[3].angle) /
+               4;
     kfPredict(odom.last_theta * DEG_TO_RAD, odom.last_rot, odom.trans);
     odom.x = kf.mu_curr.pData[0];
     odom.y = kf.mu_curr.pData[1];

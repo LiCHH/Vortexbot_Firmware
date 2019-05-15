@@ -62,7 +62,7 @@ typedef enum
 
 /* chassis relevant */
 /* the ratio of motor encoder value translate to degree */
-#define ENCODER_ANGLE_RATIO (8192.0f / 360.0f)
+#define ENCODER_ANGLE_RATIO 0.0439f // (360.0f / 8192.0)
 
 ///! setup robot's initial pitch angle on wall
 #define ROBOT_INIT_PITCH 0.f
