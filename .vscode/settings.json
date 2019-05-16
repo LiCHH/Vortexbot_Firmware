@@ -9,7 +9,9 @@
         "cmsis_os.h": "c",
         "remote_ctrl.h": "c",
         "bsp_io.h": "c",
-        "imu_task.h": "c"
+        "imu_task.h": "c",
+        "steer_ctrl.h": "c",
+        "usart.h": "c"
     },
 
     "C_Cpp.clang_format_path": "C:/Program Files/LLVM/bin/clang-format.exe"

@@ -64,7 +64,8 @@
 #include "chassis_task.h"
 #include "vortex_task.h"
 #include "imu_task.h"
-#include "steer_ctrl.h"
+// #include "steer_ctrl.h"
+#include "dm_motor_drive.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -135,7 +136,8 @@ int main(void)
   chassis_param_init();
   vortex_param_init();
   imu_param_init();
-  servo_init();
+  // servo_init();
+  dmMotorInit();
   mpu_device_init();
 
   /* Hardware device init */

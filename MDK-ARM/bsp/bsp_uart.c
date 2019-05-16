@@ -30,7 +30,8 @@
 // #include "cmsis_os.h"
 #include "test_ctrl.h"
 #include "remote_ctrl.h"
-#include "steer_ctrl.h"
+// #include "steer_ctrl.h"
+#include "dm_motor_drive.h"
 #include "uwb_info.h"
 
 /* dma double buffer */
@@ -78,22 +79,22 @@ static void uart_rx_idle_callback(UART_HandleTypeDef *huart)
     __HAL_DMA_SET_COUNTER(huart->hdmarx, RC_MAX_LEN);
     __HAL_DMA_ENABLE(huart->hdmarx);
   }
-  else if (huart == &STEER_HUART)
-  {
-    __HAL_DMA_DISABLE(huart->hdmarx);
-    __HAL_DMA_CLEAR_FLAG(huart->hdmarx, __HAL_DMA_GET_TC_FLAG_INDEX(huart->hdmarx));
+  // else if (huart == &STEER_HUART)
+  // {
+  //   __HAL_DMA_DISABLE(huart->hdmarx);
+  //   __HAL_DMA_CLEAR_FLAG(huart->hdmarx, __HAL_DMA_GET_TC_FLAG_INDEX(huart->hdmarx));
 
-    sprintf(test_buf, "receive info", 20);
-    HAL_UART_Transmit(&TEST_HUART, test_buf, 20, 100);
+  //   sprintf(test_buf, "receive info", 20);
+  //   HAL_UART_Transmit(&TEST_HUART, test_buf, 20, 100);
 
-    if (1)
-    {
-      steer_callback_handler(servo_infos, servo_buf);
-    }
+  //   if (1)
+  //   {
+  //     steer_callback_handler(servo_infos, servo_buf);
+  //   }
 
-    __HAL_DMA_SET_COUNTER(huart->hdmarx, SERVO_BUF_LEN);
-    __HAL_DMA_ENABLE(huart->hdmarx);
-  }
+  //   __HAL_DMA_SET_COUNTER(huart->hdmarx, SERVO_BUF_LEN);
+  //   __HAL_DMA_ENABLE(huart->hdmarx);
+  // }
   else if (huart == &UWB_HUART)
   {
     __HAL_DMA_DISABLE(huart->hdmarx);
@@ -104,7 +105,7 @@ static void uart_rx_idle_callback(UART_HandleTypeDef *huart)
       uwb_receive_callback(&uwb_data, uwb_buff);
     }
 
-    __HAL_DMA_SET_COUNTER(huart->hdmarx, SERVO_BUF_LEN);
+    __HAL_DMA_SET_COUNTER(huart->hdmarx, UWB_BUF_LEN);
     __HAL_DMA_ENABLE(huart->hdmarx);
   }
 }
@@ -309,7 +310,7 @@ void steer_uart_init(void)
   __HAL_UART_ENABLE_IT(&STEER_HUART, UART_IT_IDLE);
 
   // SET_BIT(STEER_HUART.Instance->CR3, USART_CR3_DMAR);
-  UART_Receive_DMA_No_IT(&STEER_HUART, servo_buf, SERVO_BUF_LEN);
+  UART_Receive_DMA_No_IT(&STEER_HUART, steer_buf, STEER_BUF_LEN);
 }
 
 void uwb_uart_init(void)

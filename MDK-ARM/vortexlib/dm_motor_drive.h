@@ -3,6 +3,9 @@
 
 #include "stm32f4xx_hal.h"
 
+#define STEER_BUF_LEN 50
+#define STEER_MAX_LEN 60
+
 typedef enum
 {
   READ_ENC = 0x90,
@@ -16,7 +19,8 @@ typedef enum
 
 typedef enum
 {
-  
+  CLOCKWISE = 0x00,
+  COUNTERCLOCKWISE = 0x01 
 } dm_direction_e;
 
 typedef __packed struct 
@@ -31,9 +35,28 @@ typedef __packed struct
 
 typedef __packed struct 
 {
-  uint8_t direction;
+  // uint8_t direction;
+  uint8_t pos1;
+  uint8_t pos2;
+  uint8_t pos3;
+  uint8_t pos4;
+  uint8_t pos5;
+  uint8_t pos6;
+  uint8_t pos7;
+  uint8_t pos8;
+  uint8_t check_sum;
 
 } dm_pos_cl3_t;
+
+void dmMotorInit(void);
+void setDMMotorBuf(uint8_t id, int32_t pos, uint8_t direction);
+void sendDMMotor(uint8_t id);
+
+extern dm_motor_header_t dm_motor_header;
+extern dm_pos_cl3_t dm_pos_cl3;
+extern uint8_t dm_motor_buf[4][14];
+
+extern uint8_t steer_buf[];
 
 
 #endif // !1

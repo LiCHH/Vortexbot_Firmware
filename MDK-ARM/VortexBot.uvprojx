@@ -587,6 +587,11 @@
               <FileType>1</FileType>
               <FilePath>.\vortexlib\kf.c</FilePath>
             </File>
+            <File>
+              <FileName>dm_motor_drive.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\vortexlib\dm_motor_drive.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

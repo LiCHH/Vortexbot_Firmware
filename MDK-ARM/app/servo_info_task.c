@@ -27,7 +27,7 @@ void servo_info_task(void const *argu)
   while(1) {
     // taskENTER_CRITICAL();
     for(i = 0; i < 4; ++i){
-      send_request(i);
+      // send_request(i);
       // sprintf((char *)test_buf, "going to send servo id: %d \r\n", i);
       // // HAL_UART_Transmit_DMA(&TEST_HUART, (uint8_t *)test_buf, 50);
       // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)test_buf, 50, 100);
