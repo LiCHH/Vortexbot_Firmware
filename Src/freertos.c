@@ -62,6 +62,7 @@
 #include "imu_task.h"
 #include "servo_info_task.h"
 #include "uwb_task.h"
+#include "odom_task.h"
 
 /* USER CODE END Includes */
 
@@ -86,6 +87,7 @@ TaskHandle_t mode_sw_task_t;
 TaskHandle_t imu_task_t;
 TaskHandle_t servo_info_task_t;
 TaskHandle_t uwb_task_t;
+TaskHandle_t odom_task_t;
 
 osTimerId chassis_timer_id;
 osTimerId vortex_timer_id;
@@ -181,14 +183,17 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(modeTask, mode_switch_task, osPriorityNormal, 0, 128);
   mode_sw_task_t = osThreadCreate(osThread(modeTask), NULL);
 
-  osThreadDef(imuTask, imu_task, osPriorityLow, 0, 128);
+  osThreadDef(imuTask, imu_task, osPriorityNormal, 0, 128);
   imu_task_t = osThreadCreate(osThread(imuTask), NULL);
 
-  osThreadDef(servoInfoTask, servo_info_task, osPriorityNormal, 0, 128);
-  servo_info_task_t = osThreadCreate(osThread(servoInfoTask), NULL);
+  // osThreadDef(servoInfoTask, servo_info_task, osPriorityNormal, 0, 128);
+  // servo_info_task_t = osThreadCreate(osThread(servoInfoTask), NULL);
 
-  // osThreadDef(uwbTask, uwb_task, osPriorityNormal, 0, 128);
-  // uwb_task_t = osThreadCreate(osThread(uwbTask), NULL);
+  osThreadDef(odomTask, odom_task, osPriorityNormal, 0, 128);
+  odom_task_t = osThreadCreate(osThread(odomTask), NULL);
+
+  osThreadDef(uwbTask, uwb_task, osPriorityNormal, 0, 128);
+  uwb_task_t = osThreadCreate(osThread(uwbTask), NULL);
 
   taskEXIT_CRITICAL();
   /* USER CODE END RTOS_THREADS */

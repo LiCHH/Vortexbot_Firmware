@@ -34,8 +34,7 @@
 
 typedef enum
 {
-  fr_motor = 0,
-  fl_motor = 1,
+  f_motor = 0,
   bl_motor = 2,
   br_motor = 3
 } motor_seq_e;
@@ -46,18 +45,22 @@ typedef enum
 
 #define WHEEL_RADIUS 0.045f
 
-#define FR_BL_POS_F -1
-#define FL_BR_POS_F 1
+#define F_POS_F   -1
+#define BR_POS_F   1
+#define BL_POS_F  -1
 
-#define FR_BR_SPD_F -1
-#define FL_BL_SPD_F 1
+#define F_SPD_F  -1
+#define BL_SPD_F  1
+#define BR_SPD_F -1
 
 #define STEER_FR_OFFSET -((float)0x0051 / ENCODER_ANGLE_RATIO / MOTOR_REDUCTION_RATIO)
 #define STEER_FL_OFFSET -((float)0x0001 / ENCODER_ANGLE_RATIO / MOTOR_REDUCTION_RATIO)
 #define STEER_BR_OFFSET ((float)0x00D5 / ENCODER_ANGLE_RATIO / MOTOR_REDUCTION_RATIO)
 #define STEER_BL_OFFSET ((float)0x0061 / ENCODER_ANGLE_RATIO / MOTOR_REDUCTION_RATIO)
 
-#define OMNI_INIT_ANGLE      45
+#define OMNI_INIT_FRONT_ANGLE   90
+#define OMNI_INIT_BACK_ANGLE    30
+#define STEER_INIT_ANGLE    180
 #define STEER_SERVO_OFFSET 2048
 
 /* chassis relevant */
@@ -69,6 +72,5 @@ typedef enum
 
 ///! setup imu temperature control
 #define DEFAULT_IMU_TEMP 50
-
 
 #endif

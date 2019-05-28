@@ -66,6 +66,8 @@
 #include "imu_task.h"
 // #include "steer_ctrl.h"
 #include "dm_motor_drive.h"
+#include "odom_task.h"
+#include "kf.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -136,6 +138,8 @@ int main(void)
   chassis_param_init();
   vortex_param_init();
   imu_param_init();
+  odomTaskInit();
+  kfInit();
   // servo_init();
   dmMotorInit();
   mpu_device_init();
@@ -150,15 +154,6 @@ int main(void)
   steer_uart_init();
   uwb_uart_init();
 
-  // chassis.steer_pos_ref[0] = 2000; //buf[1] | (buf[0] << 8);
-  // chassis.steer_pos_ref[1] = 2000; //buf[3] | (buf[2] << 8);
-  // chassis.steer_pos_ref[2] = 2000; //buf[5] | (buf[4] << 8);
-  // chassis.steer_pos_ref[3] = 2000; //buf[7] | (buf[6] << 8);
-
-  // chassis.driving_spd_ref[0] = 0x3840;
-  // chassis.driving_spd_ref[1] = 0x0;
-  // chassis.driving_spd_ref[2] = 0xFFFF;
-  // chassis.driving_spd_ref[3] = 0xFFFF;
 
   /* PWM device init */
   pwm_device_init();

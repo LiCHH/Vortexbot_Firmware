@@ -61,9 +61,8 @@ typedef struct
 
   int32_t round_cnt;   //round_cnt
   int32_t total_ecd;   //total_angle
-  int32_t last_total_angle;
+
   int32_t total_angle; //total_ecd / encoder ratio
-  int32_t pass_angle;  // total_angle - last_total_angle
 
   uint16_t offset_ecd;
   uint32_t msg_cnt;

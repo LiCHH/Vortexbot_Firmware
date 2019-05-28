@@ -11,7 +11,8 @@
         "bsp_io.h": "c",
         "imu_task.h": "c",
         "steer_ctrl.h": "c",
-        "usart.h": "c"
+        "usart.h": "c",
+        "chassis_task.h": "c"
     },
 
     "C_Cpp.clang_format_path": "C:/Program Files/LLVM/bin/clang-format.exe"

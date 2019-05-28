@@ -49,12 +49,12 @@ typedef __packed struct
 } dm_pos_cl3_t;
 
 void dmMotorInit(void);
-void setDMMotorBuf(uint8_t id, int32_t pos, uint8_t direction);
-void sendDMMotor(uint8_t id);
+void setDMMotorBuf(int id, int32_t pos, uint8_t direction);
+void sendDMMotor(int id);
 
 extern dm_motor_header_t dm_motor_header;
 extern dm_pos_cl3_t dm_pos_cl3;
-extern uint8_t dm_motor_buf[4][14];
+extern uint8_t dm_motor_buf[4][16];
 
 extern uint8_t steer_buf[];
 

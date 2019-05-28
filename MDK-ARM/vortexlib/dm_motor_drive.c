@@ -1,12 +1,14 @@
 #include "dm_motor_drive.h"
 
 #include "string.h"
+#include "cmsis_os.h"
+
 #include "sys_config.h"
 #include "bsp_uart.h"
 
 dm_motor_header_t dm_motor_header;
 dm_pos_cl3_t dm_pos_cl3;
-uint8_t dm_motor_buf[4][14];
+uint8_t dm_motor_buf[4][16];
 uint8_t steer_buf[STEER_BUF_LEN];
 
 static uint8_t getCheckSum(uint8_t* pack, int length) {
@@ -28,8 +30,8 @@ void dmMotorInit(void) {
   dm_motor_header.data_length = 0x08;
 }
 
-void setDMMotorBuf(uint8_t id, int32_t pos, uint8_t direction) {
-  dm_motor_header.id = id + 1;
+void setDMMotorBuf(int id, int32_t pos, uint8_t direction) {
+  dm_motor_header.id = (uint8_t)id + 1;
   dm_motor_header.check_sum = getCheckSum((uint8_t *)&dm_motor_header, 4);
   memcpy((uint8_t *)&dm_motor_buf[id], (uint8_t *)&dm_motor_header, 5);
 
@@ -46,6 +48,18 @@ void setDMMotorBuf(uint8_t id, int32_t pos, uint8_t direction) {
   memcpy((uint8_t *)(&dm_motor_buf[id]) + 5, (uint8_t *)&dm_pos_cl3, 9);
 }
 
-void sendDMMotor(uint8_t id) {
-  HAL_UART_Transmit(&STEER_HUART, (uint8_t *)dm_motor_buf[id], 14, 10);  
+void sendDMMotor(int id) {
+  //!  unused  id 1
+  if(id == 1) return ;
+
+  //! FIXME: don't know why add this make it work for br_wheel
+  if(id == 3 || id == 2) {
+    HAL_UART_Transmit(&STEER_HUART, (uint8_t *)dm_motor_buf[id], 14, 10);
+    HAL_UART_Transmit(&STEER_HUART, (uint8_t *)dm_motor_buf[id], 14, 10); 
+    return ;
+  }
+
+  HAL_UART_Transmit(&STEER_HUART, (uint8_t *)dm_motor_buf[id], 14, 10); 
+ 
+  // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)dm_motor_buf[id], 14, 10);  
 }

@@ -22,7 +22,7 @@ static uint8_t tx_buff[14] = {0xff};
 static uint8_t mpu_buff[14];
 static uint8_t ist_buff[6];
 volatile float m_q0 = 1.0f, m_q1 = 0.0f, m_q2 = 0.0f, m_q3 = 0.0f; // quaternion of sensor frame relative to auxiliary frame
-volatile float beta = 0.5f;
+volatile float beta = 1.f;
 uint8_t temp_buf[300];
 
 mpu_data_t mpu_data;

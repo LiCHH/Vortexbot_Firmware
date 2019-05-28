@@ -12,8 +12,7 @@
 
 #include "stm32f4xx_hal.h"
 
-#define CHASSIS_TIMER_PERIOD 10
-
+#define CHASSIS_TIMER_PERIOD 20
 
 typedef enum
 {
@@ -30,6 +29,8 @@ typedef struct
   float vx;
   float vy;
   float vw;
+
+  float mv_direction;
 
   float power_ratio;
 

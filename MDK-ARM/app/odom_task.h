@@ -16,13 +16,13 @@ typedef struct
   float last_theta;
   float last_rot;
 
-  uint32_t last_tick;
-  uint32_t duration;
+  float last_motor_angle;
+  float curr_motor_angle;
 
 } odom_t;
 
 void odomTaskInit(void);
-void odomTask(void const* argu);
+void odom_task(void const* argu);
 
 extern odom_t odom;
 

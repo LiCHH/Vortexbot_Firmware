@@ -627,6 +627,11 @@
               <FileType>1</FileType>
               <FilePath>.\app\uwb_task.c</FilePath>
             </File>
+            <File>
+              <FileName>odom_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\app\odom_task.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
