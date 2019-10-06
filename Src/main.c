@@ -135,6 +135,7 @@ int main(void)
   MX_TIM12_Init();
   /* USER CODE BEGIN 2 */
   /* Software parameter init */
+  rc_param_init();
   chassis_param_init();
   vortex_param_init();
   imu_param_init();

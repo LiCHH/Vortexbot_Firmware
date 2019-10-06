@@ -75,7 +75,7 @@ static void chassis_mode_handler(void)
     }
     else if (rc_info.sc == SW_MID)
     {
-      chassis.ctrl_mode = DIFFERENTIAL;
+      chassis.ctrl_mode = FORWARD_DIRECTIONAL;
     }
     else if (rc_info.sc == SW_DOWN)
     {

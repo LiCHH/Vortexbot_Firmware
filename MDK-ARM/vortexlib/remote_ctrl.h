@@ -48,5 +48,23 @@ extern uint8_t rc_buf[];
 extern rc_info_t rc_info;
 
 void rc_callback_handler(rc_info_t *rc, uint8_t *rc_buf);
+void rc_param_init(void);
+
+///! 均值滤波器
+typedef struct
+{
+  int16_t *datas;
+  int16_t sum;
+  int num_data;
+  int insert_index;
+  int16_t filtered_data;
+  int data_received;
+
+} filter_t;
+
+#define FILTER_SIZE 15
+
+void filter_init(filter_t *filter, int num_datas);
+void filter_update(filter_t *filter, int16_t raw_data);
 
 #endif // !RL_H__

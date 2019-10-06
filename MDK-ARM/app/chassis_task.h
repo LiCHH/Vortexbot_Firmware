@@ -39,6 +39,8 @@ typedef struct
 
   int16_t driving_spd_fdb[4];
   int16_t driving_spd_ref[4]; // 空载最高在521*36rpm左右，即输出轴521rpm
+  int16_t driving_pos_fdb[4];
+  int16_t driving_pos_ref[4]; // 空载最高在521*36rpm左右，即输出轴521rpm
   int16_t driving_current[4];
 
   int16_t steer_spd_fdb[4];

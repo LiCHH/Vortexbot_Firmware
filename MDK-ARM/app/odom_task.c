@@ -24,9 +24,8 @@ void odom_task(void const* argu) {
     odom.last_rot = odom.rot;
     odom.last_motor_angle = odom.curr_motor_angle;
 
-    // odom.theta = attitude.yaw;
-    // TODO: For test
-    odom.theta = 0;
+    odom.theta = attitude.yaw;
+    // odom.theta = 0;
     odom.rot = chassis.mv_direction;
     odom.curr_motor_angle =
         (abs(motor_driving[0].total_angle) + abs(motor_driving[2].total_angle) +
@@ -34,11 +33,13 @@ void odom_task(void const* argu) {
         3 / MOTOR_REDUCTION_RATIO * DEG_TO_RAD;
     odom.trans = (odom.curr_motor_angle - odom.last_motor_angle) * WHEEL_RADIUS;
 
-    kfPredict(odom.last_theta * DEG_TO_RAD, odom.last_rot * DEG_TO_RAD, odom.trans);
+    if(chassis.ctrl_mode == OMNI_DIRECTIONAL) {
+      kfPredict(odom.last_theta * DEG_TO_RAD, odom.last_rot * DEG_TO_RAD, odom.trans);
+    }
     odom.x = kf.mu_curr.pData[0];
     odom.y = kf.mu_curr.pData[1];
 
-    sprintf((char*)test_buf, "%.2f %.2f %.2f\r\n", odom.x, odom.y, odom.rot);
+    sprintf((char*)test_buf, "%.2f %.2f %.2f\r\n", odom.x, odom.y, odom.theta);
     HAL_UART_Transmit(&TEST_HUART, test_buf, 20, 10);
 
     osDelayUntil(&odom_wake_time, ODOM_TASK_PERIOD);

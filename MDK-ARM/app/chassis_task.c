@@ -28,6 +28,7 @@ chassis_t chassis;
 static void omnidirection_handler(void);
 static void differential_handler(void);
 static void carlike_handler(void);
+static void forward_handler(void);
 static void stop_handler(void);
 
 void get_chassis_info(void)
@@ -35,6 +36,7 @@ void get_chassis_info(void)
   for (int i = 0; i < 4; ++i)
   {
     chassis.driving_spd_fdb[i] = motor_driving[i].speed_rpm;
+    chassis.driving_pos_fdb[i] = motor_driving[i].total_angle;
   }
 }
 
@@ -62,6 +64,12 @@ void chassis_task(void const *argu)
   }
   break;
 
+  case FORWARD_DIRECTIONAL:
+  {
+    forward_handler();
+  }
+  break;
+
   default:
   {
     stop_handler();
@@ -80,6 +88,7 @@ void chassis_task(void const *argu)
 
 static void omnidirection_handler(void)
 {
+  static int stop_flag = 0;
   // if (chassis.last_ctrl_mode == CHASSIS_STOP || chassis.last_ctrl_mode == CHASSIS_RELAX)
   // {
   //   chassis.steer_pos_ref[fr_motor] = (FR_BL_POS_F * OMNI_INIT_ANGLE + STEER_FR_OFFSET) * MOTOR_REDUCTION_RATIO;
@@ -97,24 +106,24 @@ static void omnidirection_handler(void)
     //! 防止抖动
     chassis.power_ratio = (chassis.power_ratio > 0.05f) ? chassis.power_ratio : 0;
     chassis.vx = rc_info.l_rocker_ud;
-    if(abs(rc_info.l_rocker_lr) != 256)
-      chassis.vy = rc_info.l_rocker_lr;
+    chassis.vy = rc_info.l_rocker_lr;
   }
 
   float angle;
   if (fabs(chassis.vy) < FLOAT_THRESHOLD)
   {
     angle = 0;
-  }
-  //! TODO: add filter to remote controller
-  else if (fabs(chassis.vx) < FLOAT_THRESHOLD)
+  } 
+  else if (fabs(chassis.vx) < FLOAT_THRESHOLD) {
     angle = SIGN(chassis.vy) * 90;
-  else
+  }
+  else {
     angle = atan2(chassis.vy, fabs(chassis.vx)) * RAD_TO_DEG;
-
-  chassis.steer_pos_ref[f_motor]  = F_POS_F * OMNI_INIT_FRONT_ANGLE + STEER_INIT_ANGLE - angle; //+ STEER_FR_OFFSET) * MOTOR_REDUCTION_RATIO;
-  chassis.steer_pos_ref[bl_motor] = BL_POS_F * OMNI_INIT_BACK_ANGLE + STEER_INIT_ANGLE - angle; //+ STEER_BL_OFFSET) * MOTOR_REDUCTION_RATIO;
-  chassis.steer_pos_ref[br_motor] = BR_POS_F * OMNI_INIT_BACK_ANGLE + STEER_INIT_ANGLE - angle; //+ STEER_BR_OFFSET) * MOTOR_REDUCTION_RATIO;
+  }
+    
+  chassis.steer_pos_ref[f_motor]  = F_POS_F * OMNI_INIT_FRONT_ANGLE + STEER_INIT_ANGLE - angle + STEER_F_OFFSET; //+ STEER_FR_OFFSET) * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[bl_motor] = BL_POS_F * OMNI_INIT_BACK_ANGLE + STEER_INIT_ANGLE - angle + STEER_BL_OFFSET; //+ STEER_BL_OFFSET) * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[br_motor] = BR_POS_F * OMNI_INIT_BACK_ANGLE + STEER_INIT_ANGLE - angle + STEER_BR_OFFSET; //+ STEER_BR_OFFSET) * MOTOR_REDUCTION_RATIO;
 
   // sprintf(test_buf, "vx: %.2f vy: %.2f %.2f\r\n", chassis.vx, chassis.vy, angle);
   // HAL_UART_Transmit(&TEST_HUART, test_buf, 40, 10);
@@ -124,12 +133,28 @@ static void omnidirection_handler(void)
   setDMMotorBuf(br_motor, chassis.steer_pos_ref[br_motor] * 100, 0);
 
   int16_t spd_ref = 0;
-  if (!(fabs(chassis.vx) < FLOAT_THRESHOLD && fabs(chassis.vy) < FLOAT_THRESHOLD))
+  if (!(fabs(chassis.vx) < FLOAT_THRESHOLD && fabs(chassis.vy) < FLOAT_THRESHOLD)) {
     spd_ref = SIGN(chassis.vx) * MOTOR_SPEED_MAX * chassis.power_ratio * MOTOR_REDUCTION_RATIO;
+    stop_flag = 1;
 
-  chassis.driving_spd_ref[f_motor]  = F_SPD_F  * spd_ref;
-  chassis.driving_spd_ref[br_motor] = BR_SPD_F * spd_ref;
-  chassis.driving_spd_ref[bl_motor] = BL_SPD_F * spd_ref;
+    chassis.driving_spd_ref[f_motor]  = F_SPD_F  * spd_ref;
+    chassis.driving_spd_ref[br_motor] = BR_SPD_F * spd_ref;
+    chassis.driving_spd_ref[bl_motor] = BL_SPD_F * spd_ref;
+
+  }
+  else {
+    if(stop_flag) {
+      for(int i = 0; i < 4; ++i) {
+        chassis.driving_pos_ref[i] = motor_driving[i].total_angle;
+      }
+      stop_flag = 0;
+    }
+    for(int i = 0; i < 4; ++i) {
+      pid_calc(&pid_driving_pos[i], chassis.driving_pos_fdb[i], chassis.driving_pos_ref[i]);
+      chassis.driving_spd_ref[i] = pid_driving_pos[i].out;
+    }
+  }
+
 
   chassis.mv_direction = -angle;
   // }
@@ -149,7 +174,8 @@ void chassis_param_init(void)
 
   for (int i = 0; i < 4; i++)
   {
-    PID_struct_init(&pid_driving_spd[i], POSITION_PID, 10000, 500, 2.5f, 0.03f, 0.f);
+    PID_struct_init(&pid_driving_spd[i], POSITION_PID, 10000, 500, 4.0f, 0.03f, 0.f);
+    PID_struct_init(&pid_driving_pos[i], POSITION_PID, 17000, 80, 3.f, 0.01f, 0.f);
     PID_struct_init(&pid_steer_spd[i], POSITION_PID, 10000, 500, 4.5f, 0.01f, 0.f);
     PID_struct_init(&pid_steer_pos[i], POSITION_PID, 17000, 80, 3.f, 0.01f, 0.f);
   }
@@ -175,13 +201,56 @@ void send_control_msgs(void)
 
 static void stop_handler(void)
 {
-  chassis.steer_pos_ref[f_motor] = STEER_INIT_ANGLE; //STEER_FR_OFFSET * MOTOR_REDUCTION_RATIO;
-  chassis.steer_pos_ref[bl_motor] = STEER_INIT_ANGLE; //STEER_BL_OFFSET * MOTOR_REDUCTION_RATIO;
-  chassis.steer_pos_ref[br_motor] = STEER_INIT_ANGLE; //STEER_BR_OFFSET * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[f_motor] = STEER_INIT_ANGLE + STEER_F_OFFSET; //STEER_FR_OFFSET * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[bl_motor] = STEER_INIT_ANGLE + STEER_BL_OFFSET; //STEER_BL_OFFSET * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[br_motor] = STEER_INIT_ANGLE + STEER_BR_OFFSET; //STEER_BR_OFFSET * MOTOR_REDUCTION_RATIO;
   setDMMotorBuf(f_motor , chassis.steer_pos_ref[f_motor] * 100, 0);
   setDMMotorBuf(bl_motor, chassis.steer_pos_ref[bl_motor] * 100, 0);
   setDMMotorBuf(br_motor, chassis.steer_pos_ref[br_motor] * 100, 0);
 
   memset(&chassis.driving_spd_ref, 0, sizeof(chassis.driving_spd_ref));
-  send_control_msgs();
+  // send_control_msgs();
+}
+
+static void forward_handler(void)
+{
+  static int stop_flag = 0;
+  chassis.steer_pos_ref[f_motor] = STEER_INIT_ANGLE + STEER_F_OFFSET; //STEER_FR_OFFSET * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[bl_motor] = STEER_INIT_ANGLE + STEER_BL_OFFSET; //STEER_BL_OFFSET * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[br_motor] = STEER_INIT_ANGLE + STEER_BR_OFFSET; //STEER_BR_OFFSET * MOTOR_REDUCTION_RATIO;
+
+  setDMMotorBuf(f_motor , chassis.steer_pos_ref[f_motor] * 100, 0);
+  setDMMotorBuf(bl_motor, chassis.steer_pos_ref[bl_motor] * 100, 0);
+  setDMMotorBuf(br_motor, chassis.steer_pos_ref[br_motor] * 100, 0);
+
+  if (bot_mode == MANUL_CONTROL_MODE)
+  {
+    chassis.power_ratio = (float)(rc_info.r_rocker_ud - ROCKER_MIN) / ROCKER_RANGE;
+    //! 防止抖动
+    chassis.power_ratio = (chassis.power_ratio > 0.05f) ? chassis.power_ratio : 0;
+    chassis.vx = rc_info.l_rocker_ud;
+  }
+
+  int16_t spd_ref = 0;
+  if (fabs(chassis.vx) > FLOAT_THRESHOLD) {
+    spd_ref = SIGN(chassis.vx) * MOTOR_SPEED_MAX * chassis.power_ratio * MOTOR_REDUCTION_RATIO;
+    stop_flag = 1;
+    chassis.driving_spd_ref[f_motor]  = F_SPD_F  * spd_ref;
+    chassis.driving_spd_ref[br_motor] = BR_SPD_F * spd_ref;
+    chassis.driving_spd_ref[bl_motor] = -BL_SPD_F * spd_ref;
+  }
+  else {
+    if(stop_flag) {
+      for(int i = 0; i < 4; ++i) {
+        chassis.driving_pos_ref[i] = motor_driving[i].total_angle;
+      }
+      stop_flag = 0;
+    }
+    for(int i = 0; i < 4; ++i) {
+      pid_calc(&pid_driving_pos[i], chassis.driving_pos_fdb[i], chassis.driving_pos_ref[i]);
+      chassis.driving_spd_ref[i] = pid_driving_pos[i].out;
+    }
+    return;
+  }
+
 }

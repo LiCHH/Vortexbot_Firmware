@@ -22,7 +22,7 @@
 
 #define RPM_TO_RPS 0.0167f
 
-#define FLOAT_THRESHOLD 50
+#define FLOAT_THRESHOLD 100
 
 #define SIGN(x) ((x < 0) ? -1 : 1)
 #define INT_LIMIT(x, range) ((abs(x) < range ? x : range * SIGN(x)))
@@ -43,7 +43,7 @@ typedef enum
 
 #define MOTOR_REDUCTION_RATIO 36
 
-#define WHEEL_RADIUS 0.045f
+#define WHEEL_RADIUS 0.04f // 0.045f
 
 #define F_POS_F   -1
 #define BR_POS_F   1
@@ -53,10 +53,16 @@ typedef enum
 #define BL_SPD_F  1
 #define BR_SPD_F -1
 
-#define STEER_FR_OFFSET -((float)0x0051 / ENCODER_ANGLE_RATIO / MOTOR_REDUCTION_RATIO)
-#define STEER_FL_OFFSET -((float)0x0001 / ENCODER_ANGLE_RATIO / MOTOR_REDUCTION_RATIO)
-#define STEER_BR_OFFSET ((float)0x00D5 / ENCODER_ANGLE_RATIO / MOTOR_REDUCTION_RATIO)
-#define STEER_BL_OFFSET ((float)0x0061 / ENCODER_ANGLE_RATIO / MOTOR_REDUCTION_RATIO)
+//! for using M2006 for steer
+// #define STEER_FR_OFFSET -((float)0x0051 / ENCODER_ANGLE_RATIO / MOTOR_REDUCTION_RATIO)
+// #define STEER_FL_OFFSET -((float)0x0001 / ENCODER_ANGLE_RATIO / MOTOR_REDUCTION_RATIO)
+// #define STEER_BR_OFFSET ((float)0x00D5 / ENCODER_ANGLE_RATIO / MOTOR_REDUCTION_RATIO)
+// #define STEER_BL_OFFSET ((float)0x0061 / ENCODER_ANGLE_RATIO / MOTOR_REDUCTION_RATIO)
+
+//！ for using DM
+#define STEER_F_OFFSET 2.5
+#define STEER_BL_OFFSET 0
+#define STEER_BR_OFFSET -2.5
 
 #define OMNI_INIT_FRONT_ANGLE   90
 #define OMNI_INIT_BACK_ANGLE    30
