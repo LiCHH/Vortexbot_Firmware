@@ -136,7 +136,6 @@ int main(void)
   /* USER CODE BEGIN 2 */
   /* Software parameter init */
   rc_param_init();
-  chassis_param_init();
   vortex_param_init();
   imu_param_init();
   odomTaskInit();
@@ -158,6 +157,9 @@ int main(void)
 
   /* PWM device init */
   pwm_device_init();
+
+  /* task init */
+  chassis_task_init();
 
   /* USER CODE END 2 */
 

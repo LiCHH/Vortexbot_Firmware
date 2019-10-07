@@ -592,6 +592,11 @@
               <FileType>1</FileType>
               <FilePath>.\vortexlib\dm_motor_drive.c</FilePath>
             </File>
+            <File>
+              <FileName>attitude_control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\vortexlib\attitude_control.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -36,7 +36,7 @@ void rc_callback_handler(rc_info_t *rc, uint8_t *buf) {
   rc->r_rocker_lr -= ROCKER_OFFSET;
 
   lr_ud_raw = (buf[2] >> 3 | buf[3] << 5) & 0x07ff;
-  lr_ud_raw -= ROCKER_OFFSET + 193;
+  lr_ud_raw -= ROCKER_OFFSET + LR_UD_BIAS;
   filter_update(&lr_ud_f, lr_ud_raw);
   rc->l_rocker_ud = lr_ud_f.filtered_data;
 
@@ -46,7 +46,7 @@ void rc_callback_handler(rc_info_t *rc, uint8_t *buf) {
   // rc->r_rocker_ud -= ROCKER_OFFSET;
 
   lr_lr_raw = (buf[5] >> 1 | buf[6] << 7) & 0x07ff;
-  lr_lr_raw -= ROCKER_OFFSET - 41;
+  lr_lr_raw -= ROCKER_OFFSET - LR_LR_BIAS;
   filter_update(&lr_lr_f, lr_lr_raw);
   rc->l_rocker_lr = lr_lr_f.filtered_data;
 
@@ -58,7 +58,7 @@ void rc_callback_handler(rc_info_t *rc, uint8_t *buf) {
   rc->sc = (buf[13] >> 1) & 0x03;
   rc->sd = (buf[15] >> 4) & 0x03;
 
-  // test code
+  //i! test code
   // static int count = 0;
   // if (count == 10) {
   //   sprintf((char *)test_buf, "ud raw:%d fil:%d lr raw:%d fil:%d\r\n",

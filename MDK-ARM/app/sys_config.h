@@ -45,6 +45,8 @@ typedef enum
 
 #define WHEEL_RADIUS 0.04f // 0.045f
 
+#define BODY_RADIUS 0.2f
+
 #define F_POS_F   -1
 #define BR_POS_F   1
 #define BL_POS_F  -1

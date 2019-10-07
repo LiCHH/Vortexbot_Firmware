@@ -79,22 +79,19 @@ static void uart_rx_idle_callback(UART_HandleTypeDef *huart)
     __HAL_DMA_SET_COUNTER(huart->hdmarx, RC_MAX_LEN);
     __HAL_DMA_ENABLE(huart->hdmarx);
   }
-  // else if (huart == &STEER_HUART)
-  // {
-  //   __HAL_DMA_DISABLE(huart->hdmarx);
-  //   __HAL_DMA_CLEAR_FLAG(huart->hdmarx, __HAL_DMA_GET_TC_FLAG_INDEX(huart->hdmarx));
+  else if (huart == &STEER_HUART)
+  {
+    __HAL_DMA_DISABLE(huart->hdmarx);
+    __HAL_DMA_CLEAR_FLAG(huart->hdmarx, __HAL_DMA_GET_TC_FLAG_INDEX(huart->hdmarx));
 
-  //   sprintf(test_buf, "receive info", 20);
-  //   HAL_UART_Transmit(&TEST_HUART, test_buf, 20, 100);
+    if (1)
+    {
+      DMReceiveHandler();
+    }
 
-  //   if (1)
-  //   {
-  //     steer_callback_handler(servo_infos, servo_buf);
-  //   }
-
-  //   __HAL_DMA_SET_COUNTER(huart->hdmarx, SERVO_BUF_LEN);
-  //   __HAL_DMA_ENABLE(huart->hdmarx);
-  // }
+    __HAL_DMA_SET_COUNTER(huart->hdmarx, STEER_BUF_LEN);
+    __HAL_DMA_ENABLE(huart->hdmarx);
+  }
   else if (huart == &UWB_HUART)
   {
     __HAL_DMA_DISABLE(huart->hdmarx);
@@ -310,7 +307,7 @@ void steer_uart_init(void)
   __HAL_UART_ENABLE_IT(&STEER_HUART, UART_IT_IDLE);
 
   // SET_BIT(STEER_HUART.Instance->CR3, USART_CR3_DMAR);
-  UART_Receive_DMA_No_IT(&STEER_HUART, steer_buf, STEER_BUF_LEN);
+  UART_Receive_DMA_No_IT(&STEER_HUART, steer_buf, STEER_MAX_LEN);
 }
 
 void uwb_uart_init(void)

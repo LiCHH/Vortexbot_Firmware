@@ -79,7 +79,7 @@ static void chassis_mode_handler(void)
     }
     else if (rc_info.sc == SW_DOWN)
     {
-      chassis.ctrl_mode = CAR_LIKE;
+      chassis.ctrl_mode = ATTITUDE_CONTROL;
     }
     else
     {

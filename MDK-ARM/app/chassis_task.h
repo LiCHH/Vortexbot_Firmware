@@ -21,7 +21,8 @@ typedef enum
   OMNI_DIRECTIONAL    = 2,
   FORWARD_DIRECTIONAL = 3,
   DIFFERENTIAL        = 4,
-  CAR_LIKE            = 5
+  CAR_LIKE            = 5,
+  ATTITUDE_CONTROL    = 6
 } chassis_mode_e;
 
 typedef struct
@@ -52,7 +53,7 @@ typedef struct
 } chassis_t;
 
 void chassis_task(void const *argu);
-void chassis_param_init(void);
+void chassis_task_init(void);
 void send_control_msgs(void);
 
 extern chassis_t chassis;

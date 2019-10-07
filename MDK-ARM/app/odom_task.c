@@ -39,8 +39,9 @@ void odom_task(void const* argu) {
     odom.x = kf.mu_curr.pData[0];
     odom.y = kf.mu_curr.pData[1];
 
-    sprintf((char*)test_buf, "%.2f %.2f %.2f\r\n", odom.x, odom.y, odom.theta);
-    HAL_UART_Transmit(&TEST_HUART, test_buf, 20, 10);
+    //! Test Code
+    // sprintf((char*)test_buf, "%.2f %.2f %.2f\r\n", odom.x, odom.y, odom.theta);
+    // HAL_UART_Transmit(&TEST_HUART, test_buf, 20, 10);
 
     osDelayUntil(&odom_wake_time, ODOM_TASK_PERIOD);
   }
