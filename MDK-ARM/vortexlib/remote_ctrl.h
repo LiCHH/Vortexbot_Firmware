@@ -62,7 +62,7 @@ typedef struct
 
 } filter_t;
 
-#define FILTER_SIZE 9
+#define FILTER_SIZE 13
 #define LR_UD_BIAS 193
 #define LR_LR_BIAS -41
 

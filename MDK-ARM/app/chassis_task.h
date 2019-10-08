@@ -12,7 +12,7 @@
 
 #include "stm32f4xx_hal.h"
 
-#define CHASSIS_TIMER_PERIOD 20
+#define CHASSIS_TIMER_PERIOD  20
 
 typedef enum
 {

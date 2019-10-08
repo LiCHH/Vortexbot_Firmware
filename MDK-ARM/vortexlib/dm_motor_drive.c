@@ -84,40 +84,40 @@ void requestDMEncoderInfo(int id) {
 }
 
 void DMReceiveHandler(void) {
-  if(!read_flag[f_motor] || !read_flag[bl_motor] || !read_flag[br_motor]) {
-    int bias = 0;
-    char output[10];
-    memset(output, 0, 30);
-    sprintf(output, "fuck3\n");
-    HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 10, 10);
-    while (bias < STEER_BUF_LEN)
-    {
-      for(; bias < STEER_BUF_LEN; ++bias) {
-        if(steer_buf[bias] == 0x3E) break;
-      }
-      if(bias == STEER_BUF_LEN) return;
-      int id = (int)steer_buf[2 + bias];
-      int encoder = (steer_buf[6 + bias] << 8) + steer_buf[5 + bias];
-      double angle = encoder / 4096.f * 360.f;
-      // sprintf(output, "%d, %.2f\n", id, angle);
-      // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 10, 10);
-      bias += 8;
-      read_flag[id - 1] = 1;
-      read_angle[id - 1] = angle;
-      // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)steer_buf, 10, 10);
-      // sprintf(output, "\r\n");
-      // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 2, 10);
-    }
-    memset(steer_buf, 0, STEER_BUF_LEN);
-  }
+  // if(!read_flag[f_motor] || !read_flag[bl_motor] || !read_flag[br_motor]) {
+  //   int bias = 0;
+  //   char output[10];
+  //   memset(output, 0, 30);
+  //   sprintf(output, "fuck3\n");
+  //   HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 10, 10);
+  //   while (bias < STEER_BUF_LEN)
+  //   {
+  //     for(; bias < STEER_BUF_LEN; ++bias) {
+  //       if(steer_buf[bias] == 0x3E) break;
+  //     }
+  //     if(bias == STEER_BUF_LEN) return;
+  //     if(getCheckSum((uint8_t *)(steer_buf + 5 + bias), 2) == steer_buf[7 + bias]) {
+  //       int id = (int)steer_buf[2 + bias];
+  //       // sprintf(output, "%d, %.2f\n", id, angle);
+  //       // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 10, 10);
+  //       int encoder = (steer_buf[6 + bias] << 8) + steer_buf[5 + bias];
+  //       double angle = encoder / 4096.f * 360.f;
+  //       read_flag[id - 1] = 1;
+  //       read_angle[id - 1] = angle;
+  //     }
+  //     bias += 8;
+  //     // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)steer_buf, 10, 10);
+  //     // sprintf(output, "\r\n");
+  //     // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 2, 10);
+  //   }
+  //   memset(steer_buf, 0, STEER_BUF_LEN);
+  // }
 }
 
 void DMMotorAngleInit(void) {
-  char output[10];
+  char output[30];
   memset(output, 0, sizeof(output));
   memset(read_flag, 0, sizeof(read_flag));
-  sprintf(output, "fuck1\n");
-  HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 10, 10);
   while (!read_flag[f_motor] || !read_flag[bl_motor] || !read_flag[br_motor])
   {
     for(int i = 0; i < 4; ++i) {
@@ -126,16 +126,11 @@ void DMMotorAngleInit(void) {
     }
     HAL_Delay(20);
   }
-  sprintf(output, "fuck2\n");
-  HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 10, 10);
-
   uint8_t direction = 0;
   int16_t init_angle_raw[4];
   init_angle_raw[f_motor] = F_INIT_RAW;
   init_angle_raw[bl_motor] = BL_INIT_RAW;
   init_angle_raw[br_motor] = BR_INIT_RAW;
-  sprintf(output, "fuck4\n");
-  HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 10, 10);
   for(int i = 0; i < 4; ++i) {
     sprintf(output, "fuck5\n");
     HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 10, 10);
@@ -146,6 +141,8 @@ void DMMotorAngleInit(void) {
       direction = COUNTERCLOCKWISE;
     }
     init_rotate_direction[i] = direction;
+    sprintf(output, "id:%d s:%d r:%d d:%d\n", i, init_angle_raw[i], read_angle[i], direction);
+    HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 30, 10);
   }
   sprintf(output, "finish\n");
   HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 10, 10);
@@ -163,10 +160,11 @@ void setDMMotorBufWithDirection(int id, int32_t pos, uint8_t direction) {
   dm_pos_cl3.direction = direction;
   dm_pos_cl3.pos1 = 0xFF & pos;
   dm_pos_cl3.pos2 = 0xFF & (pos >> 8);
-  dm_pos_cl3.pos3 = 0x7F & (pos >> 16) | ((0x01 & (pos >> 31)) << 7);
+  dm_pos_cl3.pos3 = (0x7F & (pos >> 16)) | ((0x01 & (pos >> 31)) << 7);
   dm_pos_cl3.check_sum = getCheckSum((uint8_t *)&dm_pos_cl3, 4);
   memcpy((uint8_t *)(&dm_motor_buf[id]) + 5, (uint8_t *)&dm_pos_cl3, 5);
 
+  //! Reset header
   dm_motor_header.cmd = POS_CL1;
   dm_motor_header.data_length = 0x08;
 }

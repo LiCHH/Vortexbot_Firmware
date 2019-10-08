@@ -69,11 +69,11 @@ static void chassis_mode_handler(void)
   {
   case MANUL_CONTROL_MODE:
   {
-    if (rc_info.sc == SW_UP)
+    if (rc_info.sc == SW_MID)
     {
       chassis.ctrl_mode = OMNI_DIRECTIONAL;
     }
-    else if (rc_info.sc == SW_MID)
+    else if (rc_info.sc == SW_UP)
     {
       chassis.ctrl_mode = FORWARD_DIRECTIONAL;
     }

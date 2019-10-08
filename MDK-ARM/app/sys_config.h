@@ -62,8 +62,8 @@ typedef enum
 // #define STEER_BL_OFFSET ((float)0x0061 / ENCODER_ANGLE_RATIO / MOTOR_REDUCTION_RATIO)
 
 //！ for using DM
-#define STEER_F_OFFSET 2.5
-#define STEER_BL_OFFSET 0
+#define STEER_F_OFFSET 0.5
+#define STEER_BL_OFFSET 5.5
 #define STEER_BR_OFFSET -2.5
 
 #define OMNI_INIT_FRONT_ANGLE   90

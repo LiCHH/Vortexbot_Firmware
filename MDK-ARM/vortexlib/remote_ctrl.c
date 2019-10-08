@@ -96,6 +96,16 @@ void filter_update(filter_t *filter, int16_t raw_data) {
 
 void rc_param_init() {
   memset(&rc_info, 0, sizeof(rc_info));
+  rc_info.sa = SW_UP;
+  rc_info.sb = SW_UP;
+  rc_info.sc = SW_UP;
+  rc_info.sd = SW_UP;
+  rc_info.knob_v1 = KNOB_V1_MIN;
+  rc_info.knob_v2 = KNOB_V2_MIN;
+  rc_info.l_rocker_lr = 0;
+  rc_info.l_rocker_ud = 0;
+  rc_info.r_rocker_ud = ROCKER_MIN;
+  rc_info.r_rocker_lr = ROCKER_OFFSET;
   filter_init(&rr_ud_f, FILTER_SIZE);
   filter_init(&lr_ud_f, FILTER_SIZE);
   filter_init(&lr_lr_f, FILTER_SIZE);
