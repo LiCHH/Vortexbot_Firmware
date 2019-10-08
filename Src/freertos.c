@@ -63,6 +63,7 @@
 #include "servo_info_task.h"
 #include "uwb_task.h"
 #include "odom_task.h"
+#include "motion_task.h"
 
 /* USER CODE END Includes */
 
@@ -91,6 +92,7 @@ TaskHandle_t odom_task_t;
 
 osTimerId chassis_timer_id;
 osTimerId vortex_timer_id;
+osTimerId motion_timer_id;
 
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
@@ -171,6 +173,9 @@ void MX_FREERTOS_Init(void) {
 
   osTimerDef(vortexTimer, vortex_task);
   vortex_timer_id = osTimerCreate(osTimer(vortexTimer), osTimerPeriodic, NULL);
+
+  osTimerDef(motionTimer, motion_task);
+  motion_timer_id = osTimerCreate(osTimer(motionTimer), osTimerPeriodic, NULL);
   /* USER CODE END RTOS_TIMERS */
 
   /* Create the thread(s) */

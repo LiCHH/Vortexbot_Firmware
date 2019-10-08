@@ -63,8 +63,8 @@ typedef struct
 } filter_t;
 
 #define FILTER_SIZE 13
-#define LR_UD_BIAS 193
-#define LR_LR_BIAS -41
+#define LR_UD_BIAS 128
+#define LR_LR_BIAS -104
 
 void filter_init(filter_t *filter, int num_datas);
 void filter_update(filter_t *filter, int16_t raw_data);

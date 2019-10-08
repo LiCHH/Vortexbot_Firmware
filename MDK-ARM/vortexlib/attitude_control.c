@@ -107,8 +107,8 @@ void attitude_control(double speed_ref, double alpha_ref, int16_t* speed_out, in
   omega_ref = yaw_pid.out;
 
   memset(output, 0, sizeof(output));
-  sprintf(output, "sp:%.2f r:%.2f f:%.2f om:%.2f\r\n", speed_ref, yaw_ref, yaw_ref, omega_ref);
-  HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 40, 10);
+  sprintf(output, "sp:%.2f a:%.2f r:%.2f f:%.2f om:%.2f\r\n", speed_ref, alpha_ref, yaw_ref, yaw_raw, omega_ref);
+  HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 50, 10);
 
   calc_velocity(omega_ref, speed_ref, alpha_ref, speed_out, angle_out);
 }

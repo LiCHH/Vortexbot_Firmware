@@ -4,17 +4,20 @@
 #include "swmode_task.h"
 #include "chassis_task.h"
 #include "vortex_task.h"
+#include "motion_task.h"
 
 /* stack usage monitor */
 UBaseType_t mode_stack_surplus;
 
 extern osTimerId chassis_timer_id;
 extern osTimerId vortex_timer_id;
+extern osTimerId motion_timer_id;
 
 void mode_switch_task(void const *argu)
 {
   osTimerStart(chassis_timer_id, CHASSIS_TIMER_PERIOD); 
   osTimerStart(vortex_timer_id, VORTEX_TASK_PERIOD); 
+  osTimerStart(motion_timer_id, MOTION_TIMER_PERIOD);
 
   uint32_t mode_wake_time = osKernelSysTick();
   while (1)

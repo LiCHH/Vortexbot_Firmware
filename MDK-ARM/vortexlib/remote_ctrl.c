@@ -46,7 +46,7 @@ void rc_callback_handler(rc_info_t *rc, uint8_t *buf) {
   // rc->r_rocker_ud -= ROCKER_OFFSET;
 
   lr_lr_raw = (buf[5] >> 1 | buf[6] << 7) & 0x07ff;
-  lr_lr_raw -= ROCKER_OFFSET - LR_LR_BIAS;
+  lr_lr_raw -= ROCKER_OFFSET + LR_LR_BIAS;
   filter_update(&lr_lr_f, lr_lr_raw);
   rc->l_rocker_lr = lr_lr_f.filtered_data;
 
