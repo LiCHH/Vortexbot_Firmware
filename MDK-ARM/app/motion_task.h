@@ -3,7 +3,7 @@
 
 #include "chassis_task.h"
 
-#define MOTION_TIMER_PERIOD 100
+#define MOTION_TIMER_PERIOD 20
 
 void motion_task(void const *argu);
 
