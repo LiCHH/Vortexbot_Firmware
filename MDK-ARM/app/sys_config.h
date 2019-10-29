@@ -5,7 +5,7 @@
 #include "stm32f4xx_hal.h"
 #include "math.h"
 
-#define BOT_ID 2
+#define BOT_ID 1
 
 /* can relevant */
 #define CHASSIS_CAN hcan1
