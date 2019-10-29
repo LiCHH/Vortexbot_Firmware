@@ -5,6 +5,8 @@
 #include "stm32f4xx_hal.h"
 #include "math.h"
 
+#define BOT_ID 2
+
 /* can relevant */
 #define CHASSIS_CAN hcan1
 
@@ -22,7 +24,7 @@
 
 #define RPM_TO_RPS 0.0167f
 
-#define FLOAT_THRESHOLD 100
+#define FLOAT_THRESHOLD 20
 
 #define SIGN(x) ((x < 0) ? -1 : 1)
 #define INT_LIMIT(x, range) ((abs(x) < range ? x : range * SIGN(x)))
@@ -39,7 +41,7 @@ typedef enum
   br_motor = 3
 } motor_seq_e;
 
-#define MOTOR_SPEED_MAX 150
+#define MOTOR_SPEED_MAX 350 // 150
 
 #define MOTOR_REDUCTION_RATIO 36
 
@@ -62,9 +64,15 @@ typedef enum
 // #define STEER_BL_OFFSET ((float)0x0061 / ENCODER_ANGLE_RATIO / MOTOR_REDUCTION_RATIO)
 
 //！ for using DM
+#if BOT_ID == 1
 #define STEER_F_OFFSET 0.5
 #define STEER_BL_OFFSET 5.5
 #define STEER_BR_OFFSET -2.5
+#elif BOT_ID == 2
+#define STEER_F_OFFSET -0.5
+#define STEER_BL_OFFSET -0.5
+#define STEER_BR_OFFSET -1.5
+#endif
 
 #define OMNI_INIT_FRONT_ANGLE   90
 #define OMNI_INIT_BACK_ANGLE    30

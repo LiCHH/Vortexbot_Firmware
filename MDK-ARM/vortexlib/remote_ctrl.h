@@ -4,6 +4,7 @@
 #define __REMOTE_CTRL_H__
 
 #include "stm32f4xx_hal.h"
+#include "sys_config.h"
 
 #define RC_MAX_LEN      50
 #define RC_BUFLEN       20
@@ -62,9 +63,15 @@ typedef struct
 
 } filter_t;
 
+#if BOT_ID == 1
 #define FILTER_SIZE 13
 #define LR_UD_BIAS 128
 #define LR_LR_BIAS -104
+#elif BOT_ID == 2
+#define FILTER_SIZE 9
+#define LR_UD_BIAS  193
+#define LR_LR_BIAS  -32
+#endif
 
 void filter_init(filter_t *filter, int num_datas);
 void filter_update(filter_t *filter, int16_t raw_data);
