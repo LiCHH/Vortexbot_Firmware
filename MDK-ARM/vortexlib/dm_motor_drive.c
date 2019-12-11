@@ -63,13 +63,15 @@ void sendDMMotor(int id) {
   if(id == 1) return ;
 
   //! FIXME: don't know why add this make it work for br_wheel
-  if(id == 3 || id == 2) {
+  if(id == 2 || id == 3) {
     HAL_UART_Transmit(&STEER_HUART, (uint8_t *)dm_motor_buf[id], 14, 10);
-    HAL_UART_Transmit(&STEER_HUART, (uint8_t *)dm_motor_buf[id], 14, 10); 
-    return ;
+    // HAL_UART_Transmit(&STEER_HUART, (uint8_t *)dm_motor_buf[id], 14, 10); 
+    // return ;
   }
 
   HAL_UART_Transmit(&STEER_HUART, (uint8_t *)dm_motor_buf[id], 14, 10); 
+  // HAL_Delay(1);
+  // osDelay(5);
  
   // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)dm_motor_buf[id], 14, 10);  
 }
@@ -85,32 +87,33 @@ void requestDMEncoderInfo(int id) {
 
 void DMReceiveHandler(void) {
   // if(!read_flag[f_motor] || !read_flag[bl_motor] || !read_flag[br_motor]) {
-  //   int bias = 0;
-  //   char output[10];
-  //   memset(output, 0, 30);
-  //   sprintf(output, "fuck3\n");
-  //   HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 10, 10);
-  //   while (bias < STEER_BUF_LEN)
-  //   {
-  //     for(; bias < STEER_BUF_LEN; ++bias) {
-  //       if(steer_buf[bias] == 0x3E) break;
-  //     }
-  //     if(bias == STEER_BUF_LEN) return;
-  //     if(getCheckSum((uint8_t *)(steer_buf + 5 + bias), 2) == steer_buf[7 + bias]) {
-  //       int id = (int)steer_buf[2 + bias];
-  //       // sprintf(output, "%d, %.2f\n", id, angle);
-  //       // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 10, 10);
-  //       int encoder = (steer_buf[6 + bias] << 8) + steer_buf[5 + bias];
-  //       double angle = encoder / 4096.f * 360.f;
-  //       read_flag[id - 1] = 1;
-  //       read_angle[id - 1] = angle;
-  //     }
-  //     bias += 8;
-  //     // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)steer_buf, 10, 10);
-  //     // sprintf(output, "\r\n");
-  //     // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 2, 10);
-  //   }
-  //   memset(steer_buf, 0, STEER_BUF_LEN);
+    // int bias = 0;
+    // char output[30];
+    // memset(output, 0, 30);
+    // // sprintf(output, "fuck3\n");
+    // // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 10, 10);
+    // while (bias < STEER_BUF_LEN)
+    // {
+    //   for(; bias < STEER_BUF_LEN; ++bias) {
+    //     if(steer_buf[bias] == 0x3E) break;
+    //   }
+    //   if(bias == STEER_BUF_LEN) break;
+    //   if(getCheckSum((uint8_t *)(steer_buf + 5 + bias), 2) == steer_buf[7 + bias]) {
+    //     int id = (int)steer_buf[2 + bias];
+    //     int encoder = (steer_buf[6 + bias] << 8) + steer_buf[5 + bias];
+    //     double angle = encoder / 4096.f * 360.f;
+ 
+    //     read_flag[id - 1] = 1;
+    //     read_angle[id - 1] = angle;
+    //   }
+    //   bias += 8;
+    //   // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)steer_buf, 10, 10);
+    //   // sprintf(output, "\r\n");
+    //   // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 2, 10);
+    // }
+    // sprintf(output, "1 %d,3 %d,4 %d\r\n", read_angle[0], read_angle[2], read_angle[3]);
+    // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 30, 10);
+    // memset(steer_buf, 0, STEER_BUF_LEN);
   // }
 }
 

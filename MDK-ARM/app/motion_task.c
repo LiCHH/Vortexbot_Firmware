@@ -101,9 +101,9 @@ static void omnidirection_handler(void)
     angle = atan2(chassis.vy, fabs(chassis.vx)) * RAD_TO_DEG;
   }
     
-  chassis.steer_pos_ref[f_motor]  = F_POS_F * OMNI_INIT_FRONT_ANGLE + STEER_INIT_ANGLE - angle + STEER_F_OFFSET; //+ STEER_FR_OFFSET) * MOTOR_REDUCTION_RATIO;
-  chassis.steer_pos_ref[bl_motor] = BL_POS_F * OMNI_INIT_BACK_ANGLE + STEER_INIT_ANGLE - angle + STEER_BL_OFFSET; //+ STEER_BL_OFFSET) * MOTOR_REDUCTION_RATIO;
-  chassis.steer_pos_ref[br_motor] = BR_POS_F * OMNI_INIT_BACK_ANGLE + STEER_INIT_ANGLE - angle + STEER_BR_OFFSET; //+ STEER_BR_OFFSET) * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[f_motor]  = F_POS_F * OMNI_INIT_FRONT_ANGLE + STEER_INIT_ANGLE_F - angle + STEER_F_OFFSET; //+ STEER_FR_OFFSET) * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[bl_motor] = BL_POS_F * OMNI_INIT_BACK_ANGLE + STEER_INIT_ANGLE_BL - angle + STEER_BL_OFFSET; //+ STEER_BL_OFFSET) * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[br_motor] = BR_POS_F * OMNI_INIT_BACK_ANGLE + STEER_INIT_ANGLE_BR - angle + STEER_BR_OFFSET; //+ STEER_BR_OFFSET) * MOTOR_REDUCTION_RATIO;
 
   //! test code
   // sprintf(test_buf, "vx: %.2f vy: %.2f %.2f\r\n", chassis.vx, chassis.vy, angle);
@@ -155,7 +155,7 @@ void chassis_task_init(void)
 
   for (int i = 0; i < 4; i++)
   {
-    PID_struct_init(&pid_driving_spd[i], POSITION_PID, 10000, 500, 4.0f, 0.03f, 0.f);
+    PID_struct_init(&pid_driving_spd[i], POSITION_PID, 10000, 500, 4.f, 0.01f, 0.f);
     PID_struct_init(&pid_driving_pos[i], POSITION_PID, 17000, 80, 3.f, 0.01f, 0.f);
     PID_struct_init(&pid_steer_spd[i], POSITION_PID, 10000, 500, 4.5f, 0.01f, 0.f);
     PID_struct_init(&pid_steer_pos[i], POSITION_PID, 17000, 80, 3.f, 0.01f, 0.f);
@@ -163,20 +163,21 @@ void chassis_task_init(void)
 
   // DMMotorAngleInit();
   //! 增加45°偏置可以比较顺利地初始化
-  chassis.steer_pos_ref[f_motor]  = STEER_INIT_ANGLE + STEER_F_OFFSET + 45; //STEER_FR_OFFSET * MOTOR_REDUCTION_RATIO;
-  chassis.steer_pos_ref[bl_motor] = STEER_INIT_ANGLE + STEER_BL_OFFSET + 45; //STEER_BL_OFFSET * MOTOR_REDUCTION_RATIO;
-  chassis.steer_pos_ref[br_motor] = STEER_INIT_ANGLE + STEER_BR_OFFSET + 45; //STEER_BR_OFFSET * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[f_motor]  = STEER_INIT_ANGLE_F + STEER_F_OFFSET; //STEER_FR_OFFSET * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[bl_motor] = STEER_INIT_ANGLE_BL + STEER_BL_OFFSET; //STEER_BL_OFFSET * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[br_motor] = STEER_INIT_ANGLE_BR + STEER_BR_OFFSET; //STEER_BR_OFFSET * MOTOR_REDUCTION_RATIO;
   setDMMotorBuf(f_motor , chassis.steer_pos_ref[f_motor] * 100);
   setDMMotorBuf(bl_motor, chassis.steer_pos_ref[bl_motor] * 100);
   setDMMotorBuf(br_motor, chassis.steer_pos_ref[br_motor] * 100);
   // setDMMotorBufWithDirection(f_motor , chassis.steer_pos_ref[f_motor] * 100, init_rotate_direction[f_motor]);
   // setDMMotorBufWithDirection(bl_motor, chassis.steer_pos_ref[bl_motor] * 100, init_rotate_direction[bl_motor]);
   // setDMMotorBufWithDirection(br_motor, chassis.steer_pos_ref[br_motor] * 100, init_rotate_direction[br_motor]);
-  for(int t = 0; t < 4; ++t) {
+  for(int t = 0; t < 44; ++t) {
     for(int i = 0; i < 4; ++i) {
       sendDMMotor(i);
       HAL_Delay(10);
     }
+    // sendDMMotor(0);
   }
   HAL_Delay(50);
 
@@ -185,9 +186,9 @@ void chassis_task_init(void)
 
 static void stop_handler(void)
 {
-  chassis.steer_pos_ref[f_motor] = STEER_INIT_ANGLE + STEER_F_OFFSET; //STEER_FR_OFFSET * MOTOR_REDUCTION_RATIO;
-  chassis.steer_pos_ref[bl_motor] = STEER_INIT_ANGLE + STEER_BL_OFFSET; //STEER_BL_OFFSET * MOTOR_REDUCTION_RATIO;
-  chassis.steer_pos_ref[br_motor] = STEER_INIT_ANGLE + STEER_BR_OFFSET; //STEER_BR_OFFSET * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[f_motor] = STEER_INIT_ANGLE_F + STEER_F_OFFSET; //STEER_FR_OFFSET * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[bl_motor] = STEER_INIT_ANGLE_BL + STEER_BL_OFFSET; //STEER_BL_OFFSET * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[br_motor] = STEER_INIT_ANGLE_BR + STEER_BR_OFFSET; //STEER_BR_OFFSET * MOTOR_REDUCTION_RATIO;
   setDMMotorBuf(f_motor , chassis.steer_pos_ref[f_motor] * 100);
   setDMMotorBuf(bl_motor, chassis.steer_pos_ref[bl_motor] * 100);
   setDMMotorBuf(br_motor, chassis.steer_pos_ref[br_motor] * 100);
@@ -199,9 +200,9 @@ static void stop_handler(void)
 static void forward_handler(void)
 {
   static int stop_flag = 0;
-  chassis.steer_pos_ref[f_motor] = STEER_INIT_ANGLE + STEER_F_OFFSET; //STEER_FR_OFFSET * MOTOR_REDUCTION_RATIO;
-  chassis.steer_pos_ref[bl_motor] = STEER_INIT_ANGLE + STEER_BL_OFFSET; //STEER_BL_OFFSET * MOTOR_REDUCTION_RATIO;
-  chassis.steer_pos_ref[br_motor] = STEER_INIT_ANGLE + STEER_BR_OFFSET; //STEER_BR_OFFSET * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[f_motor] = STEER_INIT_ANGLE_F + STEER_F_OFFSET; //STEER_FR_OFFSET * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[bl_motor] = STEER_INIT_ANGLE_BL + STEER_BL_OFFSET; //STEER_BL_OFFSET * MOTOR_REDUCTION_RATIO;
+  chassis.steer_pos_ref[br_motor] = STEER_INIT_ANGLE_BR + STEER_BR_OFFSET; //STEER_BR_OFFSET * MOTOR_REDUCTION_RATIO;
 
   setDMMotorBuf(f_motor , chassis.steer_pos_ref[f_motor] * 100);
   setDMMotorBuf(bl_motor, chassis.steer_pos_ref[bl_motor] * 100);
@@ -270,9 +271,9 @@ static void attitude_control_handler(void)
 
     attitude_control(spd_ref, angle_ref, spd, angle);
     
-    chassis.steer_pos_ref[f_motor]  = F_POS_F * OMNI_INIT_FRONT_ANGLE + STEER_INIT_ANGLE + angle[f_motor] + STEER_F_OFFSET; //+ STEER_FR_OFFSET) * MOTOR_REDUCTION_RATIO;
-    chassis.steer_pos_ref[bl_motor] = BL_POS_F * OMNI_INIT_BACK_ANGLE + STEER_INIT_ANGLE + angle[bl_motor] + STEER_BL_OFFSET; //+ STEER_BL_OFFSET) * MOTOR_REDUCTION_RATIO;
-    chassis.steer_pos_ref[br_motor] = BR_POS_F * OMNI_INIT_BACK_ANGLE + STEER_INIT_ANGLE + angle[br_motor] + STEER_BR_OFFSET; //+ STEER_BR_OFFSET) * MOTOR_REDUCTION_RATIO;
+    chassis.steer_pos_ref[f_motor]  = F_POS_F * OMNI_INIT_FRONT_ANGLE + STEER_INIT_ANGLE_F + angle[f_motor] + STEER_F_OFFSET; //+ STEER_FR_OFFSET) * MOTOR_REDUCTION_RATIO;
+    chassis.steer_pos_ref[bl_motor] = BL_POS_F * OMNI_INIT_BACK_ANGLE + STEER_INIT_ANGLE_BL + angle[bl_motor] + STEER_BL_OFFSET; //+ STEER_BL_OFFSET) * MOTOR_REDUCTION_RATIO;
+    chassis.steer_pos_ref[br_motor] = BR_POS_F * OMNI_INIT_BACK_ANGLE + STEER_INIT_ANGLE_BR + angle[br_motor] + STEER_BR_OFFSET; //+ STEER_BR_OFFSET) * MOTOR_REDUCTION_RATIO;
 
     setDMMotorBuf(f_motor , chassis.steer_pos_ref[f_motor] * 100);
     setDMMotorBuf(bl_motor, chassis.steer_pos_ref[bl_motor] * 100);
@@ -285,9 +286,9 @@ static void attitude_control_handler(void)
     stop_flag = 1;
   }
   else {
-    chassis.steer_pos_ref[f_motor]  = F_POS_F * OMNI_INIT_FRONT_ANGLE + STEER_INIT_ANGLE + STEER_F_OFFSET; //+ STEER_FR_OFFSET) * MOTOR_REDUCTION_RATIO;
-    chassis.steer_pos_ref[bl_motor] = BL_POS_F * OMNI_INIT_BACK_ANGLE + STEER_INIT_ANGLE + STEER_BL_OFFSET; //+ STEER_BL_OFFSET) * MOTOR_REDUCTION_RATIO;
-    chassis.steer_pos_ref[br_motor] = BR_POS_F * OMNI_INIT_BACK_ANGLE + STEER_INIT_ANGLE + STEER_BR_OFFSET; //+ STEER_BR_OFFSET) * MOTOR_REDUCTION_RATIO;
+    chassis.steer_pos_ref[f_motor]  = F_POS_F * OMNI_INIT_FRONT_ANGLE + STEER_INIT_ANGLE_F + STEER_F_OFFSET; //+ STEER_FR_OFFSET) * MOTOR_REDUCTION_RATIO;
+    chassis.steer_pos_ref[bl_motor] = BL_POS_F * OMNI_INIT_BACK_ANGLE + STEER_INIT_ANGLE_BL + STEER_BL_OFFSET; //+ STEER_BL_OFFSET) * MOTOR_REDUCTION_RATIO;
+    chassis.steer_pos_ref[br_motor] = BR_POS_F * OMNI_INIT_BACK_ANGLE + STEER_INIT_ANGLE_BR + STEER_BR_OFFSET; //+ STEER_BR_OFFSET) * MOTOR_REDUCTION_RATIO;
     //! 如果是静止状态，则加入位置环，以保证在墙上不滑动
     if(stop_flag) {
       for(int i = 0; i < 4; ++i) {

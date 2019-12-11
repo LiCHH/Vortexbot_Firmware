@@ -51,6 +51,7 @@ void send_control_msgs(void)
     // requestDMEncoderInfo(i);
     // HAL_Delay(20);
   }
+  // sendDMMotor(0);
   taskEXIT_CRITICAL();
 }
 

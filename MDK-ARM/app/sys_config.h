@@ -41,7 +41,7 @@ typedef enum
   br_motor = 3
 } motor_seq_e;
 
-#define MOTOR_SPEED_MAX 350 // 150
+#define MOTOR_SPEED_MAX 200 // 150
 
 #define MOTOR_REDUCTION_RATIO 36
 
@@ -69,14 +69,17 @@ typedef enum
 #define STEER_BL_OFFSET 5.5
 #define STEER_BR_OFFSET -2.5
 #elif BOT_ID == 2
-#define STEER_F_OFFSET -0.5
-#define STEER_BL_OFFSET -0.5
-#define STEER_BR_OFFSET -1.5
+#define STEER_F_OFFSET -0.2f
+#define STEER_BL_OFFSET 3.f
+#define STEER_BR_OFFSET 9.5f
 #endif
 
 #define OMNI_INIT_FRONT_ANGLE   90
 #define OMNI_INIT_BACK_ANGLE    30
-#define STEER_INIT_ANGLE    180
+#define STEER_INIT_ANGLE   120
+#define STEER_INIT_ANGLE_F   180
+#define STEER_INIT_ANGLE_BL   120
+#define STEER_INIT_ANGLE_BR   60
 #define STEER_SERVO_OFFSET 2048
 
 /* chassis relevant */
