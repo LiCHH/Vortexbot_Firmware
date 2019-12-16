@@ -59,25 +59,20 @@ void setDMMotorBuf(int id, int32_t pos) {
 }
 
 void sendDMMotor(int id) {
-  //!  unused  id 1
-  if(id == 1) return ;
-
   //! FIXME: don't know why add this make it work for br_wheel
-  if(id == 2 || id == 3) {
-    HAL_UART_Transmit(&STEER_HUART, (uint8_t *)dm_motor_buf[id], 14, 10);
-    // HAL_UART_Transmit(&STEER_HUART, (uint8_t *)dm_motor_buf[id], 14, 10); 
-    // return ;
-  }
-
+  taskENTER_CRITICAL();
+  // if(id == 1) 
+  //   HAL_UART_Transmit(&STEER_HUART, (uint8_t *)dm_motor_buf[id], 14, 5); 
   HAL_UART_Transmit(&STEER_HUART, (uint8_t *)dm_motor_buf[id], 14, 10); 
-  // HAL_Delay(1);
-  // osDelay(5);
+  taskEXIT_CRITICAL();
+  // osDelay(1);
+  HAL_Delay(1);
  
   // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)dm_motor_buf[id], 14, 10);  
 }
 
 void requestDMEncoderInfo(int id) {
-  if(id == 1) return;
+  // if(id == 1) return;
   dm_read_enc.id = id + 1;
   dm_read_enc.check_sum = getCheckSum((uint8_t *)&dm_read_enc, 4);
   HAL_UART_Transmit(&STEER_HUART, (uint8_t *)&dm_read_enc, 5, 10);
@@ -121,7 +116,7 @@ void DMMotorAngleInit(void) {
   char output[30];
   memset(output, 0, sizeof(output));
   memset(read_flag, 0, sizeof(read_flag));
-  while (!read_flag[f_motor] || !read_flag[bl_motor] || !read_flag[br_motor])
+  while (!read_flag[fr_motor] || !read_flag[fl_motor] || !read_flag[bl_motor] || !read_flag[br_motor])
   {
     for(int i = 0; i < 4; ++i) {
       requestDMEncoderInfo(i);
@@ -131,7 +126,8 @@ void DMMotorAngleInit(void) {
   }
   uint8_t direction = 0;
   int16_t init_angle_raw[4];
-  init_angle_raw[f_motor] = F_INIT_RAW;
+  init_angle_raw[fr_motor] = F_INIT_RAW;
+  init_angle_raw[fl_motor] = F_INIT_RAW;
   init_angle_raw[bl_motor] = BL_INIT_RAW;
   init_angle_raw[br_motor] = BR_INIT_RAW;
   for(int i = 0; i < 4; ++i) {

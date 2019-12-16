@@ -10,7 +10,7 @@
 uint8_t rc_buf[RC_BUFLEN];
 rc_info_t rc_info;
 
-filter_t rr_ud_f, lr_lr_f, lr_ud_f;
+static filter_t rr_ud_f, lr_lr_f, lr_ud_f;
 
 /**
  * @brief   handle remote controller information
@@ -71,7 +71,7 @@ void rc_callback_handler(rc_info_t *rc, uint8_t *buf) {
 
 void filter_init(filter_t *filter, int num_datas) {
   int i = 0;
-  filter->datas = malloc(sizeof(int16_t) * num_datas);
+  // filter->datas = malloc(sizeof(int16_t) * num_datas);
   for (i = 0; i < num_datas; ++i) {
     filter->datas[i] = 0;
   }

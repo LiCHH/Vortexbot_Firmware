@@ -16,13 +16,11 @@
 #include "sys_config.h"
 #include "pid.h"
 #include "bsp_can.h"
-// #include "remote_ctrl.h"
-// #include "vortexbot_info.h"
-// #include "dm_motor_drive.h"
 #include "test_ctrl.h"
 #include "bsp_uart.h"
 #include "odom_task.h"
 #include "attitude_control.h"
+#include "dm_motor_drive.h"
 
 chassis_t chassis;
 
@@ -46,13 +44,13 @@ void send_control_msgs(void)
 {
   taskENTER_CRITICAL();
   send_chassis_current(CAN_LOW_ID, chassis.driving_current[0], chassis.driving_current[1], chassis.driving_current[2], chassis.driving_current[3]);
+  taskEXIT_CRITICAL();
   for(int i = 0; i < 4; ++i) {
     sendDMMotor(i);
     // requestDMEncoderInfo(i);
     // HAL_Delay(20);
   }
   // sendDMMotor(0);
-  taskEXIT_CRITICAL();
 }
 
 void chassis_task(void const *argu)

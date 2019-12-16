@@ -69,8 +69,8 @@ void dmMotorInit(void);
 void setDMMotorBuf(int id, int32_t pos);
 void sendDMMotor(int id);
 void requestDMEncoderInfo(int id);
-void DMReceiveHandler();
-void DMMotorAngleInit();
+void DMReceiveHandler(void);
+void DMMotorAngleInit(void);
 void setDMMotorBufWithDirection(int id, int32_t pos, uint8_t direction);
 
 extern dm_motor_header_t dm_motor_header;

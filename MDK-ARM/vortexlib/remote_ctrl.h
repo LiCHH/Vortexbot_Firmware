@@ -54,9 +54,9 @@ void rc_param_init(void);
 ///! 均值滤波器
 typedef struct
 {
-  int16_t *datas;
-  int16_t sum;
   int num_data;
+  int16_t datas[9];
+  int16_t sum;
   int insert_index;
   int16_t filtered_data;
   int data_received;
@@ -71,6 +71,10 @@ typedef struct
 #define FILTER_SIZE 9
 #define LR_UD_BIAS  193
 #define LR_LR_BIAS  -32
+#elif BOT_ID == 3
+#define FILTER_SIZE 9
+#define LR_UD_BIAS  0
+#define LR_LR_BIAS  0
 #endif
 
 void filter_init(filter_t *filter, int num_datas);

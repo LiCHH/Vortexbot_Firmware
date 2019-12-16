@@ -5,7 +5,7 @@
 #include "stm32f4xx_hal.h"
 #include "math.h"
 
-#define BOT_ID 2
+#define BOT_ID 3
 
 /* can relevant */
 #define CHASSIS_CAN hcan1
@@ -36,7 +36,8 @@
 
 typedef enum
 {
-  f_motor = 0,
+  fr_motor = 0,
+  fl_motor = 1,
   bl_motor = 2,
   br_motor = 3
 } motor_seq_e;
@@ -49,13 +50,15 @@ typedef enum
 
 #define BODY_RADIUS 0.2f
 
-#define F_POS_F   -1
-#define BR_POS_F   1
-#define BL_POS_F  -1
+#define FR_POS_F   -1
+#define FL_POS_F    1
+#define BL_POS_F   -1
+#define BR_POS_F    1
 
-#define F_SPD_F  -1
-#define BL_SPD_F  1
-#define BR_SPD_F -1
+#define FR_SPD_F   -1
+#define FL_SPD_F    1
+#define BL_SPD_F   -1
+#define BR_SPD_F    1
 
 //! for using M2006 for steer
 // #define STEER_FR_OFFSET -((float)0x0051 / ENCODER_ANGLE_RATIO / MOTOR_REDUCTION_RATIO)
@@ -72,14 +75,19 @@ typedef enum
 #define STEER_F_OFFSET -0.2f
 #define STEER_BL_OFFSET 3.f
 #define STEER_BR_OFFSET 9.5f
+#elif BOT_ID == 3
+#define STEER_FR_OFFSET 0.0
+#define STEER_FL_OFFSET 0.0
+#define STEER_BL_OFFSET 0.0
+#define STEER_BR_OFFSET 0.0
 #endif
 
-#define OMNI_INIT_FRONT_ANGLE   90
-#define OMNI_INIT_BACK_ANGLE    30
-#define STEER_INIT_ANGLE   120
-#define STEER_INIT_ANGLE_F   180
-#define STEER_INIT_ANGLE_BL   120
-#define STEER_INIT_ANGLE_BR   60
+#define OMNI_INIT_FRONT_ANGLE   45
+#define OMNI_INIT_BACK_ANGLE    45
+#define STEER_INIT_ANGLE_FR     135
+#define STEER_INIT_ANGLE_FL     45
+#define STEER_INIT_ANGLE_BL     135
+#define STEER_INIT_ANGLE_BR     45
 #define STEER_SERVO_OFFSET 2048
 
 /* chassis relevant */

@@ -3,7 +3,6 @@
 #define __SWMODE_TASK_H__
 
 #include "stm32f4xx_hal.h"
-#include "remote_ctrl.h"
 #include "vortexbot_info.h"
 
 /* Switch mode task period time (ms) */

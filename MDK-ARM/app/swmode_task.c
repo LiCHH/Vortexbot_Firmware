@@ -5,6 +5,7 @@
 #include "chassis_task.h"
 #include "vortex_task.h"
 #include "motion_task.h"
+#include "remote_ctrl.h"
 
 /* stack usage monitor */
 UBaseType_t mode_stack_surplus;
@@ -82,7 +83,8 @@ static void chassis_mode_handler(void)
     }
     else if (rc_info.sc == SW_DOWN)
     {
-      chassis.ctrl_mode = ATTITUDE_CONTROL;
+      // chassis.ctrl_mode = ATTITUDE_CONTROL;
+      chassis.ctrl_mode = OMNI_DIRECTIONAL;
     }
     else
     {
