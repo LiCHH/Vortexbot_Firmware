@@ -21,6 +21,7 @@
 #include "odom_task.h"
 #include "attitude_control.h"
 #include "dm_motor_drive.h"
+#include "test_ctrl.h"
 
 chassis_t chassis;
 
@@ -38,6 +39,10 @@ void get_chassis_info(void)
     chassis.driving_spd_fdb[i] = motor_driving[i].speed_rpm;
     chassis.driving_pos_fdb[i] = motor_driving[i].total_angle;
   }
+  // sprintf(test_buf, "%5.2f %5.2f %5.2f %5.2f\r\n", chassis.driving_pos_fdb[0]/12960.f, chassis.driving_pos_fdb[1]/12960.f,
+  //                                              chassis.driving_pos_fdb[2]/12960.f, chassis.driving_pos_fdb[3]/12960.f);
+
+  // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)test_buf, 40, 10);
 }
 
 void send_control_msgs(void)
@@ -45,64 +50,36 @@ void send_control_msgs(void)
   taskENTER_CRITICAL();
   send_chassis_current(CAN_LOW_ID, chassis.driving_current[0], chassis.driving_current[1], chassis.driving_current[2], chassis.driving_current[3]);
   taskEXIT_CRITICAL();
-  for(int i = 0; i < 4; ++i) {
-    sendDMMotor(i);
-    // requestDMEncoderInfo(i);
-    // HAL_Delay(20);
-  }
+  // for(int i = 0; i < 4; ++i) {
+  //   sendDMMotor(i);
+  // }
   // sendDMMotor(0);
+}
+
+void chassis_steer_task(void const *argu) {
+  uint32_t chassis_steer_wake_time = osKernelSysTick();
+  while(1) {
+    for(int i = 0; i < 4; ++i) {
+      sendDMMotor(i);
+    }
+    osDelayUntil(&chassis_steer_wake_time, CHASSIS_STEER_PERIOD);
+  }
 }
 
 void chassis_task(void const *argu)
 {
-  get_chassis_info();
-
-  // switch (chassis.ctrl_mode)
-  // {
-  // case OMNI_DIRECTIONAL:
-  // {
-  //   omnidirection_handler();
-  // }
-  // break;
-
-  // case DIFFERENTIAL:
-  // {
-  //   differential_handler();
-  // }
-  // break;
-
-  // case CAR_LIKE:
-  // {
-  //   carlike_handler();
-  // }
-  // break;
-
-  // case FORWARD_DIRECTIONAL:
-  // {
-  //   forward_handler();
-  // }
-  // break;
-
-  // case ATTITUDE_CONTROL:
-  // {
-  //   attitude_control_handler();
-  // }
-  // break;
-
-  // default:
-  // {
-  //   stop_handler();
-  // }
-  // break;
-  // }
-
-  for (int i = 0; i < 4; ++i)
-  {
-    // Driving DOF's speed loop PID control
-    pid_calc(&pid_driving_spd[i], chassis.driving_spd_fdb[i], chassis.driving_spd_ref[i]);
-    chassis.driving_current[i] = pid_driving_spd[i].out;
+  uint32_t chassis_wake_time = osKernelSysTick();
+  while(1) {
+    get_chassis_info();
+    for (int i = 0; i < 4; ++i)
+    {
+      // Driving DOF's speed loop PID control
+      pid_calc(&pid_driving_spd[i], chassis.driving_spd_fdb[i], chassis.driving_spd_ref[i]);
+      chassis.driving_current[i] = pid_driving_spd[i].out;
+    }
+    send_control_msgs();
+    osDelayUntil(&chassis_wake_time, CHASSIS_TIMER_PERIOD);
   }
-  send_control_msgs();
 }
 
 // static void omnidirection_handler(void)

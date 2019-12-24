@@ -30,25 +30,28 @@ static filter_t rr_ud_f, lr_lr_f, lr_ud_f;
 void rc_callback_handler(rc_info_t *rc, uint8_t *buf) {
   if (buf[0] != 0x0F) return;
 
-  int16_t rr_ud_raw, lr_lr_raw, lr_ud_raw;
+  static int16_t rr_ud_raw, lr_lr_raw, lr_ud_raw;
 
   rc->r_rocker_lr = (buf[1] | buf[2] << 8) & 0x07ff;
   rc->r_rocker_lr -= ROCKER_OFFSET;
 
   lr_ud_raw = (buf[2] >> 3 | buf[3] << 5) & 0x07ff;
   lr_ud_raw -= ROCKER_OFFSET + LR_UD_BIAS;
-  filter_update(&lr_ud_f, lr_ud_raw);
-  rc->l_rocker_ud = lr_ud_f.filtered_data;
+  rc->l_rocker_ud = lr_ud_raw;
+  // filter_update(&lr_ud_f, lr_ud_raw);
+  // rc->l_rocker_ud = lr_ud_f.filtered_data;
 
   rr_ud_raw = (buf[3] >> 6 | buf[4] << 2 | buf[5] << 10) & 0x07ff;
-  filter_update(&rr_ud_f, rr_ud_raw);
-  rc->r_rocker_ud = rr_ud_f.filtered_data;
-  // rc->r_rocker_ud -= ROCKER_OFFSET;
+  rc->r_rocker_ud = rr_ud_raw;
+  // filter_update(&rr_ud_f, rr_ud_raw);
+  // rc->r_rocker_ud = rr_ud_f.filtered_data;
+  // // rc->r_rocker_ud -= ROCKER_OFFSET;
 
   lr_lr_raw = (buf[5] >> 1 | buf[6] << 7) & 0x07ff;
   lr_lr_raw -= ROCKER_OFFSET + LR_LR_BIAS;
-  filter_update(&lr_lr_f, lr_lr_raw);
-  rc->l_rocker_lr = lr_lr_f.filtered_data;
+  rc->l_rocker_lr = lr_lr_raw;
+  // filter_update(&lr_lr_f, lr_lr_raw);
+  // rc->l_rocker_lr = lr_lr_f.filtered_data;
 
   rc->knob_v1 = (buf[7] >> 7 | buf[8] << 1 | buf[9] << 9) & 0x07ff;
   rc->knob_v2 = (buf[9] >> 2 | buf[10] << 6) & 0x07ff;
@@ -58,7 +61,7 @@ void rc_callback_handler(rc_info_t *rc, uint8_t *buf) {
   rc->sc = (buf[13] >> 1) & 0x03;
   rc->sd = (buf[15] >> 4) & 0x03;
 
-  //i! test code
+  //! test code
   // static int count = 0;
   // if (count == 10) {
   //   sprintf((char *)test_buf, "ud raw:%d fil:%d lr raw:%d fil:%d\r\n",
@@ -71,7 +74,7 @@ void rc_callback_handler(rc_info_t *rc, uint8_t *buf) {
 
 void filter_init(filter_t *filter, int num_datas) {
   int i = 0;
-  // filter->datas = malloc(sizeof(int16_t) * num_datas);
+  filter->datas = malloc(sizeof(int16_t) * num_datas);
   for (i = 0; i < num_datas; ++i) {
     filter->datas[i] = 0;
   }

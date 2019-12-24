@@ -89,8 +89,10 @@ TaskHandle_t imu_task_t;
 TaskHandle_t servo_info_task_t;
 TaskHandle_t uwb_task_t;
 TaskHandle_t odom_task_t;
+TaskHandle_t chassis_task_t;
+TaskHandle_t chassis_steer_task_t;
 
-osTimerId chassis_timer_id;
+// osTimerId chassis_timer_id;
 osTimerId vortex_timer_id;
 osTimerId motion_timer_id;
 
@@ -168,8 +170,8 @@ void MX_FREERTOS_Init(void) {
   /* start timers, add new ones, ... */
   taskENTER_CRITICAL();
 
-  osTimerDef(chassisTimer, chassis_task);
-  chassis_timer_id = osTimerCreate(osTimer(chassisTimer), osTimerPeriodic, NULL);
+  // osTimerDef(chassisTimer, chassis_task);
+  // chassis_timer_id = osTimerCreate(osTimer(chassisTimer), osTimerPeriodic, NULL);
 
   osTimerDef(vortexTimer, vortex_task);
   vortex_timer_id = osTimerCreate(osTimer(vortexTimer), osTimerPeriodic, NULL);
@@ -190,6 +192,12 @@ void MX_FREERTOS_Init(void) {
 
   osThreadDef(imuTask, imu_task, osPriorityNormal, 0, 128);
   imu_task_t = osThreadCreate(osThread(imuTask), NULL);
+
+  osThreadDef(chassisTask, chassis_task, osPriorityHigh, 0, 128);
+  chassis_task_t = osThreadCreate(osThread(chassisTask), NULL);
+
+  osThreadDef(chassisSteerTask, chassis_steer_task, osPriorityAboveNormal, 0, 128);
+  chassis_task_t = osThreadCreate(osThread(chassisSteerTask), NULL);
 
   // osThreadDef(servoInfoTask, servo_info_task, osPriorityNormal, 0, 128);
   // servo_info_task_t = osThreadCreate(osThread(servoInfoTask), NULL);

@@ -52,15 +52,14 @@ void rc_callback_handler(rc_info_t *rc, uint8_t *rc_buf);
 void rc_param_init(void);
 
 ///! 均值滤波器
-typedef struct
+typedef volatile struct
 {
-  int num_data;
-  int16_t datas[9];
+  int16_t num_data;
+  int16_t* datas;
   int16_t sum;
-  int insert_index;
+  int16_t insert_index;
   int16_t filtered_data;
-  int data_received;
-
+  int16_t data_received;
 } filter_t;
 
 #if BOT_ID == 1

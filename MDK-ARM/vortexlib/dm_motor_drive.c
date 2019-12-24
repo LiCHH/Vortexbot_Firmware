@@ -5,6 +5,7 @@
 
 #include "sys_config.h"
 #include "bsp_uart.h"
+#include "test_ctrl.h"
 
 dm_motor_header_t dm_motor_header;
 dm_read_enc_t dm_read_enc; 
@@ -83,10 +84,10 @@ void requestDMEncoderInfo(int id) {
 void DMReceiveHandler(void) {
   // if(!read_flag[f_motor] || !read_flag[bl_motor] || !read_flag[br_motor]) {
     // int bias = 0;
-    // char output[30];
-    // memset(output, 0, 30);
-    // // sprintf(output, "fuck3\n");
-    // // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 10, 10);
+    // char output[40];
+    // memset(output, 0, 40);
+    // sprintf(output, "fuck3\n");
+    // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 10, 10);
     // while (bias < STEER_BUF_LEN)
     // {
     //   for(; bias < STEER_BUF_LEN; ++bias) {
@@ -106,10 +107,14 @@ void DMReceiveHandler(void) {
     //   // sprintf(output, "\r\n");
     //   // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 2, 10);
     // }
-    // sprintf(output, "1 %d,3 %d,4 %d\r\n", read_angle[0], read_angle[2], read_angle[3]);
-    // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 30, 10);
+    // sprintf(output, "%d %d %d %d\r\n", read_angle[0], read_angle[1], read_angle[2], read_angle[3]);
+    // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 40, 10);
     // memset(steer_buf, 0, STEER_BUF_LEN);
   // }
+  HAL_UART_Transmit(&TEST_HUART, (uint8_t*)steer_buf, STEER_BUF_LEN, 10);
+  memset(steer_buf, 0, STEER_BUF_LEN);
+  sprintf(test_buf, "\r\n");
+  HAL_UART_Transmit(&TEST_HUART, (uint8_t*)test_buf, 2, 1);
 }
 
 void DMMotorAngleInit(void) {

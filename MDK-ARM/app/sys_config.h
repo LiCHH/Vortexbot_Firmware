@@ -42,7 +42,7 @@ typedef enum
   br_motor = 3
 } motor_seq_e;
 
-#define MOTOR_SPEED_MAX 200 // 150
+#define MOTOR_SPEED_MAX 300 // 150
 
 #define MOTOR_REDUCTION_RATIO 36
 
@@ -57,8 +57,8 @@ typedef enum
 
 #define FR_SPD_F   -1
 #define FL_SPD_F    1
-#define BL_SPD_F   -1
-#define BR_SPD_F    1
+#define BL_SPD_F    1
+#define BR_SPD_F   -1
 
 //! for using M2006 for steer
 // #define STEER_FR_OFFSET -((float)0x0051 / ENCODER_ANGLE_RATIO / MOTOR_REDUCTION_RATIO)
@@ -76,10 +76,10 @@ typedef enum
 #define STEER_BL_OFFSET 3.f
 #define STEER_BR_OFFSET 9.5f
 #elif BOT_ID == 3
-#define STEER_FR_OFFSET 0.0
-#define STEER_FL_OFFSET 0.0
-#define STEER_BL_OFFSET 0.0
-#define STEER_BR_OFFSET 0.0
+#define STEER_FR_OFFSET 2.5
+#define STEER_FL_OFFSET 6.0
+#define STEER_BL_OFFSET 0.8
+#define STEER_BR_OFFSET 2.5
 #endif
 
 #define OMNI_INIT_FRONT_ANGLE   45

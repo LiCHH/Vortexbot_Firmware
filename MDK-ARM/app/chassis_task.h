@@ -12,7 +12,8 @@
 
 #include "stm32f4xx_hal.h"
 
-#define CHASSIS_TIMER_PERIOD  20
+#define CHASSIS_TIMER_PERIOD  10
+#define CHASSIS_STEER_PERIOD 20
 
 typedef enum
 {
@@ -40,8 +41,8 @@ typedef struct
 
   int16_t driving_spd_fdb[4];
   int16_t driving_spd_ref[4]; // 空载最高在521*36rpm左右，即输出轴521rpm
-  int16_t driving_pos_fdb[4];
-  int16_t driving_pos_ref[4]; // 空载最高在521*36rpm左右，即输出轴521rpm
+  int32_t driving_pos_fdb[4];
+  int32_t driving_pos_ref[4]; // 空载最高在521*36rpm左右，即输出轴521rpm
   int16_t driving_current[4];
 
   int16_t steer_spd_fdb[4];
@@ -53,6 +54,7 @@ typedef struct
 } chassis_t;
 
 void chassis_task(void const *argu);
+void chassis_steer_task(void const *argu);
 void chassis_task_init(void);
 void send_control_msgs(void);
 

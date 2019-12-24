@@ -14,7 +14,8 @@
         "usart.h": "c",
         "chassis_task.h": "c",
         "bsp_imu.h": "c",
-        "odom_task.h": "c"
+        "odom_task.h": "c",
+        "swmode_task.h": "c"
     },
 
     "C_Cpp.clang_format_path": "C:/Program Files/LLVM/bin/clang-format.exe"

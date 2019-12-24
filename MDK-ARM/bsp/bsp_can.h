@@ -59,10 +59,10 @@ typedef struct
   int16_t speed_rpm;     //speed_rpm
   int16_t given_current; //given_current
 
-  int32_t round_cnt;   //round_cnt
-  int32_t total_ecd;   //total_angle
+  int32_t round_cnt;   // round_cnt
+  int32_t total_ecd;   // total_angle
 
-  int32_t total_angle; //total_ecd / encoder ratio
+  int32_t total_angle; // total_ecd / encoder ratio
 
   uint16_t offset_ecd;
   uint32_t msg_cnt;

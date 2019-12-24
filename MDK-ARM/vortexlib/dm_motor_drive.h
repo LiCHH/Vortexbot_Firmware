@@ -3,8 +3,8 @@
 
 #include "stm32f4xx_hal.h"
 
-#define STEER_BUF_LEN 30
-#define STEER_MAX_LEN 60
+#define STEER_BUF_LEN 15
+#define STEER_MAX_LEN 30
 
 typedef enum
 {

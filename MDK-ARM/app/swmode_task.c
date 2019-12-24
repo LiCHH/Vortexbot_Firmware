@@ -16,7 +16,7 @@ extern osTimerId motion_timer_id;
 
 void mode_switch_task(void const *argu)
 {
-  osTimerStart(chassis_timer_id, CHASSIS_TIMER_PERIOD); 
+  // osTimerStart(chassis_timer_id, CHASSIS_TIMER_PERIOD); 
   osTimerStart(vortex_timer_id, VORTEX_TASK_PERIOD); 
   osTimerStart(motion_timer_id, MOTION_TIMER_PERIOD);
 

@@ -124,20 +124,8 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
   break;
   }
 
-  // for test
-  // chassis_task();
 
   HAL_GPIO_TogglePin(LEDB_GPIO_Port, LEDB_Pin);
-  // Can be replace by HAL_GPIO_TogglePin()
-  // static int flag = 0;
-  // if (!flag)
-  // {
-  //   HAL_GPIO_WritePin(LEDB_GPIO_Port, LEDB_Pin, GPIO_PIN_SET);
-  // }
-  // else
-  // {
-  //   HAL_GPIO_WritePin(LEDB_GPIO_Port, LEDB_Pin, GPIO_PIN_RESET);
-  // }
   /*#### add enable can it again to solve can receive only one ID problem!!!####**/
   // __HAL_CAN_ENABLE_IT(&hcan1, CAN_IT_FMP0);
   HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
