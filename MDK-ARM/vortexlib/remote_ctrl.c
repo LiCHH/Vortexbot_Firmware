@@ -2,15 +2,21 @@
 
 #include "stdlib.h"
 #include "string.h"
+#include "cmsis_os.h"
+#include "math.h"
 
 #include "usart.h"
 #include "sys_config.h"
 #include "test_ctrl.h"
+#include "chassis_task.h"
+#include "imu_task.h"
 
 uint8_t rc_buf[RC_BUFLEN];
 rc_info_t rc_info;
+rb_info_t rb_info;
 
-static filter_t rr_ud_f, lr_lr_f, lr_ud_f;
+static void get_bot_velocity(void);
+static void get_bot_refangle(void);
 
 /**
  * @brief   handle remote controller information
@@ -27,49 +33,80 @@ static filter_t rr_ud_f, lr_lr_f, lr_ud_f;
  *          sc          :
  *          sd          :
  */
-void rc_callback_handler(rc_info_t *rc, uint8_t *buf) {
+void rc_callback_handler(uint8_t *buf) {
   if (buf[0] != 0x0F) return;
 
-  static int16_t rr_ud_raw, lr_lr_raw, lr_ud_raw;
+  rc_info.r_rocker_lr = (buf[1] | buf[2] << 8) & 0x07ff;
+  rc_info.r_rocker_lr -= ROCKER_OFFSET;
 
-  rc->r_rocker_lr = (buf[1] | buf[2] << 8) & 0x07ff;
-  rc->r_rocker_lr -= ROCKER_OFFSET;
+  rc_info.l_rocker_ud = (buf[2] >> 3 | buf[3] << 5) & 0x07ff;
+  rc_info.l_rocker_ud -= ROCKER_OFFSET;
 
-  lr_ud_raw = (buf[2] >> 3 | buf[3] << 5) & 0x07ff;
-  lr_ud_raw -= ROCKER_OFFSET + LR_UD_BIAS;
-  rc->l_rocker_ud = lr_ud_raw;
-  // filter_update(&lr_ud_f, lr_ud_raw);
-  // rc->l_rocker_ud = lr_ud_f.filtered_data;
+  rc_info.l_rocker_lr = (buf[5] >> 1 | buf[6] << 7) & 0x07ff;
+  rc_info.l_rocker_lr -= ROCKER_OFFSET;
 
-  rr_ud_raw = (buf[3] >> 6 | buf[4] << 2 | buf[5] << 10) & 0x07ff;
-  rc->r_rocker_ud = rr_ud_raw;
-  // filter_update(&rr_ud_f, rr_ud_raw);
-  // rc->r_rocker_ud = rr_ud_f.filtered_data;
-  // // rc->r_rocker_ud -= ROCKER_OFFSET;
+  rc_info.r_rocker_ud = (buf[3] >> 6 | buf[4] << 2 | buf[5] << 10) & 0x07ff;
+  rc_info.r_rocker_ud -= ROCKER_MIN;
 
-  lr_lr_raw = (buf[5] >> 1 | buf[6] << 7) & 0x07ff;
-  lr_lr_raw -= ROCKER_OFFSET + LR_LR_BIAS;
-  rc->l_rocker_lr = lr_lr_raw;
-  // filter_update(&lr_lr_f, lr_lr_raw);
-  // rc->l_rocker_lr = lr_lr_f.filtered_data;
+  if(rc_info.r_rocker_lr <= 5 && rc_info.r_rocker_lr >= -5) 
+    rc_info.r_rocker_lr = 0;
+  if(rc_info.l_rocker_lr <= 5 && rc_info.l_rocker_lr >= -5) 
+    rc_info.l_rocker_lr = 0;
+  if(rc_info.l_rocker_ud <= 5 && rc_info.l_rocker_ud >= -5) 
+    rc_info.l_rocker_ud = 0;
+  if(rc_info.r_rocker_ud <= 5) 
+    rc_info.r_rocker_ud = 0;
 
-  rc->knob_v1 = (buf[7] >> 7 | buf[8] << 1 | buf[9] << 9) & 0x07ff;
-  rc->knob_v2 = (buf[9] >> 2 | buf[10] << 6) & 0x07ff;
+  rc_info.knob_v1 = (buf[7] >> 7 | buf[8] << 1 | buf[9] << 9) & 0x07ff;
+  rc_info.knob_v2 = (buf[9] >> 2 | buf[10] << 6) & 0x07ff;
 
-  rc->sa = (buf[11] >> 6) & 0x03;
-  rc->sb = (buf[7] >> 5) & 0x03;
-  rc->sc = (buf[13] >> 1) & 0x03;
-  rc->sd = (buf[15] >> 4) & 0x03;
+  rc_info.sa = (buf[11] >> 6) & 0x03;
+  rc_info.sb = (buf[7] >> 5) & 0x03;
+  rc_info.sc = (buf[13] >> 1) & 0x03;
+  rc_info.sd = (buf[14] >> 4) & 0x03;
 
+  get_bot_velocity();
+  if(rc_info.sd == SW_DOWN) {
+    get_bot_refangle();
+  }
+  
   //! test code
-  // static int count = 0;
-  // if (count == 10) {
-  //   sprintf((char *)test_buf, "ud raw:%d fil:%d lr raw:%d fil:%d\r\n",
-  //           rr_ud_raw, rr_ud_f.filtered_data, lr_lr_raw, lr_lr_f.filtered_data);
-  //   HAL_UART_Transmit(&TEST_HUART, test_buf, 50, 10);
-  //   count = 0;
-  // }
-  // count++;
+  // sprintf(test_buf, "%04d %04d %04d %04d\r\n", rc_info.l_rocker_lr, rc_info.l_rocker_ud,
+  //                                              rc_info.r_rocker_lr, rc_info.r_rocker_ud);
+  // HAL_UART_Transmit(&TEST_HUART, test_buf, 22, 5);
+}
+
+float total_spd;
+int16_t vx, vy, vw;
+
+static void get_bot_velocity(void) {
+
+    rb_info.power_ratio = (float)(rc_info.r_rocker_ud) / ROCKER_RANGE;
+    //! 防止抖动
+    // chassis.power_ratio = (chassis.power_ratio > 0.05f) ? chassis.power_ratio : 0;
+    vx = rc_info.l_rocker_ud;
+    vy = rc_info.l_rocker_lr;
+    vw = rc_info.r_rocker_lr;
+
+    //! test code
+    // memset(test_buf, 0, 20);
+    // sprintf(test_buf, "v.%.2f %.2f %.2f\r\n", chassis.vx, chassis.vy, chassis.vw);
+    // HAL_UART_Transmit(&TEST_HUART, test_buf, 20, 10);
+
+    total_spd = sqrt(vx * vx + vy * vy + vw * vw);
+    if(total_spd > 0.01) { 
+      rb_info.vx = (float)vx / total_spd * ROBOT_LIN_SPD_MAX * rb_info.power_ratio;
+      rb_info.vy = (float)vy / total_spd * ROBOT_LIN_SPD_MAX * rb_info.power_ratio;
+      rb_info.vw = (float)vw / total_spd * ROBOT_ANG_SPD_MAX * rb_info.power_ratio;
+    } else {
+      rb_info.vx = 0;
+      rb_info.vy = 0;
+      rb_info.vw = 0;
+    }
+}
+
+static void get_bot_refangle(void) {
+  rb_info.ref_direction = attitude.yaw;
 }
 
 void filter_init(filter_t *filter, int num_datas) {
@@ -109,7 +146,9 @@ void rc_param_init() {
   rc_info.l_rocker_ud = 0;
   rc_info.r_rocker_ud = ROCKER_MIN;
   rc_info.r_rocker_lr = ROCKER_OFFSET;
-  filter_init(&rr_ud_f, FILTER_SIZE);
-  filter_init(&lr_ud_f, FILTER_SIZE);
-  filter_init(&lr_lr_f, FILTER_SIZE);
+  // filter_init(&rr_ud_f, FILTER_SIZE);
+  // filter_init(&lr_ud_f, FILTER_SIZE);
+  // filter_init(&lr_lr_f, FILTER_SIZE);
+
+  memset(&rb_info, 0, sizeof(rb_info));
 }

@@ -41,18 +41,14 @@ void imu_task(void const *argu)
     attitude.yaw = get_yaw();
     taskEXIT_CRITICAL();
     RESTRICT_ANGLE(attitude.yaw);
-    // if (count++ == 1000)
-    // {
-    //   HAL_GPIO_TogglePin(LEDH_GPIO_Port, LEDH_Pin);
-    //   count = 0;
-    // }
-    //! Debug thing
-    // sprintf((char *)test_buf, "Receivied yaw %f\r\n", attitude.yaw);
+
+    //! test code 
+    sprintf((char *)test_buf, "%.2f\r\n", attitude.yaw * RAD_TO_DEG);
     // sprintf((char *)test_buf, "ax: %d, ay: %d, az: %d, mx: %d, my: %d, mz: %d, gx: %d, gy: %d, gz: %d\r\n",
     //                            mpu_data.ax, mpu_data.ay, mpu_data.az,
     //                            mpu_data.mx, mpu_data.my, mpu_data.mz,
     //                            mpu_data.gx, mpu_data.gy, mpu_data.gz);
-    // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)test_buf, 50, 100);
+    HAL_UART_Transmit(&TEST_HUART, (uint8_t *)test_buf, 10, 5);
     osDelayUntil(&imu_wake_time, IMU_TASK_PERIOD);
   }
 }

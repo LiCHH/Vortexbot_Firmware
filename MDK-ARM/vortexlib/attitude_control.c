@@ -8,20 +8,17 @@
 #include "bsp_uart.h"
 #include "commons.h"
 
-static double radius[4];
-static double beta[4];
-static double theta[4];
-static double phi[4];
-static double speed[4];
+// static double radius[4];
+// static double beta[4];
+// static double theta[4];
+// static double phi[4];
+// static double speed[4];
+// double yaw_ref = 0;
 
-double yaw_ref = 0;
 pid_t yaw_pid;
 
-//! for test
-char output[50];
-
-static void calc_velocity(double omega_ref, double speed_ref, double alpha_ref,
-                          int16_t* speed_out, int16_t* angle_out) {
+// static void calc_velocity(double omega_ref, double speed_ref, double alpha_ref,
+//                           int16_t* speed_out, int16_t* angle_out) {
   // omega_ref += 0.1f;
   // double speed_body = speed_ref / 60 * 2 * PI * WHEEL_RADIUS / MOTOR_REDUCTION_RATIO;
   // double radius_ref = fabs(speed_body / omega_ref);
@@ -98,9 +95,9 @@ static void calc_velocity(double omega_ref, double speed_ref, double alpha_ref,
   //         speed_out[f_motor], speed_out[bl_motor], speed_out[br_motor],
   //         angle_out[f_motor], angle_out[bl_motor], angle_out[br_motor]);
   // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 50, 10);
-}
+// }
 
-void attitude_control(double speed_ref, double alpha_ref, int16_t* speed_out, int16_t* angle_out) {
+void attitude_control(void) {
   // double yaw_raw = attitude.yaw;
   // double omega_ref;
   // pid_calc(&yaw_pid, yaw_raw, yaw_ref);
@@ -114,5 +111,5 @@ void attitude_control(double speed_ref, double alpha_ref, int16_t* speed_out, in
 }
 
 void attitude_control_init(void) {
-  // PID_struct_init(&yaw_pid, POSITION_PID, PI / 2, PI / 2, 0.1f, 0.f, 0.0001f);
+  PID_struct_init(&yaw_pid, POSITION_PID, PI / 2, PI / 2, 0.1f, 0.f, 0.0001f);
 }

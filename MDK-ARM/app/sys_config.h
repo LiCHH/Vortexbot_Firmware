@@ -24,14 +24,19 @@
 
 #define RPM_TO_RPS 0.0167f
 
-#define FLOAT_THRESHOLD 20
+#define FLOAT_THRESHOLD 0.001f
 
 #define SIGN(x) ((x < 0) ? -1 : 1)
 #define INT_LIMIT(x, range) ((abs(x) < range ? x : range * SIGN(x)))
 
 #define RESTRICT_ANGLE(angle) do {  \
-  while(angle > 180) angle -= 360;     \
-  while(angle < -180) angle += 360;\
+  while(angle > 180) angle -= 360;  \
+  while(angle < -180) angle += 360; \
+} while(0);
+
+#define RESTRICT_ANGLE_RAD(angle) do {  \
+  while(angle > PI)  angle -= 2 * PI;   \
+  while(angle < -PI) angle += 2 * PI;   \
 } while(0);
 
 typedef enum
@@ -48,7 +53,14 @@ typedef enum
 
 #define WHEEL_RADIUS 0.04f // 0.045f
 
-#define BODY_RADIUS 0.2f
+#define BODY_RADIUS 0.2228f
+
+#define LINSPD_TO_RPM (60 / (2 * PI * WHEEL_RADIUS))
+
+#define ROBOT_LIN_SPD_MAX (MOTOR_SPEED_MAX / LINSPD_TO_RPM)
+
+#define ROBOT_ANG_SPD_MAX (ROBOT_LIN_SPD_MAX / BODY_RADIUS)
+
 
 #define FR_POS_F   -1
 #define FL_POS_F    1
@@ -95,7 +107,7 @@ typedef enum
 #define ENCODER_ANGLE_RATIO 0.0439f // (360.0f / 8192.0)
 
 ///! setup robot's initial pitch angle on wall
-#define ROBOT_INIT_PITCH 0.f
+#define ROBOT_INIT_PITCH 90.f
 
 ///! setup imu temperature control
 #define DEFAULT_IMU_TEMP 50

@@ -23,7 +23,8 @@ typedef enum
   FORWARD_DIRECTIONAL = 3,
   DIFFERENTIAL        = 4,
   CAR_LIKE            = 5,
-  ATTITUDE_CONTROL    = 6
+  ATTITUDE_CONTROL    = 6,
+  VERSATILE_CONTROL   = 7
 } chassis_mode_e;
 
 typedef struct
@@ -33,8 +34,6 @@ typedef struct
   float vw;
 
   float mv_direction;
-
-  float power_ratio;
 
   chassis_mode_e ctrl_mode;
   chassis_mode_e last_ctrl_mode;

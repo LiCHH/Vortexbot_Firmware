@@ -5,7 +5,7 @@
 
 #include "bsp_imu.h"
 
-#define IMU_TASK_PERIOD 5
+#define IMU_TASK_PERIOD 4
 
 typedef struct 
 {

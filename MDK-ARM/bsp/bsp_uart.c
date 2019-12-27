@@ -73,7 +73,7 @@ static void uart_rx_idle_callback(UART_HandleTypeDef *huart)
 
     if (1)
     {
-      rc_callback_handler(&rc_info, rc_buf);
+      rc_callback_handler(rc_buf);
     }
 
     __HAL_DMA_SET_COUNTER(huart->hdmarx, RC_MAX_LEN);

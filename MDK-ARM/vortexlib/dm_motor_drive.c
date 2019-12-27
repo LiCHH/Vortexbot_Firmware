@@ -42,6 +42,8 @@ void dmMotorInit(void) {
 }
 
 void setDMMotorBuf(int id, int32_t pos) {
+//   sprintf(test_buf, "%03d\r\n", pos/100);
+//   HAL_UART_Transmit(&TEST_HUART, test_buf, 5, 5);
   dm_motor_header.id = (uint8_t)id + 1;
   dm_motor_header.check_sum = getCheckSum((uint8_t *)&dm_motor_header, 4);
   memcpy((uint8_t *)&dm_motor_buf[id], (uint8_t *)&dm_motor_header, 5);
@@ -111,10 +113,10 @@ void DMReceiveHandler(void) {
     // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 40, 10);
     // memset(steer_buf, 0, STEER_BUF_LEN);
   // }
-  HAL_UART_Transmit(&TEST_HUART, (uint8_t*)steer_buf, STEER_BUF_LEN, 10);
-  memset(steer_buf, 0, STEER_BUF_LEN);
-  sprintf(test_buf, "\r\n");
-  HAL_UART_Transmit(&TEST_HUART, (uint8_t*)test_buf, 2, 1);
+  // HAL_UART_Transmit(&TEST_HUART, (uint8_t*)steer_buf, STEER_BUF_LEN, 10);
+  // memset(steer_buf, 0, STEER_BUF_LEN);
+  // sprintf(test_buf, "\r\n");
+  // HAL_UART_Transmit(&TEST_HUART, (uint8_t*)test_buf, 2, 1);
 }
 
 void DMMotorAngleInit(void) {

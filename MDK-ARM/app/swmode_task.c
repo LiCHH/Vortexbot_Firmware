@@ -79,12 +79,12 @@ static void chassis_mode_handler(void)
     }
     else if (rc_info.sc == SW_UP)
     {
-      chassis.ctrl_mode = FORWARD_DIRECTIONAL;
+      chassis.ctrl_mode = VERSATILE_CONTROL;
     }
     else if (rc_info.sc == SW_DOWN)
     {
       // chassis.ctrl_mode = ATTITUDE_CONTROL;
-      chassis.ctrl_mode = OMNI_DIRECTIONAL;
+      chassis.ctrl_mode = ATTITUDE_CONTROL;
     }
     else
     {

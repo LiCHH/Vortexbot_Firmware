@@ -13,7 +13,7 @@
 #define MPU_DELAY(x) HAL_Delay(x)
 
 #define MPU_HSPI hspi5
-#define IST8310
+// #define IST8310
 #define MPU_NSS_LOW HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET)
 #define MPU_NSS_HIGH HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET)
 
@@ -145,7 +145,7 @@ static uint8_t ist_reg_read_by_mpu(uint8_t addr)
 
 /**
 	* @brief    initialize the MPU6500 I2C Slave 0 for I2C reading.
-* @param    device_address: slave device address, Address[6:0]
+  * @param    device_address: slave device address, Address[6:0]
 	* @retval   void
 	* @note     
 	*/
@@ -499,44 +499,58 @@ void MadgwickUpdate(void)
 	MadgwickAHRSupdate(imu.wx, imu.wy, imu.wz, imu.ax, imu.ay, imu.az, imu.mx, imu.my, imu.mz);
 }
 
-static float get_rpy_relative(double pitch)
+static float get_rpy_relative(float pitch)
 {
 	static int count = 0;
 	static float offset = 0;
 
-	pitch = pitch / 180 * 3.14159;
-	float q_corr_x = 0;
-	float q_corr_y = sin(pitch / 2);
-	float q_corr_z = 0;
-	float q_corr_w = cos(pitch / 2);
-	float q_res_x, q_res_y, q_res_z, q_res_w;
-
-	q_res_w = q_corr_w * m_q0 - q_corr_x * m_q1 - q_corr_y * m_q2 - q_corr_z * m_q3;
-	q_res_x = q_corr_w * m_q1 + q_corr_x * m_q0 + q_corr_y * m_q3 - q_corr_z * m_q2;
-	q_res_y = q_corr_w * m_q2 - q_corr_x * m_q3 + q_corr_y * m_q0 + q_corr_z * m_q1;
-	q_res_z = q_corr_w * m_q3 + q_corr_x * m_q2 - q_corr_y * m_q1 + q_corr_z * m_q0;
-
+	// pitch = pitch / 180 * 3.14159;
 	float corr_r, corr_p, corr_y;
-	corr_r = atan2(2 * (q_res_w * q_res_x + q_res_y * q_res_z), 1 - 2 * q_res_x * q_res_x - 2 * q_res_y * q_res_y) * 57.3;
-	corr_p = asin(2 * (q_res_w * q_res_y - q_res_x * q_res_z)) * 57.3;
-	corr_y = atan2(2 * (q_res_w * q_res_z + q_res_x * q_res_y), 1 - 2 * q_res_y * q_res_y - 2 * q_res_z * q_res_z) * 57.3;
+	// corr_r = atan2(2 * (m_q0 * m_q1 + m_q2 * m_q3), 1 - 2 * m_q1 * m_q1 - 2 * m_q2 * m_q2);
+	// corr_p = asin(2 * (m_q0 * m_q2 - m_q1 * m_q3));
+	corr_y = atan2(2 * (m_q0 * m_q3 + m_q1 * m_q2), 1 - 2 * m_q2 * m_q2 - 2 * m_q3 * m_q3);
 
-	if (count < 10000)
+	float q_res_x, q_res_y, q_res_z, q_res_w;
+	float q_res2_x, q_res2_y, q_res2_z, q_res2_w;
+
+	float q_corr_x = 0;
+	float q_corr_y = 0;
+	float q_corr_z = sin(-corr_y / 2);
+	float q_corr_w = cos(-corr_y / 2);
+
+	q_res2_w = q_corr_w * m_q0 - q_corr_x * m_q1 - q_corr_y * m_q2 - q_corr_z * m_q3;
+	q_res2_x = q_corr_w * m_q1 + q_corr_x * m_q0 + q_corr_y * m_q3 - q_corr_z * m_q2;
+	q_res2_y = q_corr_w * m_q2 - q_corr_x * m_q3 + q_corr_y * m_q0 + q_corr_z * m_q1;
+	q_res2_z = q_corr_w * m_q3 + q_corr_x * m_q2 - q_corr_y * m_q1 + q_corr_z * m_q0;
+
+	q_corr_x = 0;
+	q_corr_y = sin(pitch / 2);
+	q_corr_z = 0;
+	q_corr_w = cos(pitch / 2);
+
+	q_res_w = q_corr_w * q_res2_w - q_corr_x * q_res2_x - q_corr_y * q_res2_y - q_corr_z * q_res2_z;
+	q_res_x = q_corr_w * q_res2_x + q_corr_x * q_res2_w + q_corr_y * q_res2_z - q_corr_z * q_res2_y;
+	q_res_y = q_corr_w * q_res2_y - q_corr_x * q_res2_z + q_corr_y * q_res2_w + q_corr_z * q_res2_x;
+	q_res_z = q_corr_w * q_res2_z + q_corr_x * q_res2_y - q_corr_y * q_res2_x + q_corr_z * q_res2_w;
+
+	corr_y = atan2(2 * (q_res_w * q_res_z + q_res_x * q_res_y), 1 - 2 * q_res_y * q_res_y - 2 * q_res_z * q_res_z);
+
+	if (count < 3000)
 	{
 		offset = corr_y;
 		++count;
 	}
-	else if(count == 10000) 
+	else if(count == 3000) 
 	{
 		beep_ctrl(300, 150);
 		// HAL_Delay(3000);
 		++count;
 		// beep_ctrl(0, 0);
 	}
-	else if(count < 10250){
+	else if(count < 3150){
 		++count;
 	}
-	else if(count == 10250) {
+	else if(count == 3150) {
 		beep_ctrl(0, 0);
 	}
 	// sprintf(temp_buf, "r:%8.3lf p:%8.3f y:%8.3f\r", corr_r, corr_p, corr_y);
@@ -546,14 +560,16 @@ static float get_rpy_relative(double pitch)
 	// HAL_UART_Transmit(&huart6, (uint8_t *)temp_buf, 36, 55);
 	// memset(temp_buf, 0, sizeof(temp_buf));
 
-	return corr_y - offset;
+	return corr_y; // - offset;
 
 	// sprintf(temp_buf, "%c:%06.1f\r\n", corr_y - offset);
 	// HAL_UART_Transmit(&huart6, (uint8_t *)temp_buf, 15, 55);
 	// memset(temp_buf, 0, sizeof(temp_buf));
 }
 
+const float INIT_PITCH = PI / 2;
 float get_yaw(void)
 {
-	return get_rpy_relative(ROBOT_INIT_PITCH);
+	// return get_rpy_relative(0);
+	return get_rpy_relative(INIT_PITCH);
 }

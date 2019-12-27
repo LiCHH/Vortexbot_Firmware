@@ -29,7 +29,7 @@ typedef enum
   SW_DOWN = 0x03
 } sw_e;
 
-typedef __packed struct
+typedef struct
 {
   int16_t r_rocker_lr;
   int16_t r_rocker_ud;
@@ -45,11 +45,23 @@ typedef __packed struct
   uint8_t sd;
 } rc_info_t;
 
+typedef struct 
+{
+  float vx;
+  float vy;
+  float vw;
+
+  float ref_direction;
+  float power_ratio;
+} rb_info_t;
+
 extern uint8_t rc_buf[];
 extern rc_info_t rc_info;
+extern rb_info_t rb_info;
 
-void rc_callback_handler(rc_info_t *rc, uint8_t *rc_buf);
+void rc_callback_handler(uint8_t *rc_buf);
 void rc_param_init(void);
+void get_bot_velocity(void);
 
 ///! 均值滤波器
 typedef volatile struct
