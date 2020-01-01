@@ -7,6 +7,7 @@
 #include "imu_task.h"
 #include "bsp_uart.h"
 #include "commons.h"
+#include "remote_ctrl.h"
 
 // static double radius[4];
 // static double beta[4];
@@ -97,10 +98,11 @@ pid_t yaw_pid;
   // HAL_UART_Transmit(&TEST_HUART, (uint8_t *)output, 50, 10);
 // }
 
-void attitude_control(void) {
-  // double yaw_raw = attitude.yaw;
-  // double omega_ref;
-  // pid_calc(&yaw_pid, yaw_raw, yaw_ref);
+float attitude_control(void) {
+  float yaw_raw = attitude.yaw;
+  float yaw_ref = rb_info.ref_direction;
+  pid_calc(&yaw_pid, yaw_raw, yaw_ref);
+  return yaw_pid.out;
   // omega_ref = yaw_pid.out;
 
   // memset(output, 0, sizeof(output));
@@ -111,5 +113,5 @@ void attitude_control(void) {
 }
 
 void attitude_control_init(void) {
-  PID_struct_init(&yaw_pid, POSITION_PID, PI / 2, PI / 2, 0.1f, 0.f, 0.0001f);
+  PID_struct_init(&yaw_pid, POSITION_PID, 0.5 * ROBOT_ANG_SPD_MAX, 1, 2.5f, 0.02f, 0.001f);
 }

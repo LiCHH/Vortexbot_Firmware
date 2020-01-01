@@ -3,7 +3,7 @@
 
 #include "sys_config.h"
 
-void attitude_control(void);
+float attitude_control(void);
 void attitude_control_init(void);
 
 #endif

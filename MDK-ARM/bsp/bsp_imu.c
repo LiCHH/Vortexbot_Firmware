@@ -9,11 +9,12 @@
 #include "ist8310_reg.h"
 #include "mpu6500_reg.h"
 
+#include "test_ctrl.h"
 
 #define MPU_DELAY(x) HAL_Delay(x)
 
 #define MPU_HSPI hspi5
-// #define IST8310
+#define IST8310
 #define MPU_NSS_LOW HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET)
 #define MPU_NSS_HIGH HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET)
 
@@ -506,34 +507,44 @@ static float get_rpy_relative(float pitch)
 
 	// pitch = pitch / 180 * 3.14159;
 	float corr_r, corr_p, corr_y;
-	// corr_r = atan2(2 * (m_q0 * m_q1 + m_q2 * m_q3), 1 - 2 * m_q1 * m_q1 - 2 * m_q2 * m_q2);
-	// corr_p = asin(2 * (m_q0 * m_q2 - m_q1 * m_q3));
+	corr_r = atan2(2 * (m_q0 * m_q1 + m_q2 * m_q3), 1 - 2 * m_q1 * m_q1 - 2 * m_q2 * m_q2);
+	corr_p = asin(2 * (m_q0 * m_q2 - m_q1 * m_q3));
 	corr_y = atan2(2 * (m_q0 * m_q3 + m_q1 * m_q2), 1 - 2 * m_q2 * m_q2 - 2 * m_q3 * m_q3);
 
 	float q_res_x, q_res_y, q_res_z, q_res_w;
-	float q_res2_x, q_res2_y, q_res2_z, q_res2_w;
+	// float q_res2_x, q_res2_y, q_res2_z, q_res2_w;
+	float q_corr_x, q_corr_y, q_corr_z, q_corr_w;
 
-	float q_corr_x = 0;
-	float q_corr_y = 0;
-	float q_corr_z = sin(-corr_y / 2);
-	float q_corr_w = cos(-corr_y / 2);
+	// q_corr_x = 0;
+	// q_corr_y = 0;
+	// q_corr_z = sin(-corr_y / 2);
+	// q_corr_w = cos(-corr_y / 2);
 
-	q_res2_w = q_corr_w * m_q0 - q_corr_x * m_q1 - q_corr_y * m_q2 - q_corr_z * m_q3;
-	q_res2_x = q_corr_w * m_q1 + q_corr_x * m_q0 + q_corr_y * m_q3 - q_corr_z * m_q2;
-	q_res2_y = q_corr_w * m_q2 - q_corr_x * m_q3 + q_corr_y * m_q0 + q_corr_z * m_q1;
-	q_res2_z = q_corr_w * m_q3 + q_corr_x * m_q2 - q_corr_y * m_q1 + q_corr_z * m_q0;
+	// q_res2_w = q_corr_w * m_q0 - q_corr_x * m_q1 - q_corr_y * m_q2 - q_corr_z * m_q3;
+	// q_res2_x = q_corr_w * m_q1 + q_corr_x * m_q0 + q_corr_y * m_q3 - q_corr_z * m_q2;
+	// q_res2_y = q_corr_w * m_q2 - q_corr_x * m_q3 + q_corr_y * m_q0 + q_corr_z * m_q1;
+	// q_res2_z = q_corr_w * m_q3 + q_corr_x * m_q2 - q_corr_y * m_q1 + q_corr_z * m_q0;
 
-	q_corr_x = 0;
-	q_corr_y = sin(pitch / 2);
-	q_corr_z = 0;
-	q_corr_w = cos(pitch / 2);
+	// q_res_w = q_corr_w * q_res2_w - q_corr_x * q_res2_x - q_corr_y * q_res2_y - q_corr_z * q_res2_z;
+	// q_res_x = q_corr_w * q_res2_x + q_corr_x * q_res2_w + q_corr_y * q_res2_z - q_corr_z * q_res2_y;
+	// q_res_y = q_corr_w * q_res2_y - q_corr_x * q_res2_z + q_corr_y * q_res2_w + q_corr_z * q_res2_x;
+	// q_res_z = q_corr_w * q_res2_z + q_corr_x * q_res2_y - q_corr_y * q_res2_x + q_corr_z * q_res2_w;
 
-	q_res_w = q_corr_w * q_res2_w - q_corr_x * q_res2_x - q_corr_y * q_res2_y - q_corr_z * q_res2_z;
-	q_res_x = q_corr_w * q_res2_x + q_corr_x * q_res2_w + q_corr_y * q_res2_z - q_corr_z * q_res2_y;
-	q_res_y = q_corr_w * q_res2_y - q_corr_x * q_res2_z + q_corr_y * q_res2_w + q_corr_z * q_res2_x;
-	q_res_z = q_corr_w * q_res2_z + q_corr_x * q_res2_y - q_corr_y * q_res2_x + q_corr_z * q_res2_w;
-
-	corr_y = atan2(2 * (q_res_w * q_res_z + q_res_x * q_res_y), 1 - 2 * q_res_y * q_res_y - 2 * q_res_z * q_res_z);
+	// TODO:
+	// q_corr_x = 0;
+	// q_corr_y = sin(pitch / 2);
+	// q_corr_z = 0;
+	// q_corr_w = cos(pitch / 2);
+	// q_res_w = q_corr_w * m_q0 - q_corr_x * m_q1 - q_corr_y * m_q2 - q_corr_z * m_q3;
+	// q_res_x = q_corr_w * m_q1 + q_corr_x * m_q0 + q_corr_y * m_q3 - q_corr_z * m_q2;
+	// q_res_y = q_corr_w * m_q2 - q_corr_x * m_q3 + q_corr_y * m_q0 + q_corr_z * m_q1;
+	// q_res_z = q_corr_w * m_q3 + q_corr_x * m_q2 - q_corr_y * m_q1 + q_corr_z * m_q0;
+	// corr_r = atan2(2 * (q_res_w * q_res_x + q_res_y * q_res_z), 1 - 2 * q_res_x * q_res_x - 2 * q_res_y * q_res_y);
+	// corr_p = asin(2 * (q_res_w * q_res_y - q_res_x * q_res_z));
+	// corr_y = atan2(2 * (q_res_w * q_res_z + q_res_x * q_res_y), 1 - 2 * q_res_y * q_res_y - 2 * q_res_z * q_res_z);
+	// if(fabs(corr_r) > PI / 2) {
+	// 	corr_y = -corr_y;
+	// }
 
 	if (count < 3000)
 	{
@@ -553,18 +564,12 @@ static float get_rpy_relative(float pitch)
 	else if(count == 3150) {
 		beep_ctrl(0, 0);
 	}
-	// sprintf(temp_buf, "r:%8.3lf p:%8.3f y:%8.3f\r", corr_r, corr_p, corr_y);
-	// HAL_UART_Transmit(&huart6, (uint8_t *)temp_buf, 33, 55);
-	// memset(temp_buf, 0, sizeof(temp_buf));
-	// sprintf(temp_buf, "ax:%8d ay:%8d az:%8d\r", mpu_data.ax, mpu_data.ay, mpu_data.az);
-	// HAL_UART_Transmit(&huart6, (uint8_t *)temp_buf, 36, 55);
+	// sprintf(test_buf, "%.2f %.2f %.2f\r\n", corr_r*RAD_TO_DEG, corr_p*RAD_TO_DEG, corr_y*RAD_TO_DEG);
+	// HAL_UART_Transmit(&TEST_HUART, (uint8_t *)test_buf, 40, 10);
 	// memset(temp_buf, 0, sizeof(temp_buf));
 
 	return corr_y; // - offset;
 
-	// sprintf(temp_buf, "%c:%06.1f\r\n", corr_y - offset);
-	// HAL_UART_Transmit(&huart6, (uint8_t *)temp_buf, 15, 55);
-	// memset(temp_buf, 0, sizeof(temp_buf));
 }
 
 const float INIT_PITCH = PI / 2;
