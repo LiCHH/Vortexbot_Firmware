@@ -14,7 +14,7 @@
 #define MPU_DELAY(x) HAL_Delay(x)
 
 #define MPU_HSPI hspi5
-#define IST8310
+// #define IST8310
 #define MPU_NSS_LOW HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET)
 #define MPU_NSS_HIGH HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET)
 
@@ -531,20 +531,20 @@ static float get_rpy_relative(float pitch)
 	// q_res_z = q_corr_w * q_res2_z + q_corr_x * q_res2_y - q_corr_y * q_res2_x + q_corr_z * q_res2_w;
 
 	// TODO:
-	// q_corr_x = 0;
-	// q_corr_y = sin(pitch / 2);
-	// q_corr_z = 0;
-	// q_corr_w = cos(pitch / 2);
-	// q_res_w = q_corr_w * m_q0 - q_corr_x * m_q1 - q_corr_y * m_q2 - q_corr_z * m_q3;
-	// q_res_x = q_corr_w * m_q1 + q_corr_x * m_q0 + q_corr_y * m_q3 - q_corr_z * m_q2;
-	// q_res_y = q_corr_w * m_q2 - q_corr_x * m_q3 + q_corr_y * m_q0 + q_corr_z * m_q1;
-	// q_res_z = q_corr_w * m_q3 + q_corr_x * m_q2 - q_corr_y * m_q1 + q_corr_z * m_q0;
-	// corr_r = atan2(2 * (q_res_w * q_res_x + q_res_y * q_res_z), 1 - 2 * q_res_x * q_res_x - 2 * q_res_y * q_res_y);
-	// corr_p = asin(2 * (q_res_w * q_res_y - q_res_x * q_res_z));
-	// corr_y = atan2(2 * (q_res_w * q_res_z + q_res_x * q_res_y), 1 - 2 * q_res_y * q_res_y - 2 * q_res_z * q_res_z);
-	// if(fabs(corr_r) > PI / 2) {
-	// 	corr_y = -corr_y;
-	// }
+	q_corr_x = 0;
+	q_corr_y = sin(pitch / 2);
+	q_corr_z = 0;
+	q_corr_w = cos(pitch / 2);
+	q_res_w = q_corr_w * m_q0 - q_corr_x * m_q1 - q_corr_y * m_q2 - q_corr_z * m_q3;
+	q_res_x = q_corr_w * m_q1 + q_corr_x * m_q0 + q_corr_y * m_q3 - q_corr_z * m_q2;
+	q_res_y = q_corr_w * m_q2 - q_corr_x * m_q3 + q_corr_y * m_q0 + q_corr_z * m_q1;
+	q_res_z = q_corr_w * m_q3 + q_corr_x * m_q2 - q_corr_y * m_q1 + q_corr_z * m_q0;
+	corr_r = atan2(2 * (q_res_w * q_res_x + q_res_y * q_res_z), 1 - 2 * q_res_x * q_res_x - 2 * q_res_y * q_res_y);
+	corr_p = asin(2 * (q_res_w * q_res_y - q_res_x * q_res_z));
+	corr_y = atan2(2 * (q_res_w * q_res_z + q_res_x * q_res_y), 1 - 2 * q_res_y * q_res_y - 2 * q_res_z * q_res_z);
+	if(fabs(corr_r) > PI / 2) {
+		corr_y = -corr_y;
+	}
 
 	if (count < 3000)
 	{

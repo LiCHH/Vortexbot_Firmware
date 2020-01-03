@@ -113,5 +113,5 @@ float attitude_control(void) {
 }
 
 void attitude_control_init(void) {
-  PID_struct_init(&yaw_pid, POSITION_PID, 0.5 * ROBOT_ANG_SPD_MAX, 1, 2.5f, 0.02f, 0.001f);
+  PID_struct_init(&yaw_pid, POSITION_PID, 0.5 * ROBOT_ANG_SPD_MAX, 1, 3.5f, 0.02f, 0.001f);
 }
