@@ -16,6 +16,7 @@
 #include "bsp_uart.h"
 #include "odom_task.h"
 #include "attitude_control.h"
+#include "swmode_task.h"
 
 static void omnidirection_handler(void);
 static void versatile_control_handler(void);
@@ -39,7 +40,9 @@ void motion_task(void const *argu) {
   {
   case OMNI_DIRECTIONAL:
   {
+    taskENTER_CRITICAL();
     omnidirection_handler();
+    taskEXIT_CRITICAL();
   }
   break;
 
@@ -63,13 +66,17 @@ void motion_task(void const *argu) {
 
   case ATTITUDE_CONTROL:
   {
+    taskENTER_CRITICAL();
     attitude_control_handler();
+    taskEXIT_CRITICAL();
   }
   break;
   
   case VERSATILE_CONTROL:
   {
+    taskENTER_CRITICAL();
     versatile_control_handler();
+    taskEXIT_CRITICAL();
   }
   break;
 
@@ -211,11 +218,12 @@ static void forward_handler(void)
     chassis.driving_spd_ref[bl_motor] = -BL_SPD_F * spd_ref;
   }
   else {
-    if(stop_flag) {
+    if(stop_flag || global_stop_flag) {
       for(int i = 0; i < 4; ++i) {
         chassis.driving_pos_ref[i] = motor_driving[i].total_angle; // + motor_driving[i].speed_rpm * 60.0 * DEG_TO_RAD;
       }
       stop_flag = 0;
+      global_stop_flag = 0;
     }
     for(int i = 0; i < 4; ++i) {
       pid_calc(&pid_driving_pos[i], chassis.driving_pos_fdb[i], chassis.driving_pos_ref[i]);
@@ -312,11 +320,12 @@ static void versatile_control_handler(void) {
   }
   else {
     //! 如果是静止状态，则加入位置环，以保证在墙上不滑动
-    if(stop_flag) {
+    if(stop_flag || global_stop_flag) {
       for(int i = 0; i < 4; ++i) {
         chassis.driving_pos_ref[i] = motor_driving[i].total_angle;
       }
       stop_flag = 0;
+      global_stop_flag = 0;
     }
 
     chassis.steer_pos_ref[fr_motor] = 100 * (FR_POS_F * OMNI_INIT_FRONT_ANGLE + STEER_INIT_ANGLE_FR + STEER_FR_OFFSET); //+ STEER_FR_OFFSET) * MOTOR_REDUCTION_RATIO;
@@ -348,7 +357,7 @@ static void attitude_control_handler(void) {
     // chassis.vx = cos(3*PI/4) * rb_info.vx + sin(3*PI/4) * rb_info.vy;
     // chassis.vy = -sin(3*PI/4) * rb_info.vx + cos(3*PI/4) * rb_info.vy;
     // chassis.vw = rb_info.vw;
-    chassis.vw = attitude_control();
+    chassis.vw = 0;
   }
 
   //! test code
@@ -356,7 +365,8 @@ static void attitude_control_handler(void) {
   // sprintf(test_buf, "%.2f %5d\r\n", chassis.vw, rc_info.r_rocker_lr);
   // HAL_UART_Transmit(&TEST_HUART, test_buf, 15, 10);
 
-  if (fabs(chassis.vx) > 0.01 || fabs(chassis.vy) > 0.01 || fabs(chassis.vw) > 0.01) {
+  if (fabs(chassis.vx) > 0.01 || fabs(chassis.vy) > 0.01) {
+    chassis.vw = attitude_control();
 
     versatile_control(chassis.vx, chassis.vy, chassis.vw, spds, phis);
     
@@ -389,11 +399,12 @@ static void attitude_control_handler(void) {
   }
   else {
     //! 如果是静止状态，则加入位置环，以保证在墙上不滑动
-    if(stop_flag) {
+    if(stop_flag || global_stop_flag) {
       for(int i = 0; i < 4; ++i) {
         chassis.driving_pos_ref[i] = motor_driving[i].total_angle;
       }
       stop_flag = 0;
+      global_stop_flag = 0;
     }
     static float ref_angle;
     ref_angle = rb_info.ref_direction;
@@ -475,11 +486,12 @@ static void omnidirection_handler(void)
   }
   else {
     //! 如果是静止状态，则加入位置环，以保证在墙上不滑动
-    if(stop_flag) {
+    if(stop_flag || global_stop_flag) {
       for(int i = 0; i < 4; ++i) {
         chassis.driving_pos_ref[i] = motor_driving[i].total_angle;
       }
       stop_flag = 0;
+      global_stop_flag = 0;
     }
     static float ref_angle;
     ref_angle = rb_info.ref_direction;
