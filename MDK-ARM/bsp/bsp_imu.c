@@ -573,6 +573,7 @@ static float get_rpy_relative(float pitch)
 }
 
 const float INIT_PITCH = PI / 2;
+// const float INIT_PITCH = 0;
 float get_yaw(void)
 {
 	// return get_rpy_relative(0);

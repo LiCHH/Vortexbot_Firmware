@@ -5,7 +5,7 @@
 #include "stm32f4xx_hal.h"
 #include "math.h"
 
-#define BOT_ID 3
+#define BOT_ID 2
 
 /* can relevant */
 #define CHASSIS_CAN hcan1
@@ -84,9 +84,10 @@ typedef enum
 #define STEER_BL_OFFSET 5.5
 #define STEER_BR_OFFSET -2.5
 #elif BOT_ID == 2
-#define STEER_F_OFFSET -0.2f
+#define STEER_FR_OFFSET 2.5f
+#define STEER_FL_OFFSET -0.2f
 #define STEER_BL_OFFSET 3.f
-#define STEER_BR_OFFSET 9.5f
+#define STEER_BR_OFFSET 10.5f
 #elif BOT_ID == 3
 #define STEER_FR_OFFSET 2.5
 #define STEER_FL_OFFSET 6.0
@@ -94,22 +95,37 @@ typedef enum
 #define STEER_BR_OFFSET 2.5
 #endif
 
-#define OMNI_INIT_FRONT_ANGLE   45
-#define OMNI_INIT_BACK_ANGLE    45
+#if BOT_ID == 1
 #define STEER_INIT_ANGLE_FR     135
 #define STEER_INIT_ANGLE_FL     45
 #define STEER_INIT_ANGLE_BL     135
 #define STEER_INIT_ANGLE_BR     45
+#elif BOT_ID == 2
+#define STEER_INIT_ANGLE_FR     180
+#define STEER_INIT_ANGLE_FL     45
+#define STEER_INIT_ANGLE_BL     120
+#define STEER_INIT_ANGLE_BR     60
+#define OMNI_INIT_FRONT_ANGLE   90
+#define OMNI_INIT_BACK_ANGLE    30
+#elif BOT_ID == 3
+#define STEER_INIT_ANGLE_FR     135
+#define STEER_INIT_ANGLE_FL     45
+#define STEER_INIT_ANGLE_BL     135
+#define STEER_INIT_ANGLE_BR     45
+#define OMNI_INIT_FRONT_ANGLE   45
+#define OMNI_INIT_BACK_ANGLE    45
+#endif
+
 #define STEER_SERVO_OFFSET 2048
 
 /* chassis relevant */
 /* the ratio of motor encoder value translate to degree */
 #define ENCODER_ANGLE_RATIO 0.0439f // (360.0f / 8192.0)
 
-///! setup robot's initial pitch angle on wall
+//! setup robot's initial pitch angle on wall
 #define ROBOT_INIT_PITCH 90.f
 
-///! setup imu temperature control
+//! setup imu temperature control
 #define DEFAULT_IMU_TEMP 50
 
 #endif

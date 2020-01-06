@@ -14,6 +14,8 @@ extern osTimerId chassis_timer_id;
 extern osTimerId vortex_timer_id;
 extern osTimerId motion_timer_id;
 
+int global_stop_flag = 0;
+
 void mode_switch_task(void const *argu)
 {
   // osTimerStart(chassis_timer_id, CHASSIS_TIMER_PERIOD); 
@@ -29,6 +31,9 @@ void mode_switch_task(void const *argu)
     get_vortex_bot_mode();
     get_vortex_mode();
     get_chassis_mode();
+    if(chassis.last_ctrl_mode != chassis.ctrl_mode) {
+      global_stop_flag = 1;
+    }
 
     taskEXIT_CRITICAL();
 

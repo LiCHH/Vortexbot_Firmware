@@ -82,8 +82,7 @@ int16_t vx, vy, vw;
 static void get_bot_velocity(void) {
 
     rb_info.power_ratio = (float)(rc_info.r_rocker_ud) / ROCKER_RANGE;
-    //! 防止抖动
-    // chassis.power_ratio = (chassis.power_ratio > 0.05f) ? chassis.power_ratio : 0;
+
     vx = rc_info.l_rocker_ud;
     vy = rc_info.l_rocker_lr;
     vw = rc_info.r_rocker_lr;
@@ -146,9 +145,6 @@ void rc_param_init() {
   rc_info.l_rocker_ud = 0;
   rc_info.r_rocker_ud = ROCKER_MIN;
   rc_info.r_rocker_lr = ROCKER_OFFSET;
-  // filter_init(&rr_ud_f, FILTER_SIZE);
-  // filter_init(&lr_ud_f, FILTER_SIZE);
-  // filter_init(&lr_lr_f, FILTER_SIZE);
 
   memset(&rb_info, 0, sizeof(rb_info));
 }

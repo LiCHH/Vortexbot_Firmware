@@ -16,4 +16,6 @@ static void get_vortex_mode(void);
 
 static void get_last_mode(void);
 
+extern int global_stop_flag;
+
 #endif // !__SWMODE_TASK_H__ 
